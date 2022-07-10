@@ -1,0 +1,22 @@
+> gallery pages <
+https://exhentai.org/ < home
+https://exhentai.org/tag/female:big+breasts < tag
+https://exhentai.org/g/2268462/3a7617d36c/ < gallery
+https://exhentai.org/favorites.php < favorites
+https://exhentai.org/uploader/Pokom < uploader
+https://exhentai.org/imageset < category
+https://exhentai.org/watched < watched
+https://exhentai.org/popular < popular
+https://exhentai.org/?f_cats=144
+https://exhentai.org/?f_search=+meme
+
+> post view < 
+https://exhentai.org/s/dbd508b66b/2268322-3 < post view
+
+Gallery css IDs:
+#gdt
+.ido
+
+Post view:
+.sni
+

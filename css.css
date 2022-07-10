@@ -1,0 +1,20 @@
+.gl1t {
+    transition: all 200ms ease;
+}
+
+.highlighted-thumb {
+    z-index: 2;
+    transform: scale(1.03);
+    backdrop-filter: blur(2px);
+    filter: brightness(1.1);
+    border-radius: 0.5em;
+    box-shadow: #ff0052 0px 0px 1.9em inset, rgb(255 255 255) 0 0 0 0.2em;
+}
+
+body #nb {
+    max-width: 720px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    max-height: unset;
+}
