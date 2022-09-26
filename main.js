@@ -162,6 +162,7 @@ class exHentaiCtrl {
 	};
 
 	keydown = (e) => {
+		if ([...document.body.querySelectorAll("input:focus")].length > 0) return;
 		if (!this.gallery.ready) return false;
 		switch (e.code) {
 			case "KeyE":
@@ -231,26 +232,28 @@ class exHentaiCtrl {
 
 	moveHighlight = (e, { next } = {}) => {
 		this.calculateGrid();
-		const nodeIndex = this.gallery.nodes.indexOf(this.thumbnail.active);
-		console.log("columns", this.gallery.columns, "nodeIndex", nodeIndex);
+		let nodeIndex = this.gallery.nodes.indexOf(this.thumbnail.active);
+		// console.log("columns", this.gallery.columns, "nodeIndex", nodeIndex);
 		switch (e.code) {
 			case "KeyW":
 				if (nodeIndex < this.gallery.columns) {
-					// ALREADY ON FIRST ROW
+					// ALREADY ON FIRST THUMBNAIL
 					window.scrollTo(0, 0);
 					break;
 				}
-				next = this.gallery.nodes[nodeIndex - this.gallery.columns];
+				nodeIndex -= this.gallery.columns;
 				break;
 			case "KeyA":
 				if (nodeIndex === 0 || nodeIndex % this.gallery.columns === 0) {
+					// ALREADY ON FIRST COLUMN
+
 					if (this.pressAonFirst()) return;
 				}
 				if (nodeIndex <= 0) {
 					// ALREADY ON FIRST THUMBNAIL
 					break;
 				}
-				next = this.gallery.nodes[nodeIndex - 1];
+				nodeIndex--;
 				break;
 			case "KeyS":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
@@ -258,20 +261,22 @@ class exHentaiCtrl {
 					next = this.gallery.nodes[this.gallery.nodes.length - 1];
 					break;
 				}
-				next = this.gallery.nodes[nodeIndex + this.gallery.columns];
+				nodeIndex += this.gallery.columns;
 				break;
 			case "KeyD":
 				if (nodeIndex > 0 && (nodeIndex + 1) % this.gallery.columns === 0) {
+					// ALREADY ON LAST COLUMN
 					if (this.pressDonLast()) return;
 				}
 				if (nodeIndex >= this.gallery.nodes.length - 1) {
+					// ALREADY ON LAST THUMBNAIL
 					break;
 				}
-				next = this.gallery.nodes[nodeIndex + 1];
+				nodeIndex++;
 				break;
 		}
-		if (next) this.selectThumbnail(next);
-		console.log("post, nodeIndex", this.gallery.nodes.indexOf(this.thumbnail.active));
+		this.selectThumbnail(this.gallery.nodes[nodeIndex]);
+		// console.log("post, nodeIndex", this.gallery.nodes.indexOf(this.thumbnail.active));
 	};
 
 	boundsCheck = (node) => {
