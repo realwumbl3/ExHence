@@ -28,14 +28,15 @@ function observeFor(element, func, suicide) {
     ❌ TODO ✅
 
     - State per tab
+	
+    - Highlight from F/Lrow navigation on same row
 
     ✔ Read navbar on gallery init
 
     ✔ Init thumbnail focus is first in view
 
-    - First row + Last row prev/next page 
+    ✔ First row + Last row prev/next page 
     
-    - Highlight from F/Lrow navigation on same row
 
 */
 
@@ -63,7 +64,10 @@ class exHentaiCtrl {
 		};
 		this.attachHeader();
 		this.bind();
-		this.loadState();
+		this.loadState();		
+		chrome.runtime.sendMessage({ greeting: "hello" }, function (response) {
+			console.log(response.farewell);
+		});
 	}
 
 	saveState = () => {
@@ -73,7 +77,7 @@ class exHentaiCtrl {
 		});
 	};
 
-	loadState = () => {
+	loadState = async () => {
 		chrome.storage.local.get(["state"], (result) => {
 			if (!result.state) return console.log("no init state set yet");
 			console.log("restored state ", result.state);
@@ -88,11 +92,10 @@ class exHentaiCtrl {
 
 	initPage = ({ target = null } = {}) => {
 		const path = window.location.href.split(window.location.origin)[1];
+
 		console.log("path", path);
+        
 
-		if (this.state.thisPage) this.state.lastPage = this.state.thisPage;
-
-		this.state.thisPage = path;
 
 		if ((target = document.querySelector("#gdt, .itg.gld"))) {
 			this.initGalleryView(target);
@@ -100,7 +103,6 @@ class exHentaiCtrl {
 			this.state.lastGallery.push(path);
 			this.saveState();
 		}
-
 		if ((target = document.querySelector(".sni"))) {
 			this.enableVIEW(target);
 		}
