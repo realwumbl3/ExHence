@@ -1,46 +1,4 @@
-console.log("oM", oM);
-
-function observeFor(element, func, suicide) {
-	"use strict";
-	try {
-		let observer = new MutationObserver((mutationsList) => {
-			for (var mutation of mutationsList)
-				if (mutation.type === "childList") {
-					for (let node of mutation.addedNodes) {
-						if (
-							(typeof node?.querySelectorAll === "function" && node.querySelectorAll(element).length > 0) ||
-							(typeof node?.matches === "function" && node.matches(element))
-						) {
-							func(node);
-							if (suicide) observer.disconnect();
-						}
-					}
-				}
-		});
-		observer.observe(document, { childList: true, subtree: true });
-	} catch (err) {
-		console.log("err.message: " + err.message);
-	}
-}
-
-/*
-
-    ❌ TODO ✅
-
-    - State per tab
-	
-    - Highlight from F/Lrow navigation on same row
-
-    ✔ Read navbar on gallery init
-
-    ✔ Init thumbnail focus is first in view
-
-    ✔ First row + Last row prev/next page 
-    
-
-*/
-
-class exHentaiCtrl {
+const eXHentaiCtrl = new (class exHentaiCtrl {
 	constructor() {
 		this.gallery = {
 			container: null,
@@ -63,21 +21,23 @@ class exHentaiCtrl {
 			lastGallery: [],
 		};
 		this.attachHeader();
-		this.bind();
-		this.loadState();		
-		chrome.runtime.sendMessage({ greeting: "hello" }, function (response) {
-			console.log(response.farewell);
+
+		window.addEventListener("keydown", this.keydown.bind(this));
+
+		this.loadState();
+		chrome.runtime.sendMessage({ ping: "ping" }, (response) => {
+			console.log(response.pong);
 		});
 	}
 
-	saveState = () => {
+	saveState() {
 		this.state.lastGallery = this.state.lastGallery.splice(-20);
 		chrome.storage.local.set({ state: this.state }, () => {
 			console.log("saved state ", this.state);
 		});
 	};
 
-	loadState = async () => {
+	async loadState() {
 		chrome.storage.local.get(["state"], (result) => {
 			if (!result.state) return console.log("no init state set yet");
 			console.log("restored state ", result.state);
@@ -85,31 +45,22 @@ class exHentaiCtrl {
 		});
 	};
 
-	loaded = () => {
-		console.log("Page Loaded! 😊");
-		setTimeout((_) => this.initPage(), 100);
-	};
-
-	initPage = ({ target = null } = {}) => {
+	initPage() {
 		const path = window.location.href.split(window.location.origin)[1];
-
-		console.log("path", path);
-        
-
-
+		let target = null;
 		if ((target = document.querySelector("#gdt, .itg.gld"))) {
 			this.initGalleryView(target);
 			this.state.lastGallery = this.state.lastGallery.filter((_) => _ !== this.state.thisPage);
 			this.state.lastGallery.push(path);
 			this.saveState();
-		}
-		if ((target = document.querySelector(".sni"))) {
+		} else if ((target = document.querySelector(".sni"))) {
 			this.enableVIEW(target);
 		}
 	};
 
-	attachHeader = () => {
-		observeFor(
+	attachHeader() {
+		observe(
+			document,
 			"#nb",
 			(_) => {
 				oM()(
@@ -122,15 +73,12 @@ class exHentaiCtrl {
 		);
 	};
 
-	bind = () => {
-		window.addEventListener("keydown", this.keydown);
-	};
-
-	enableVIEW = () => {
+	enableVIEW() {
 		this.gallery.ready = true;
 	};
 
-	initGalleryView = (target) => {
+	initGalleryView(target) {
+		console.log("initGalleryView", target);
 		this.gallery.container = target;
 		this.readNavBar();
 		this.getGalleryNodes();
@@ -141,34 +89,34 @@ class exHentaiCtrl {
 	};
 
 	readNavBar() {
-		const navBar = document.querySelector(".ptt tr");
-		this.gallery.prev = navBar.firstChild.firstChild?.href;
-		this.gallery.next = navBar.lastChild.firstChild?.href;
+		const navBar = [...document.querySelectorAll("#uprev,#unext")]
+		console.log("navBar", navBar);
+		this.gallery.prev = navBar[0]?.href;
+		this.gallery.next = navBar[1]?.href;
 		// .ptds <- active page
 		// .ptdd <- unavailable
 	}
 
-	getGalleryNodes = () => {
+	getGalleryNodes() {
 		this.gallery.nodes = [...this.gallery.container.childNodes].filter((_) => _.childNodes.length > 0);
 	};
 
-	calculateGrid = () => {
+	calculateGrid() {
 		this.gallery.columns = Math.floor(this.gallery.container.clientWidth / this.thumbnail.active.clientWidth);
 	};
 
-	selectThumbnail = (node) => {
+	selectThumbnail(node) {
 		this.thumbnail.active?.classList.remove("highlighted-thumb");
 		this.thumbnail.active = node;
 		this.thumbnail.active.classList.add("highlighted-thumb");
 		this.boundsCheck(node);
 	};
 
-	keydown = (e) => {
-		if ([...document.body.querySelectorAll("input:focus")].length > 0) return;
+	keydown(e) {
+		if (document.body.querySelector("input:focus")) return; // ignore if any input feild is focused
 		if (!this.gallery.ready) return false;
 		switch (e.code) {
 			case "KeyE":
-				// ignore if any input feild is focused
 				this.pressEonThumb();
 				break;
 			case "KeyQ":
@@ -182,6 +130,10 @@ class exHentaiCtrl {
 			case "KeyA":
 			case "KeyS":
 			case "KeyD":
+			case "ArrowUp":
+			case "ArrowLeft":
+			case "ArrowDown":
+			case "ArrowRight":
 				this.moveHighlight(e);
 				break;
 			default:
@@ -189,55 +141,13 @@ class exHentaiCtrl {
 		}
 	};
 
-	pressEonThumb = () => {
-		const thumbnailAnchor = this.thumbnail.active.querySelector("a");
-		const thumbnailLink = thumbnailAnchor.href;
-		this.saveState();
-		window.location = thumbnailLink;
-	};
-
-	pressQ = () => {
-		// if on post use V button at bottom of page.
-		// if on gallery, first and last thumbnail navigate pages and Q returns to last gallery
-
-		if (this.state.lastGallery.length > 0) {
-			for (let historyUrl of this.state.lastGallery.reverse()) {
-				if (historyUrl !== this.state.thisPage) {
-					this.state.lastGallery = removeFrom(this.state.lastGallery, historyUrl);
-					this.saveState();
-					window.location = historyUrl;
-					return;
-				}
-			}
-		}
-	};
-
-	pressAonFirst = () => {
-		console.log("pressAonFirst");
-		if (this.options.firstLastColumnPageNav && this.gallery.prev) {
-			this.gallery.ready = false;
-			window.location = this.gallery.prev;
-			return true;
-		}
-		return false;
-	};
-
-	pressDonLast = () => {
-		console.log("pressDonLast");
-		if (this.options.firstLastColumnPageNav && this.gallery.next) {
-			this.gallery.ready = false;
-			window.location = this.gallery.next;
-			return true;
-		}
-		return false;
-	};
-
-	moveHighlight = (e, { next } = {}) => {
+	moveHighlight(e) {
 		this.calculateGrid();
 		let nodeIndex = this.gallery.nodes.indexOf(this.thumbnail.active);
 		// console.log("columns", this.gallery.columns, "nodeIndex", nodeIndex);
 		switch (e.code) {
-			case "KeyW":
+			case "KeyW": // UP
+			case "ArrowUp":
 				if (nodeIndex < this.gallery.columns) {
 					// ALREADY ON FIRST THUMBNAIL
 					window.scrollTo(0, 0);
@@ -245,7 +155,17 @@ class exHentaiCtrl {
 				}
 				nodeIndex -= this.gallery.columns;
 				break;
-			case "KeyA":
+			case "KeyS": // DOWN
+			case "ArrowDown":
+				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
+					// ALREADY ON LAST ROW
+					next = this.gallery.nodes[this.gallery.nodes.length - 1];
+					break;
+				}
+				nodeIndex += this.gallery.columns;
+				break;
+			case "KeyA": // LEFT
+			case "ArrowLeft":
 				if (nodeIndex === 0 || nodeIndex % this.gallery.columns === 0) {
 					// ALREADY ON FIRST COLUMN
 
@@ -257,15 +177,8 @@ class exHentaiCtrl {
 				}
 				nodeIndex--;
 				break;
-			case "KeyS":
-				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
-					// ALREADY ON LAST ROW
-					next = this.gallery.nodes[this.gallery.nodes.length - 1];
-					break;
-				}
-				nodeIndex += this.gallery.columns;
-				break;
-			case "KeyD":
+			case "KeyD": // RIGHT
+			case "ArrowRight":
 				if (nodeIndex > 0 && (nodeIndex + 1) % this.gallery.columns === 0) {
 					// ALREADY ON LAST COLUMN
 					if (this.pressDonLast()) return;
@@ -281,7 +194,50 @@ class exHentaiCtrl {
 		// console.log("post, nodeIndex", this.gallery.nodes.indexOf(this.thumbnail.active));
 	};
 
-	boundsCheck = (node) => {
+	pressEonThumb() {
+		const thumbnailAnchor = this.thumbnail.active.querySelector("a");
+		const thumbnailLink = thumbnailAnchor.href;
+		this.saveState();
+		window.location = thumbnailLink;
+	};
+
+	pressQ() {
+		// if on post use V button at bottom of page.
+		// if on gallery, first and last thumbnail navigate pages and Q returns to last gallery
+
+		if (this.state.lastGallery.length > 0) {
+			for (const historyUrl of this.state.lastGallery.reverse()) {
+				if (historyUrl !== this.state.thisPage) {
+					this.state.lastGallery.splice(this.state.lastGallery.indexOf(historyUrl), 1);
+					this.saveState();
+					window.location = historyUrl;
+					return;
+				}
+			}
+		}
+	};
+
+	pressAonFirst() {
+		console.log("pressAonFirst");
+		if (this.options.firstLastColumnPageNav && this.gallery.prev) {
+			this.gallery.ready = false;
+			window.location = this.gallery.prev;
+			return true;
+		}
+		return false;
+	};
+
+	pressDonLast() {
+		console.log("pressDonLast");
+		if (this.options.firstLastColumnPageNav && this.gallery.next) {
+			this.gallery.ready = false;
+			window.location = this.gallery.next;
+			return true;
+		}
+		return false;
+	};
+
+	boundsCheck(node) {
 		const nodeBounds = node.getBoundingClientRect();
 		let initScroll = window.scrollY;
 		switch (true) {
@@ -294,23 +250,6 @@ class exHentaiCtrl {
 		}
 		window.scrollTo(0, initScroll);
 	};
-}
+})()
 
-function firstInView(nodes) {
-	for (const node of nodes) {
-		if (node.getBoundingClientRect().top >= 0) {
-			return node;
-		}
-	}
-	return false;
-}
-
-function removeFrom(inArray, item) {
-	console.log("remove", item, "from", inArray);
-	inArray.splice(inArray.indexOf(item), 1);
-	return inArray;
-}
-
-const eXHentaiCtrl = new exHentaiCtrl();
-
-window.addEventListener("load", eXHentaiCtrl.initPage);
+window.addEventListener("load", _ => eXHentaiCtrl.initPage());

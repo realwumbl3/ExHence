@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Exhentai-Ctrl. by wumbl3.",
-  "version": "0.01",
+  "version": "0.3",
   "permissions": [
     "tabs",
     "storage"
@@ -18,15 +18,7 @@
         "css.css"
       ],
       "js": [
-        "zyx-Lite.js"
-      ],
-      "run_at": "document_start"
-    },
-    {
-      "matches": [
-        "*://exhentai.org/*"
-      ],
-      "js": [
+        "dependencies.js",
         "main.js"
       ],
       "run_at": "document_start"

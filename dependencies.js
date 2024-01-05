@@ -70,32 +70,66 @@ const oM = (function () {
 
 
 function html(raw, ...data) {
-	const stringExpressions = [];
+    const stringExpressions = [];
 
-	for (const [key, val] of Object.entries(data)) {
-		if (val instanceof HTMLElement || val instanceof DocumentFragment) {
-			stringExpressions.push(`<StrExpr id="${key}"></StrExpr>`);
-		} else {
-			stringExpressions.push(val);
-		}
-	}
+    for (const [key, val] of Object.entries(data)) {
+        if (val instanceof HTMLElement || val instanceof DocumentFragment) {
+            stringExpressions.push(`<StrExpr id="${key}"></StrExpr>`);
+        } else {
+            stringExpressions.push(val);
+        }
+    }
 
-	const string = String.raw({ raw }, ...stringExpressions);
-	const template = stringToTemplate(string);
+    const string = String.raw({ raw }, ...stringExpressions);
+    const template = stringToTemplate(string);
 
-	for (const strExpPlaceholder of [...template.querySelectorAll("StrExpr")]) strExpPlaceholder.replaceWith(data[strExpPlaceholder.id]);
+    for (const strExpPlaceholder of [...template.querySelectorAll("StrExpr")]) strExpPlaceholder.replaceWith(data[strExpPlaceholder.id]);
 
-	return template;
+    return template;
 }
 
 function stringToTemplate(string) {
-	const templateContent = document.createElement("template").content;
-	templateContent.append(...markUpToChildNodes(string));
-	return templateContent;
+    const templateContent = document.createElement("template").content;
+    templateContent.append(...markUpToChildNodes(string));
+    return templateContent;
 }
 
 function markUpToChildNodes(markup) {
-	const markupContent = document.createElement("markup");
-	markupContent.innerHTML = markup;
-	return markupContent.childNodes;
+    const markupContent = document.createElement("markup");
+    markupContent.innerHTML = markup;
+    return markupContent.childNodes;
 }
+
+function observe(container, selector, func, suicide) {
+    "use strict";
+    try {
+        const newObserver = new MutationObserver((mutationsList) => {
+            for (var mutation of mutationsList)
+                if (mutation.type === "childList") {
+                    for (const node of mutation.addedNodes) {
+                        if (
+                            (typeof node?.querySelectorAll === "function" && node.querySelectorAll(selector).length > 0) ||
+                            (typeof node?.matches === "function" && node.matches(selector))
+                        ) {
+                            func(node);
+                            if (suicide) newObserver.disconnect();
+                        }
+                    }
+                }
+        })
+        newObserver.observe(container, { childList: true, subtree: true });
+        return newObserver
+    } catch (err) {
+        console.error("newObserver", err);
+    }
+}
+
+function firstInView(nodes) {
+    for (const node of nodes) {
+        if (node.getBoundingClientRect().top >= 0) {
+            return node;
+        }
+    }
+    return false;
+}
+

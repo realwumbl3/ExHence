@@ -5,9 +5,14 @@ async function getCurrentTab() {
 	return tab;
 }
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-	console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-	if (request.greeting === "hello") sendResponse({ farewell: "goodbye" });
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+
+	console.log("onMessage", request, sender, sendResponse);
+
+	if (request.ping === "ping") {
+		sendResponse({ pong: "pong" });
+	}
+
 });
 
 (async () => {
