@@ -18,6 +18,7 @@
         "css.css"
       ],
       "js": [
+        "zyX.js",
         "dependencies.js",
         "main.js"
       ],
