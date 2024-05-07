@@ -52,7 +52,6 @@ new (class exHentaiCtrl {
 	async initGallery(gallery) {
 		const tabId = await this.getCurrentTabContext();
 		await this.loadTab(tabId);
-		console.log("Am i initiating?", this)
 		const path = window.location.href.split(window.location.origin)[1];
 		this.state.thisPage = path;
 		if (gallery.matches("#gdt,.itg.gld")) {
@@ -69,7 +68,6 @@ new (class exHentaiCtrl {
 	async initView(view) {
 		const tabId = await this.getCurrentTabContext();
 		await this.loadTab(tabId);
-		console.log("view????", view)
 		this.enableVIEW(view);
 	}
 
