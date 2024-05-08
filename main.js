@@ -152,7 +152,7 @@ new (class exHentaiCtrl {
 	};
 
 	keydown(e) {
-		if (document.body.querySelector("input:focus")) return; // ignore if any input feild is focused
+		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused
 		switch (e.code) {
 			case "KeyE":
 				this.pressEonThumb();
@@ -193,8 +193,7 @@ new (class exHentaiCtrl {
 			case "KeyS": // DOWN
 			case "ArrowDown":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
-					// ALREADY ON LAST ROW
-					break;
+					if (this.pressDonLast()) return;
 				}
 				nodeIndex += this.gallery.columns;
 				break;
