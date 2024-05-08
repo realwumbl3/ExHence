@@ -97,11 +97,6 @@ new (class exHentaiCtrl {
 		this.active = "view";
 	}
 
-	getViewDownload() {
-		const downloadButton = this.view.container.querySelector("#i6").lastChild.querySelector("a").href
-		return downloadButton
-	}
-
 	saveState() {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 20);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
@@ -173,6 +168,9 @@ new (class exHentaiCtrl {
 			case "KeyQ":
 				this.pressQ();
 				break;
+			case "KeyL":
+				console.log("[ExHentaiCTRL] | this ", this);
+				break;
 			case "KeyE":
 			case "KeyW":
 			case "KeyA":
@@ -239,8 +237,17 @@ new (class exHentaiCtrl {
 		window.location = thumbnailAnchor.href;
 	};
 
+	getViewDownload() {
+		const downloadButton = this.view.container.querySelector("#i6").lastChild.querySelector("a").href
+		if (downloadButton.startsWith("https://exhentai.org/fullimg/")) return downloadButton
+		const viewImage = this.view.container.querySelector("#img").src
+		if (viewImage) return viewImage
+		console.error("[ExHentaiCTRL] | No download link found.")
+	}
+
 	async downloadView() {
 		const viewDownload = this.getViewDownload()
+		console.log("[ExHentaiCTRL] | downloadView", viewDownload)
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload })
 	}
 
