@@ -207,7 +207,7 @@ new (class exHentaiCtrl {
 			case "KeyS": // DOWN
 			case "ArrowDown":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
-					if (this.pressDonLast()) return;
+					if (this.goForward()) return;
 				}
 				nodeIndex += this.gallery.columns;
 				break;
@@ -215,7 +215,7 @@ new (class exHentaiCtrl {
 			case "ArrowLeft":
 				if (nodeIndex === 0 || nodeIndex % this.gallery.columns === 0) {
 					// ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
-					if (this.pressAonFirst()) return;
+					if (this.goBack()) return;
 				}
 				nodeIndex--;
 				break;
@@ -225,7 +225,7 @@ new (class exHentaiCtrl {
 					|| nodeIndex === this.gallery.nodes.length - 1
 				) {
 					// ALREADY ON LAST COLUMN OR LAST THUMBNAIL
-					if (this.pressDonLast()) return;
+					if (this.goForward()) return;
 				}
 				nodeIndex++;
 				break;
@@ -236,14 +236,12 @@ new (class exHentaiCtrl {
 
 	pressEonThumb() {
 		const thumbnailAnchor = this.thumbnail.active.querySelector("a");
-		const thumbnailLink = thumbnailAnchor.href;
-		// this.saveState();
-		window.location = thumbnailLink;
+		window.location = thumbnailAnchor.href;
 	};
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload()
-		chrome.runtime.sendMessage({ command: "downloadInBackground", url: viewDownload })
+		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload })
 	}
 
 	pressQ() {
@@ -260,8 +258,7 @@ new (class exHentaiCtrl {
 		}
 	};
 
-	pressAonFirst() {
-		console.log("key(Left) on first thumb")
+	goBack() {
 		if (this.options.firstLastColumnPageNav && this.gallery.prev) {
 			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = this.gallery.prev;
@@ -270,8 +267,7 @@ new (class exHentaiCtrl {
 		return false;
 	};
 
-	pressDonLast() {
-		console.log("key(Right) on last thumb")
+	goForward() {
 		if (this.options.firstLastColumnPageNav && this.gallery.next) {
 			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = this.gallery.next;
