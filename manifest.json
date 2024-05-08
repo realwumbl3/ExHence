@@ -4,6 +4,7 @@
   "version": "0.3",
   "permissions": [
     "tabs",
+    "downloads",
     "storage"
   ],
   "background": {

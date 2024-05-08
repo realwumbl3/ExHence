@@ -1,6 +1,6 @@
 new (class exHentaiCtrl {
 	constructor() {
-		this.active = false
+		this.active = null // "view" / "gallery"
 		this.gallery = {
 			container: null,
 			columns: null,
@@ -8,6 +8,10 @@ new (class exHentaiCtrl {
 			next: null,
 			nodes: []
 		};
+		this.view = {
+			downloadUrl: null,
+			container: null,
+		}
 		this.thumbnail = {
 			active: null,
 		};
@@ -22,7 +26,7 @@ new (class exHentaiCtrl {
 		this.thisTabID = null;
 		window.addEventListener("keydown", this.keydown.bind(this));
 		observe(document, "#nb", this.attachHeader.bind(this))
-		observe(document, "#gdt, .itg.gld", this.initGallery.bind(this))
+		observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
 		observe(document, ".sni", this.initView.bind(this))
 	}
 
@@ -35,9 +39,10 @@ new (class exHentaiCtrl {
 		});
 	}
 
-	async loadTab(thisTabID) {
+	async loadTab() {
+		const tabId = await this.getTabID();
+		this.thisTabID = tabId;
 		return new Promise((res, rej) => {
-			this.thisTabID = thisTabID;
 			const stateId = `${this.thisTabID}-state`
 			chrome.storage.local.get([stateId], (result) => {
 				if (!result[stateId]) {
@@ -52,8 +57,13 @@ new (class exHentaiCtrl {
 	};
 
 	async initGallery(gallery) {
-		const tabId = await this.getTabID();
-		await this.loadTab(tabId);
+
+		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
+			gallery = gallery.firstChild
+		}
+
+		await this.loadTab();
+
 		const path = window.location.href.split(window.location.origin)[1];
 		this.state.thisPage = path;
 
@@ -72,19 +82,24 @@ new (class exHentaiCtrl {
 		}
 
 		this.selectThumbnail(this.thumbnail.active || firstInView(this.gallery.nodes));
-		this.active = true;
+		this.active = "gallery";
 	};
 
 	restorePageState(state) {
 		const lastThumbnailHref = state.selectedThumb
-		const selectedThumb = this.gallery.nodes.find(_ => _.firstChild.href === lastThumbnailHref)
+		const selectedThumb = this.gallery.nodes.find(node => node.querySelector("a").href === lastThumbnailHref)
 		this.thumbnail.active = selectedThumb
 	}
 
 	async initView(view) {
-		const tabId = await this.getTabID();
-		await this.loadTab(tabId);
-		this.enableVIEW(view);
+		await this.loadTab();
+		this.view.container = view;
+		this.active = "view";
+	}
+
+	getViewDownload() {
+		const downloadButton = this.view.container.querySelector("#i6").lastChild.querySelector("a").href
+		return downloadButton
 	}
 
 	saveState() {
@@ -115,10 +130,6 @@ new (class exHentaiCtrl {
 			})
 	};
 
-	enableVIEW() {
-		this.active = true;
-	};
-
 	readNavBar() {
 		const galleryNavBar = [...document.querySelectorAll("#uprev,#unext")]
 		if (galleryNavBar.length === 2) {
@@ -147,7 +158,8 @@ new (class exHentaiCtrl {
 		this.thumbnail.active = node;
 		this.thumbnail.active.classList.add("highlighted-thumb");
 		this.boundsCheck(node);
-		this.state.galleryHistory[0].selectedThumb = node.firstChild.href;
+		const selectedHref = node.querySelector("a").href
+		this.state.galleryHistory[0].selectedThumb = selectedHref
 		this.saveState();
 	};
 
@@ -155,11 +167,13 @@ new (class exHentaiCtrl {
 		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused
 		switch (e.code) {
 			case "KeyE":
-				this.pressEonThumb();
+				if (this.active === "gallery") return this.pressEonThumb();
+				else if (this.active === "view") return this.downloadView();
 				break;
 			case "KeyQ":
 				this.pressQ();
 				break;
+			case "KeyE":
 			case "KeyW":
 			case "KeyA":
 			case "KeyS":
@@ -227,6 +241,11 @@ new (class exHentaiCtrl {
 		window.location = thumbnailLink;
 	};
 
+	async downloadView() {
+		const viewDownload = this.getViewDownload()
+		chrome.runtime.sendMessage({ command: "downloadInBackground", url: viewDownload })
+	}
+
 	pressQ() {
 		if (!this.active) return
 		if (this.state.galleryHistory.length > 0) {
@@ -235,7 +254,7 @@ new (class exHentaiCtrl {
 			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
 			console.log("going to", previous)
-			this.active = false // set to false so you don't interrupt the page change with another page change		
+			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = previous.path
 			return;
 		}
@@ -244,7 +263,7 @@ new (class exHentaiCtrl {
 	pressAonFirst() {
 		console.log("key(Left) on first thumb")
 		if (this.options.firstLastColumnPageNav && this.gallery.prev) {
-			this.active = false // set to false so you don't interrupt the page change with another page change		
+			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = this.gallery.prev;
 			return true;
 		}
@@ -254,7 +273,7 @@ new (class exHentaiCtrl {
 	pressDonLast() {
 		console.log("key(Right) on last thumb")
 		if (this.options.firstLastColumnPageNav && this.gallery.next) {
-			this.active = false // set to false so you don't interrupt the page change with another page change		
+			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = this.gallery.next;
 			return true;
 		}
