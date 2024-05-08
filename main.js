@@ -6,6 +6,7 @@ new (class exHentaiCtrl {
 			columns: null,
 			prev: null,
 			next: null,
+			nodes: []
 		};
 		this.thumbnail = {
 			active: null,
@@ -15,9 +16,7 @@ new (class exHentaiCtrl {
 			firstLastColumnPageNav: true,
 		};
 		this.state = {
-			index: 0,
 			thisPage: null,
-			lastPage: null,
 			galleryHistory: [],
 		};
 		this.thisTabID = null;
@@ -27,10 +26,10 @@ new (class exHentaiCtrl {
 		observe(document, ".sni", this.initView.bind(this))
 	}
 
-	async getCurrentTabContext() {
+	async getTabID() {
 		return new Promise((res, rej) => {
 			chrome.runtime.sendMessage("getTab", (response) => {
-				if (!response.hasOwnProperty("id")) return console.log("no tab response");
+				if (!response.hasOwnProperty("id")) return console.error("[ExHentaiCTRL] | No tab id response from background worker.");
 				res(response.id)
 			});
 		});
@@ -41,7 +40,10 @@ new (class exHentaiCtrl {
 			this.thisTabID = thisTabID;
 			const stateId = `${this.thisTabID}-state`
 			chrome.storage.local.get([stateId], (result) => {
-				if (!result[stateId]) return console.log("no init state set yet");
+				if (!result[stateId]) {
+					console.log("No init state set yet.");
+					return res(true)
+				}
 				this.state = result[stateId]
 				console.log("[ExHentaiCTRL] | restored state ", this.state);
 				res(true)
@@ -50,23 +52,37 @@ new (class exHentaiCtrl {
 	};
 
 	async initGallery(gallery) {
-		const tabId = await this.getCurrentTabContext();
+		const tabId = await this.getTabID();
 		await this.loadTab(tabId);
 		const path = window.location.href.split(window.location.origin)[1];
 		this.state.thisPage = path;
-		if (gallery.matches("#gdt,.itg.gld")) {
-			this.initGalleryView(gallery);
-			console.log({ path })
-			if (this.state.galleryHistory.length === 0 || this.state.galleryHistory[0] !== path) this.state.galleryHistory.unshift(path)
-			// this.state.lastGallery = this.state.lastGallery.filter((_) => _ !== this.state.thisPage);
+
+		if (this.state.galleryHistory.length === 0 || this.state.galleryHistory[0].path !== path) {
+			this.state.galleryHistory.unshift({ path: path })
 			this.saveState();
-			return
 		}
 
+		console.log("[ExHentaiCTRL] | initGalleryView", gallery);
+		this.gallery.container = gallery;
+		this.readNavBar();
+		this.getGalleryNodes();
+
+		if (this.state.galleryHistory[0].path === path) {
+			this.restorePageState(this.state.galleryHistory[0])
+		}
+
+		this.selectThumbnail(this.thumbnail.active || firstInView(this.gallery.nodes));
+		this.active = true;
 	};
 
+	restorePageState(state) {
+		const lastThumbnailHref = state.selectedThumb
+		const selectedThumb = this.gallery.nodes.find(_ => _.firstChild.href === lastThumbnailHref)
+		this.thumbnail.active = selectedThumb
+	}
+
 	async initView(view) {
-		const tabId = await this.getCurrentTabContext();
+		const tabId = await this.getTabID();
 		await this.loadTab(tabId);
 		this.enableVIEW(view);
 	}
@@ -82,27 +98,24 @@ new (class exHentaiCtrl {
 		zyX.html`
 				<div><a class="nbw" href="">exHentai-CTRL Options</a></div>
 				<div><span this=log class="nbw">Log Extension.</span></div>
+				<div><span this=cleartab class="nbw">Clear Tab State.</span></div>
 		`
 			.appendTo(exheader)
-			.pass(({ log }) => {
+			.pass(({ log, cleartab }) => {
 				log.addEventListener("click", (e) => {
 					console.log("[ExHentaiCTRL] | this ", this);
+				})
+				cleartab.addEventListener("click", (e) => {
+					this.state = {
+						thisPage: null,
+						galleryHistory: [],
+					};
+					this.saveState()
 				})
 			})
 	};
 
 	enableVIEW() {
-		this.active = true;
-	};
-
-	initGalleryView(target) {
-		console.log("[ExHentaiCTRL] | initGalleryView", target);
-		this.gallery.container = target;
-		this.readNavBar();
-		this.getGalleryNodes();
-		const firstThumbnail = firstInView(this.gallery.nodes);
-		// TODO: remember selected thumbnail for each gallery
-		this.selectThumbnail(firstThumbnail);
 		this.active = true;
 	};
 
@@ -134,6 +147,8 @@ new (class exHentaiCtrl {
 		this.thumbnail.active = node;
 		this.thumbnail.active.classList.add("highlighted-thumb");
 		this.boundsCheck(node);
+		this.state.galleryHistory[0].selectedThumb = node.firstChild.href;
+		this.saveState();
 	};
 
 	keydown(e) {
@@ -202,9 +217,8 @@ new (class exHentaiCtrl {
 				nodeIndex++;
 				break;
 		}
-		nodeIndex = Math.max(0, Math.min(this.gallery.nodes.length - 1, nodeIndex));
-		this.selectThumbnail(this.gallery.nodes[nodeIndex]);
-		// console.log("post, nodeIndex", this.gallery.nodes.indexOf(this.thumbnail.active));
+		const targetThumb = this.gallery.nodes[nodeIndex]
+		if (targetThumb) this.selectThumbnail(targetThumb);
 	};
 
 	pressEonThumb() {
@@ -217,13 +231,13 @@ new (class exHentaiCtrl {
 	pressQ() {
 		if (!this.active) return
 		if (this.state.galleryHistory.length > 0) {
-			const previous = this.state.galleryHistory.find(_ => _ !== this.state.thisPage)
+			const previous = this.state.galleryHistory.find(_ => _.path !== this.state.thisPage)
 			if (!previous) return console.warn("no history to return to")
-			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous) + 1)
+			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
 			console.log("going to", previous)
 			this.active = false // set to false so you don't interrupt the page change with another page change		
-			window.location = previous;
+			window.location = previous.path
 			return;
 		}
 	};
