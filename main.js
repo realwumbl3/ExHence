@@ -153,10 +153,10 @@ new (class exHentaiCtrl {
 
 	attachHeader(exheader) {
 		zyX.html`
-				<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
-				<div><span this=help class="nbw custom">Show Hotkeys</span></div>
-				<div><span this=log class="nbw custom">Log</span></div>
-				<div><span this=cleartab class="nbw custom">Clear State.</span></div>
+		<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
+		<div><span this=help class="nbw custom">Show Hotkeys</span></div>
+		<div><span this=log class="nbw custom">Log</span></div>
+		<div><span this=cleartab class="nbw custom">Clear State.</span></div>
 		`
 			.appendTo(exheader)
 			.pass(({ opts, log, cleartab, help }) => {
@@ -171,19 +171,19 @@ new (class exHentaiCtrl {
 	showOptions() {
 		[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach(_ => _.remove());
 		zyX.html`
-				<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
-					<span class=Header>
-						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
-					</span>
-					<div class=Options>
-						<div class=Opt title="What to do when you reach the bottom of the posts and keep going.">
-							<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
-						</div>
-						<div class=Opt title="How do you want to navigate pages.">
-							<div>Navigates pages:</div><div this=sides class=Toggle>${this.options.pageNav}</div>
-						</div>
-					</div>
+		<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
+			<span class=Header>
+				<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
+			</span>
+			<div class=Options>
+				<div class=Opt title="What to do when you reach the bottom of the posts and keep going">
+					<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
 				</div>
+				<div class=Opt title="How do you want to navigate pages">
+					<div>Navigates pages:</div><div this=sides class=Toggle>${this.options.pageNav}</div>
+				</div>
+			</div>
+		</div>
 		`
 			.appendTo(document.body)
 			.pass(({ menu, bottomout, close, sides }) => {
@@ -204,22 +204,22 @@ new (class exHentaiCtrl {
 	showHotkeys() {
 		[...document.body.querySelectorAll(".ExHentaiCTRL-Help")].forEach(_ => _.remove());
 		zyX.html`
-				<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
-					<span class=Header>
-						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
-					</span>
-					<div class=Hotkeys>
-						<div class=Hotkey title="Navigate thumbnails and/or pages using these keys.">
-							<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>W,A,S,D/Arrows</div>
-						</div>
-						<div class=Hotkey title="Select a thumbnail or download the image.">
-							<div this=Action>Select thumbnail/Download image</div><div class=Keys>E</div>
-						</div>
-						<div class=Hotkey title="Go back to the previous gallery page.">
-							<div this=Action>Go back</div><div class=Keys>Q</div>
-						</div>
-					</div>
+		<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
+			<span class=Header>
+				<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
+			</span>
+			<div class=Hotkeys>
+				<div class=Hotkey title="Navigate thumbnails/pages using these keys">
+					<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>W,A,S,D/Arrows</div>
 				</div>
+				<div class=Hotkey title="[Gallery] Enter a thumbnail || [Post] Download the image">
+					<div this=Action>Enter thumbnail/Download image</div><div class=Keys>E</div>
+				</div>
+				<div class=Hotkey title="Go back to the previous gallery page">
+					<div this=Action>Go back</div><div class=Keys>Q</div>
+				</div>
+			</div>
+		</div>
 		`
 			.appendTo(document.body)
 			.pass(({ menu, close }) => {
