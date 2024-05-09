@@ -209,13 +209,13 @@ new (class exHentaiCtrl {
 				<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
 			</span>
 			<div class=Hotkeys>
-				<div class=Hotkey title="Navigate thumbnails/pages using these keys">
-					<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>W,A,S,D/Arrows</div>
+				<div class=Hotkey title="[Gallery] Navigate thumbnails/pages using these keys">
+					<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>WASD/Arrows</div>
 				</div>
 				<div class=Hotkey title="[Gallery] Enter a thumbnail || [Post] Download the image">
 					<div this=Action>Enter thumbnail/Download image</div><div class=Keys>E</div>
 				</div>
-				<div class=Hotkey title="Go back to the previous gallery page">
+				<div class=Hotkey title="[Gallery/Post] Go back to the previous gallery page">
 					<div this=Action>Go back</div><div class=Keys>Q</div>
 				</div>
 			</div>
