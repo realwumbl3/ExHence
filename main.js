@@ -25,6 +25,9 @@ new (class exHentaiCtrl {
 			galleryHistory: [],
 		};
 		this.thisTabID = null;
+		this.cooledDownStart = true;
+		setTimeout(() => (this.cooledDownStart = false), 200)
+		this.keyTimeout = new zyX.timeoutLimiter(300);
 		window.addEventListener("keydown", this.keydown.bind(this));
 		observe(document, "#nb", this.attachHeader.bind(this))
 		observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
@@ -121,7 +124,7 @@ new (class exHentaiCtrl {
 	}
 
 	saveState() {
-		this.state.galleryHistory = this.state.galleryHistory.splice(0, 20);
+		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
 			console.log("[ExHentaiCTRL] | saved state ", this.state);
 		});
@@ -211,7 +214,8 @@ new (class exHentaiCtrl {
 	};
 
 	keydown(e) {
-		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused
+		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused\
+		if (!this.keyTimeout() || this.cooledDownStart) return;
 		switch (e.code) {
 			case "KeyE":
 				if (this.active === "gallery") return this.pressEonThumb();
@@ -308,7 +312,7 @@ new (class exHentaiCtrl {
 		if (!this.active) return
 		if (this.state.galleryHistory.length > 0) {
 			const previous = this.state.galleryHistory.find(_ => _.path !== this.state.thisPage)
-			if (!previous) return console.warn("no history to return to")
+			if (!previous) return false
 			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
 			console.log("going to", previous)
