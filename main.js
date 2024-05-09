@@ -18,6 +18,7 @@ new (class exHentaiCtrl {
 		this.options = {
 			autoScrollPadding: 20,
 			firstLastColumnPageNav: true,
+			bottomingOut: "nothing"
 		};
 		this.state = {
 			thisPage: null,
@@ -30,6 +31,27 @@ new (class exHentaiCtrl {
 		observe(document, ".sni", this.initView.bind(this))
 	}
 
+	async loadOptions() {
+		return new Promise((res, rej) => {
+			chrome.storage.local.get(["ExHentaiCTRL"], async (result) => {
+				if (!result.hasOwnProperty("ExHentaiCTRL")) {
+					console.log("[ExHentaiCTRL] | No options set yet.");
+					await this.saveOptions();
+					return res(true)
+				}
+				this.options = result["ExHentaiCTRL"];
+				console.log("[ExHentaiCTRL] | loaded options ", this.options);
+				res(true)
+			});
+		})
+	}
+
+	async saveOptions() {
+		chrome.storage.local.set({ "ExHentaiCTRL": this.options }, () => {
+			console.log("[ExHentaiCTRL] | saved options ", this.options);
+		});
+	}
+
 	async getTabID() {
 		return new Promise((res, rej) => {
 			chrome.runtime.sendMessage("getTab", (response) => {
@@ -40,6 +62,7 @@ new (class exHentaiCtrl {
 	}
 
 	async loadTab() {
+		await this.loadOptions();
 		const tabId = await this.getTabID();
 		this.thisTabID = tabId;
 		return new Promise((res, rej) => {
@@ -106,12 +129,15 @@ new (class exHentaiCtrl {
 
 	attachHeader(exheader) {
 		zyX.html`
-				<div><a class="nbw" href="">exHentai-CTRL Options</a></div>
+				<div><span this=opts class="nbw" >exHentai-CTRL Options</span></div>
 				<div><span this=log class="nbw">Log Extension.</span></div>
 				<div><span this=cleartab class="nbw">Clear Tab State.</span></div>
 		`
 			.appendTo(exheader)
-			.pass(({ log, cleartab }) => {
+			.pass(({ opts, log, cleartab }) => {
+				opts.addEventListener("click", (e) => {
+					this.showOptions()
+				})
 				log.addEventListener("click", (e) => {
 					console.log("[ExHentaiCTRL] | this ", this);
 				})
@@ -122,6 +148,32 @@ new (class exHentaiCtrl {
 					};
 					this.saveState()
 				})
+			})
+
+	};
+
+	showOptions() {
+		[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach(_ => _.remove());
+		zyX.html`
+				<div this=menu class=ExHentaiCTRL-Options>
+					<span class=Header>
+						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
+					</span>
+					<div class=Options>
+						<div class=Opt>
+							<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
+						</div>
+					</table>
+				</div>
+		`
+			.appendTo(document.body)
+			.pass(({ menu, bottomout, close }) => {
+				bottomout.addEventListener("click", (e) => {
+					this.options.bottomingOut = this.options.bottomingOut === "nothing" ? "next page" : "nothing";
+					this.saveOptions();
+					bottomout.textContent = this.options.bottomingOut;
+				})
+				close.addEventListener("click", (e) => menu.remove());
 			})
 	};
 
@@ -205,7 +257,7 @@ new (class exHentaiCtrl {
 			case "KeyS": // DOWN
 			case "ArrowDown":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
-					if (this.goForward()) return;
+					if (this.options.bottomingOut === "next page" && this.goForward()) return;
 				}
 				nodeIndex += this.gallery.columns;
 				break;
@@ -297,3 +349,4 @@ new (class exHentaiCtrl {
 		window.scrollTo(0, initScroll);
 	};
 })()
+

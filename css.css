@@ -18,3 +18,73 @@ body #nb {
     justify-content: flex-start;
     max-height: unset;
 }
+
+.ExHentaiCTRL-Options {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: rgba(14, 14, 14, 0.733);
+    backdrop-filter: blur(1em);
+    outline: 0.1em solid #ff0052;
+    padding: .5em;
+    border-radius: .3em;
+    color: rgb(202, 202, 202);
+    box-shadow: 0 0 5em 1em rgba(0, 0, 0, 1);
+    gap: 1em;
+    display: grid;
+    grid-auto-flow: row;
+    width: 20em;
+
+    &>.Header {
+        display: grid;
+        grid-auto-flow: column;
+        justify-content: space-between;
+        font-size: 1.5em;
+
+        &>.Close {
+            background-color: #ff0052;
+            border-radius: .3em;
+            aspect-ratio: 1/1;
+            height: 1.2em;
+            text-align: center;
+            line-height: 1.3em;
+            font-weight: 700;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        &>.Title {
+            font-weight: bold;
+            margin-bottom: 1em;
+        }
+    }
+
+    &>.Options {
+        display: grid;
+        grid-auto-flow: row;
+        user-select: none;
+
+        &>.Opt {
+            display: grid;
+            grid-auto-flow: column;
+            font-size: 1.2em;
+            justify-content: space-between;
+            height: 1.4em;
+            align-items: center;
+
+            &>.Toggle {
+                background-color: #0f0f0f;
+                border-radius: .3em;
+                color: white;
+                cursor: pointer;
+                height: 100%;
+                padding: 0 .5em;
+            }
+
+
+        }
+    }
+
+}
