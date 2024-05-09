@@ -7,7 +7,6 @@ new (class exHentaiCtrl {
 			columns: null,
 			prev: null,
 			next: null,
-			nodes: []
 		};
 		this.view = {
 			downloadUrl: null,
@@ -88,7 +87,6 @@ new (class exHentaiCtrl {
 	};
 
 	async initGallery(gallery) {
-
 		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
 			gallery = gallery.firstChild
 		}
@@ -106,19 +104,20 @@ new (class exHentaiCtrl {
 		this.verbose && console.log("[ExHentaiCTRL] | initGalleryView", gallery);
 		this.gallery.container = gallery;
 		this.readNavBar();
-		this.getGalleryNodes();
+		const nodes = this.getGalleryNodes();
 
 		if (this.state.galleryHistory[0].path === path) {
 			this.restorePageState(this.state.galleryHistory[0])
 		}
 
-		this.selectThumbnail(this.thumbnail.active || firstInView(this.gallery.nodes));
+		this.selectThumbnail(this.thumbnail.active || firstInView(nodes));
 		this.active = "gallery";
 	};
 
 	restorePageState(state) {
+		const nodes = this.getGalleryNodes();
 		const lastThumbnailHref = state.selectedThumb
-		const selectedThumb = this.gallery.nodes.find(node => node.querySelector("a").href === lastThumbnailHref)
+		const selectedThumb = nodes.find(node => node.querySelector("a").href === lastThumbnailHref)
 		this.thumbnail.active = selectedThumb
 	}
 
@@ -137,8 +136,9 @@ new (class exHentaiCtrl {
 
 	attachHeader(exheader) {
 		zyX.html`
-				<div><span this=opts class="nbw custom" >exHentai-CTRL Options</span></div>
-				<div><span this=log class="nbw custom" zyx-onclick=${this.logSelf.bind(this)}>Log</span></div>
+				<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
+				<div><span this=help class="nbw custom">Show Hotkeys</span></div>
+				<div><span this=log class="nbw custom">Log</span></div>
 				<div><span this=cleartab class="nbw custom">Clear State.</span></div>
 		`
 			.appendTo(exheader)
@@ -146,6 +146,7 @@ new (class exHentaiCtrl {
 				opts.addEventListener("click", (e) => {
 					this.showOptions()
 				})
+				log.addEventListener("click", (e) => this.logSelf())
 				cleartab.addEventListener("click", (e) => {
 					this.state = {
 						thisPage: null,
@@ -198,14 +199,15 @@ new (class exHentaiCtrl {
 	}
 
 	getGalleryNodes() {
-		this.gallery.nodes = [...this.gallery.container.childNodes].filter((_) => _.childNodes.length > 0);
+		return [...this.gallery.container.childNodes].filter((_) => _.childNodes.length > 0);
 	};
 
 	calculateGrid() {
-		this.gallery.columns = Math.floor(this.gallery.container.clientWidth / this.thumbnail.active.clientWidth);
+		return Math.floor(this.gallery.container.clientWidth / this.thumbnail.active.clientWidth);
 	};
 
 	selectThumbnail(node) {
+		if (!node) return false;
 		this.thumbnail.active?.classList.remove("highlighted-thumb");
 		this.thumbnail.active = node;
 		this.thumbnail.active.classList.add("highlighted-thumb");
@@ -247,29 +249,30 @@ new (class exHentaiCtrl {
 
 	moveHighlight(e) {
 		if (!this.active) return false;
-		this.calculateGrid();
-		let nodeIndex = this.gallery.nodes.indexOf(this.thumbnail.active);
+		const collums = this.calculateGrid();
+		const nodes = this.getGalleryNodes();
+		let nodeIndex = nodes.indexOf(this.thumbnail.active);
 		switch (e.code) {
 			case "KeyW": // UP
 			case "ArrowUp":
-				if (nodeIndex < this.gallery.columns) {
+				if (nodeIndex < collums) {
 					// ALREADY ON FIRST THUMBNAIL ROW
 					window.scrollTo(0, 0);
 					break;
 				}
-				nodeIndex -= this.gallery.columns;
+				nodeIndex -= collums;
 				break;
 			case "KeyS": // DOWN
 			case "ArrowDown":
-				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
+				if (nodeIndex > nodes.length - collums - 1) {
 					// ALREADY ON LAST THUMBNAIL ROW
 					if (this.options.bottomingOut === "next page" && this.navigateTo("next")) return;
 				}
-				nodeIndex += this.gallery.columns;
+				nodeIndex += collums;
 				break;
 			case "KeyA": // LEFT
 			case "ArrowLeft":
-				if (nodeIndex === 0 || nodeIndex % this.gallery.columns === 0) {
+				if (nodeIndex === 0 || nodeIndex % collums === 0) {
 					// ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
 					if (this.navigateTo("prev")) return;
 				}
@@ -277,17 +280,14 @@ new (class exHentaiCtrl {
 				break;
 			case "KeyD": // RIGHT
 			case "ArrowRight":
-				if ((nodeIndex + 1) % this.gallery.columns === 0
-					|| nodeIndex === this.gallery.nodes.length - 1
-				) {
+				if ((nodeIndex + 1) % collums === 0 || nodeIndex === nodes.length - 1) {
 					// ALREADY ON LAST COLUMN OR LAST THUMBNAIL
 					if (this.navigateTo("next")) return;
 				}
 				nodeIndex++;
 				break;
 		}
-		const targetThumb = this.gallery.nodes[nodeIndex]
-		if (targetThumb) this.selectThumbnail(targetThumb);
+		this.selectThumbnail(nodes[nodeIndex]);
 	};
 
 	pressEonThumb() {
@@ -325,11 +325,8 @@ new (class exHentaiCtrl {
 
 	navigateTo(direction) {
 		if (!this.options.firstLastColumnPageNav) return false;
-		const goto = direction === "prev" ? this.gallery.prev : this.gallery.next
-		if (!goto && direction === "prev") {
-			location.reload();
-			return true;
-		}
+		const goto = direction === "prev" ? this.gallery.prev : this.gallery.next;
+		if (!goto) return false;
 		this.active = null // set to false so you don't interrupt the page change with another page change
 		window.location = goto;
 		return true;
@@ -337,16 +334,14 @@ new (class exHentaiCtrl {
 
 	boundsCheck(node) {
 		const nodeBounds = node.getBoundingClientRect();
-		let initScroll = window.scrollY;
 		switch (true) {
 			case nodeBounds.top < 0:
-				initScroll += nodeBounds.top - this.options.autoScrollPadding;
+				window.scrollTo(0, window.scrollY + nodeBounds.top - this.options.autoScrollPadding);
 				break;
 			case nodeBounds.bottom > window.innerHeight:
-				initScroll += nodeBounds.bottom - window.innerHeight + this.options.autoScrollPadding;
+				window.scrollTo(0, window.scrollY + nodeBounds.bottom - window.innerHeight + this.options.autoScrollPadding);
 				break;
 		}
-		window.scrollTo(0, initScroll);
 	};
 })()
 

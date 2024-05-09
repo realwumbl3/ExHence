@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Exhentai-Ctrl. by wumbl3.",
-  "version": "0.3",
+  "name": "ExHentai-CTRL. by wumbl3.",
+  "version": "1.0",
   "permissions": [
     "tabs",
     "downloads",
@@ -26,5 +26,7 @@
       "run_at": "document_start"
     }
   ],
-  "icons": {}
+  "icons": {
+    "512": "icon.png"
+  }
 }
