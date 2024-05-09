@@ -1,5 +1,6 @@
 new (class exHentaiCtrl {
 	constructor() {
+		this.verbose = false;
 		this.active = null // "view" / "gallery"
 		this.gallery = {
 			container: null,
@@ -27,23 +28,27 @@ new (class exHentaiCtrl {
 		this.thisTabID = null;
 		this.cooledDownStart = true;
 		setTimeout(() => (this.cooledDownStart = false), 200)
-		this.keyTimeout = new zyX.timeoutLimiter(300);
+		this.keyTimeout = new zyX.timeoutLimiter(90);
 		window.addEventListener("keydown", this.keydown.bind(this));
 		observe(document, "#nb", this.attachHeader.bind(this))
 		observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
 		observe(document, ".sni", this.initView.bind(this))
 	}
 
+	logSelf() {
+		console.log("[ExHentaiCTRL] | this ", this);
+	}
+
 	async loadOptions() {
 		return new Promise((res, rej) => {
 			chrome.storage.local.get(["ExHentaiCTRL"], async (result) => {
 				if (!result.hasOwnProperty("ExHentaiCTRL")) {
-					console.log("[ExHentaiCTRL] | No options set yet.");
+					this.verbose && console.log("[ExHentaiCTRL] | No options set yet.");
 					this.saveOptions();
 					return res(true)
 				}
 				this.options = result["ExHentaiCTRL"];
-				console.log("[ExHentaiCTRL] | loaded options ", this.options);
+				this.verbose && console.log("[ExHentaiCTRL] | loaded options ", this.options);
 				res(true)
 			});
 		})
@@ -51,7 +56,7 @@ new (class exHentaiCtrl {
 
 	saveOptions() {
 		chrome.storage.local.set({ "ExHentaiCTRL": this.options }, () => {
-			console.log("[ExHentaiCTRL] | saved options ", this.options);
+			this.verbose && console.log("[ExHentaiCTRL] | saved options ", this.options);
 		});
 	}
 
@@ -72,11 +77,11 @@ new (class exHentaiCtrl {
 			const stateId = `${this.thisTabID}-state`
 			chrome.storage.local.get([stateId], (result) => {
 				if (!result[stateId]) {
-					console.log("No init state set yet.");
+					this.verbose && console.log("No init state set yet.");
 					return res(true)
 				}
 				this.state = result[stateId]
-				console.log("[ExHentaiCTRL] | restored state ", this.state);
+				this.verbose && console.log("[ExHentaiCTRL] | restored state ", this.state);
 				res(true)
 			});
 		})
@@ -98,7 +103,7 @@ new (class exHentaiCtrl {
 			this.saveState();
 		}
 
-		console.log("[ExHentaiCTRL] | initGalleryView", gallery);
+		this.verbose && console.log("[ExHentaiCTRL] | initGalleryView", gallery);
 		this.gallery.container = gallery;
 		this.readNavBar();
 		this.getGalleryNodes();
@@ -126,23 +131,20 @@ new (class exHentaiCtrl {
 	saveState() {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
-			console.log("[ExHentaiCTRL] | saved state ", this.state);
+			this.verbose && console.log("[ExHentaiCTRL] | saved state ", this.state);
 		});
 	};
 
 	attachHeader(exheader) {
 		zyX.html`
-				<div><span this=opts class="nbw" >exHentai-CTRL Options</span></div>
-				<div><span this=log class="nbw">Log</span></div>
-				<div><span this=cleartab class="nbw">Clear State.</span></div>
+				<div><span this=opts class="nbw custom" >exHentai-CTRL Options</span></div>
+				<div><span this=log class="nbw custom" zyx-onclick=${this.logSelf.bind(this)}>Log</span></div>
+				<div><span this=cleartab class="nbw custom">Clear State.</span></div>
 		`
 			.appendTo(exheader)
 			.pass(({ opts, log, cleartab }) => {
 				opts.addEventListener("click", (e) => {
 					this.showOptions()
-				})
-				log.addEventListener("click", (e) => {
-					console.log("[ExHentaiCTRL] | this ", this);
 				})
 				cleartab.addEventListener("click", (e) => {
 					this.state = {
@@ -163,7 +165,7 @@ new (class exHentaiCtrl {
 						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
 					</span>
 					<div class=Options>
-						<div class=Opt>
+						<div class=Opt title="What to do when you reach the bottom of the posts.">
 							<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
 						</div>
 					</table>
@@ -183,12 +185,12 @@ new (class exHentaiCtrl {
 	readNavBar() {
 		const galleryNavBar = [...document.querySelectorAll("#uprev,#unext")]
 		if (galleryNavBar.length === 2) {
-			console.log("[ExHentaiCTRL] | read gallery navBar");
+			this.verbose && console.log("[ExHentaiCTRL] | read gallery navBar");
 			this.gallery.prev = galleryNavBar[0]?.href;
 			this.gallery.next = galleryNavBar[1]?.href;
 		}
 		else {
-			console.log("[ExHentaiCTRL] | read post pages navBar")
+			this.verbose && console.log("[ExHentaiCTRL] | read post pages navBar")
 			const comicNavBar = [...document.querySelectorAll("table.ptt>tbody>tr>td")]
 			this.gallery.prev = comicNavBar[0].firstChild?.href;
 			this.gallery.next = comicNavBar[comicNavBar.length - 1].firstChild?.href;
@@ -225,7 +227,7 @@ new (class exHentaiCtrl {
 				this.pressQ();
 				break;
 			case "KeyL":
-				console.log("[ExHentaiCTRL] | this ", this);
+				this.logSelf();
 				break;
 			case "KeyE":
 			case "KeyW":
@@ -247,7 +249,6 @@ new (class exHentaiCtrl {
 		if (!this.active) return false;
 		this.calculateGrid();
 		let nodeIndex = this.gallery.nodes.indexOf(this.thumbnail.active);
-		// console.log("columns", this.gallery.columns, "nodeIndex", nodeIndex);
 		switch (e.code) {
 			case "KeyW": // UP
 			case "ArrowUp":
@@ -304,7 +305,7 @@ new (class exHentaiCtrl {
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload()
-		console.log("[ExHentaiCTRL] | downloadView", viewDownload)
+		this.verbose && console.log("[ExHentaiCTRL] | downloadView", viewDownload)
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload })
 	}
 
@@ -315,7 +316,7 @@ new (class exHentaiCtrl {
 			if (!previous) return false
 			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
-			console.log("going to", previous)
+			this.verbose && console.log("going to", previous)
 			this.active = null // set to false so you don't interrupt the page change with another page change		
 			window.location = previous.path
 			return;
@@ -325,6 +326,10 @@ new (class exHentaiCtrl {
 	navigateTo(direction) {
 		if (!this.options.firstLastColumnPageNav) return false;
 		const goto = direction === "prev" ? this.gallery.prev : this.gallery.next
+		if (!goto && direction === "prev") {
+			location.reload();
+			return true;
+		}
 		this.active = null // set to false so you don't interrupt the page change with another page change
 		window.location = goto;
 		return true;

@@ -19,11 +19,17 @@ body #nb {
     max-height: unset;
 }
 
+.nbw.custom:hover {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .ExHentaiCTRL-Options {
     position: fixed;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    top: 2em;
+    transform: translateX(-50%);
     z-index: 1000;
     background-color: rgba(14, 14, 14, 0.733);
     backdrop-filter: blur(1em);
