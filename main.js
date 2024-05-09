@@ -1,6 +1,6 @@
 new (class exHentaiCtrl {
 	constructor() {
-		this.verbose = false;
+		this.verbose = true;
 		this.active = null // "view" / "gallery"
 		this.gallery = {
 			container: null,

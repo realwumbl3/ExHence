@@ -8,11 +8,13 @@ body #nb {
 }
 
 /* Thumbnails / Posts */
-.gl1t {
+.gl1t,
+.gdtl {
     transition: all 200ms ease;
 }
 
-.gl1t.highlighted-thumb {
+.gl1t.highlighted-thumb,
+.gdtl.highlighted-thumb {
     z-index: 2;
     transform: scale(1.03);
     backdrop-filter: blur(2px);
