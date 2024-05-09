@@ -1,16 +1,4 @@
-.gl1t {
-    transition: all 200ms ease;
-}
-
-.highlighted-thumb {
-    z-index: 2;
-    transform: scale(1.03);
-    backdrop-filter: blur(2px);
-    filter: brightness(1.1);
-    border-radius: 0.5em;
-    box-shadow: #ff0052 0px 0px 1.9em inset, rgb(255 255 255) 0 0 0 0.2em;
-}
-
+/* Allow the header to show more options */
 body #nb {
     max-width: 720px;
     display: flex;
@@ -19,13 +7,31 @@ body #nb {
     max-height: unset;
 }
 
+/* Thumbnails / Posts */
+.gl1t {
+    transition: all 200ms ease;
+}
+
+.gl1t.highlighted-thumb {
+    z-index: 2;
+    transform: scale(1.03);
+    backdrop-filter: blur(2px);
+    filter: brightness(1.1);
+    border-radius: 0.5em;
+    box-shadow: #ff0052 0px 0px 1.9em inset, rgb(255 255 255) 0 0 0 0.2em;
+}
+
+
+/* Header */
 .nbw.custom:hover {
     color: white;
     text-decoration: underline;
     cursor: pointer;
 }
 
-.ExHentaiCTRL-Options {
+
+/* Small top dark Window */
+.ExHentaiCTRL-Window {
     position: fixed;
     left: 50%;
     top: 2em;
@@ -41,7 +47,7 @@ body #nb {
     gap: 1em;
     display: grid;
     grid-auto-flow: row;
-    width: 20em;
+    min-width: 22em;
 
     &>.Header {
         display: grid;
@@ -65,19 +71,26 @@ body #nb {
             font-weight: bold;
             margin-bottom: 1em;
         }
+
     }
 
+}
+
+
+/* Options */
+.ExHentaiCTRL-Options {
     &>.Options {
         display: grid;
         grid-auto-flow: row;
         user-select: none;
+        gap: .3em;
 
         &>.Opt {
             display: grid;
             grid-auto-flow: column;
             font-size: 1.2em;
             justify-content: space-between;
-            height: 1.4em;
+            min-height: 1.4em;
             align-items: center;
 
             &>.Toggle {
@@ -88,9 +101,49 @@ body #nb {
                 height: 100%;
                 padding: 0 .5em;
             }
+        }
 
+    }
+}
+
+/* Hotkeys */
+.ExHentaiCTRL-Help {
+    &>.Hotkeys {
+        display: grid;
+        grid-auto-flow: row;
+        user-select: none;
+        gap: .3em;
+
+        &>.Hotkey {
+            display: grid;
+            grid-auto-flow: column;
+            font-size: 1.2em;
+            justify-content: space-between;
+            min-height: 1.4em;
+            align-items: center;
+            gap: .3em;
+
+            &>.Action {
+                background-color: #0f0f0f;
+                border-radius: .3em;
+                color: white;
+                cursor: pointer;
+                height: 100%;
+                padding: 0 .5em;
+            }
+
+            &>.Keys {
+                background-color: #0f0f0f;
+                border-radius: .3em;
+                color: white;
+                cursor: pointer;
+                height: 100%;
+                padding: 0 .5em;
+                align-items: center;
+                display: grid;
+            }
 
         }
-    }
 
+    }
 }

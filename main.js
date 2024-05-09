@@ -17,7 +17,7 @@ new (class exHentaiCtrl {
 		};
 		this.options = {
 			autoScrollPadding: 20,
-			firstLastColumnPageNav: true,
+			pageNav: "sides",
 			bottomingOut: "nothing"
 		};
 		this.state = {
@@ -25,13 +25,22 @@ new (class exHentaiCtrl {
 			galleryHistory: [],
 		};
 		this.thisTabID = null;
-		this.cooledDownStart = true;
-		setTimeout(() => (this.cooledDownStart = false), 200)
-		this.keyTimeout = new zyX.timeoutLimiter(90);
+
+		this.keyTimeout = new zyX.timeoutLimiter(70);
 		window.addEventListener("keydown", this.keydown.bind(this));
 		observe(document, "#nb", this.attachHeader.bind(this))
 		observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
 		observe(document, ".sni", this.initView.bind(this))
+
+		this.cooledDownStart = false; // Prevents multiple keypresses in quick succession.
+		this.coolDownPause(200)
+	}
+
+	coolDownPause(timeout) {
+		const init = this.cooledDownStart;
+		this.cooledDownStart = true;
+		setTimeout(() => (this.cooledDownStart = false), timeout || 200);
+		return init;
 	}
 
 	logSelf() {
@@ -134,6 +143,14 @@ new (class exHentaiCtrl {
 		});
 	};
 
+	clearState() {
+		this.state = {
+			thisPage: null,
+			galleryHistory: [{ path: window.location.href.split(window.location.origin)[1] }]
+		};
+		this.saveState()
+	}
+
 	attachHeader(exheader) {
 		zyX.html`
 				<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
@@ -142,18 +159,11 @@ new (class exHentaiCtrl {
 				<div><span this=cleartab class="nbw custom">Clear State.</span></div>
 		`
 			.appendTo(exheader)
-			.pass(({ opts, log, cleartab }) => {
-				opts.addEventListener("click", (e) => {
-					this.showOptions()
-				})
+			.pass(({ opts, log, cleartab, help }) => {
+				opts.addEventListener("click", (e) => this.showOptions())
 				log.addEventListener("click", (e) => this.logSelf())
-				cleartab.addEventListener("click", (e) => {
-					this.state = {
-						thisPage: null,
-						galleryHistory: [{ path: window.location.href.split(window.location.origin)[1] }]
-					};
-					this.saveState()
-				})
+				help.addEventListener("click", (e) => this.showHotkeys())
+				cleartab.addEventListener("click", (e) => this.clearState())
 			})
 
 	};
@@ -161,7 +171,7 @@ new (class exHentaiCtrl {
 	showOptions() {
 		[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach(_ => _.remove());
 		zyX.html`
-				<div this=menu class=ExHentaiCTRL-Options>
+				<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
 					<span class=Header>
 						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
 					</span>
@@ -169,16 +179,50 @@ new (class exHentaiCtrl {
 						<div class=Opt title="What to do when you reach the bottom of the posts and keep going.">
 							<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
 						</div>
-					</table>
+						<div class=Opt title="How do you want to navigate pages.">
+							<div>Navigates pages:</div><div this=sides class=Toggle>${this.options.pageNav}</div>
+						</div>
+					</div>
 				</div>
 		`
 			.appendTo(document.body)
-			.pass(({ menu, bottomout, close }) => {
+			.pass(({ menu, bottomout, close, sides }) => {
 				bottomout.addEventListener("click", (e) => {
 					this.options.bottomingOut = this.options.bottomingOut === "nothing" ? "next page" : "nothing";
 					this.saveOptions();
 					bottomout.textContent = this.options.bottomingOut;
 				})
+				sides.addEventListener("click", (e) => {
+					this.options.pageNav = this.options.pageNav === "sides" ? "first/last" : "sides";
+					this.saveOptions();
+					sides.textContent = this.options.pageNav;
+				})
+				close.addEventListener("click", (e) => menu.remove());
+			})
+	};
+
+	showHotkeys() {
+		[...document.body.querySelectorAll(".ExHentaiCTRL-Help")].forEach(_ => _.remove());
+		zyX.html`
+				<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
+					<span class=Header>
+						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
+					</span>
+					<div class=Hotkeys>
+						<div class=Hotkey title="Navigate thumbnails and/or pages using these keys.">
+							<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>W,A,S,D/Arrows</div>
+						</div>
+						<div class=Hotkey title="Select a thumbnail or download the image.">
+							<div this=Action>Select thumbnail/Download image</div><div class=Keys>E</div>
+						</div>
+						<div class=Hotkey title="Go back to the previous gallery page.">
+							<div this=Action>Go back</div><div class=Keys>Q</div>
+						</div>
+					</div>
+				</div>
+		`
+			.appendTo(document.body)
+			.pass(({ menu, close }) => {
 				close.addEventListener("click", (e) => menu.remove());
 			})
 	};
@@ -272,17 +316,25 @@ new (class exHentaiCtrl {
 				break;
 			case "KeyA": // LEFT
 			case "ArrowLeft":
+				if (nodeIndex === 0) {
+					// ALREADY ON FIRST THUMBNAIL
+					if (this.options.pageNav === "first/last" && this.navigateTo("prev")) return;
+				}
 				if (nodeIndex === 0 || nodeIndex % collums === 0) {
 					// ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
-					if (this.navigateTo("prev")) return;
+					if (this.options.pageNav === "sides" && this.navigateTo("prev")) return;
 				}
 				nodeIndex--;
 				break;
 			case "KeyD": // RIGHT
 			case "ArrowRight":
+				if (nodeIndex === nodes.length - 1) {
+					// ALREADY ON LAST THUMBNAIL
+					if (this.options.pageNav === "first/last" && this.navigateTo("next")) return;
+				}
 				if ((nodeIndex + 1) % collums === 0 || nodeIndex === nodes.length - 1) {
 					// ALREADY ON LAST COLUMN OR LAST THUMBNAIL
-					if (this.navigateTo("next")) return;
+					if (this.options.pageNav === "sides" && this.navigateTo("next")) return;
 				}
 				nodeIndex++;
 				break;
@@ -305,6 +357,7 @@ new (class exHentaiCtrl {
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload()
+		if (this.coolDownPause(1000)) return;
 		this.verbose && console.log("[ExHentaiCTRL] | downloadView", viewDownload)
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload })
 	}
@@ -317,17 +370,16 @@ new (class exHentaiCtrl {
 			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
 			this.verbose && console.log("going to", previous)
-			this.active = null // set to false so you don't interrupt the page change with another page change		
+			if (this.coolDownPause(1000)) return;
 			window.location = previous.path
 			return;
 		}
 	};
 
 	navigateTo(direction) {
-		if (!this.options.firstLastColumnPageNav) return false;
 		const goto = direction === "prev" ? this.gallery.prev : this.gallery.next;
 		if (!goto) return false;
-		this.active = null // set to false so you don't interrupt the page change with another page change
+		if (this.coolDownPause(1000)) return;
 		window.location = goto;
 		return true;
 	}
