@@ -248,7 +248,7 @@ new (class exHentaiCtrl {
 			case "KeyW": // UP
 			case "ArrowUp":
 				if (nodeIndex < this.gallery.columns) {
-					// ALREADY ON FIRST THUMBNAIL
+					// ALREADY ON FIRST THUMBNAIL ROW
 					window.scrollTo(0, 0);
 					break;
 				}
@@ -257,6 +257,7 @@ new (class exHentaiCtrl {
 			case "KeyS": // DOWN
 			case "ArrowDown":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
+					// ALREADY ON LAST THUMBNAIL ROW
 					if (this.options.bottomingOut === "next page" && this.navigateTo("next")) return;
 				}
 				nodeIndex += this.gallery.columns;
