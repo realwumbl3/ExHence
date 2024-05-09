@@ -36,7 +36,7 @@ new (class exHentaiCtrl {
 			chrome.storage.local.get(["ExHentaiCTRL"], async (result) => {
 				if (!result.hasOwnProperty("ExHentaiCTRL")) {
 					console.log("[ExHentaiCTRL] | No options set yet.");
-					await this.saveOptions();
+					this.saveOptions();
 					return res(true)
 				}
 				this.options = result["ExHentaiCTRL"];
@@ -46,7 +46,7 @@ new (class exHentaiCtrl {
 		})
 	}
 
-	async saveOptions() {
+	saveOptions() {
 		chrome.storage.local.set({ "ExHentaiCTRL": this.options }, () => {
 			console.log("[ExHentaiCTRL] | saved options ", this.options);
 		});
@@ -130,8 +130,8 @@ new (class exHentaiCtrl {
 	attachHeader(exheader) {
 		zyX.html`
 				<div><span this=opts class="nbw" >exHentai-CTRL Options</span></div>
-				<div><span this=log class="nbw">Log Extension.</span></div>
-				<div><span this=cleartab class="nbw">Clear Tab State.</span></div>
+				<div><span this=log class="nbw">Log</span></div>
+				<div><span this=cleartab class="nbw">Clear State.</span></div>
 		`
 			.appendTo(exheader)
 			.pass(({ opts, log, cleartab }) => {
@@ -144,7 +144,7 @@ new (class exHentaiCtrl {
 				cleartab.addEventListener("click", (e) => {
 					this.state = {
 						thisPage: null,
-						galleryHistory: [],
+						galleryHistory: [{ path: window.location.href.split(window.location.origin)[1] }]
 					};
 					this.saveState()
 				})
@@ -257,7 +257,7 @@ new (class exHentaiCtrl {
 			case "KeyS": // DOWN
 			case "ArrowDown":
 				if (nodeIndex > this.gallery.nodes.length - this.gallery.columns - 1) {
-					if (this.options.bottomingOut === "next page" && this.goForward()) return;
+					if (this.options.bottomingOut === "next page" && this.navigateTo("next")) return;
 				}
 				nodeIndex += this.gallery.columns;
 				break;
@@ -265,7 +265,7 @@ new (class exHentaiCtrl {
 			case "ArrowLeft":
 				if (nodeIndex === 0 || nodeIndex % this.gallery.columns === 0) {
 					// ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
-					if (this.goBack()) return;
+					if (this.navigateTo("prev")) return;
 				}
 				nodeIndex--;
 				break;
@@ -275,7 +275,7 @@ new (class exHentaiCtrl {
 					|| nodeIndex === this.gallery.nodes.length - 1
 				) {
 					// ALREADY ON LAST COLUMN OR LAST THUMBNAIL
-					if (this.goForward()) return;
+					if (this.navigateTo("next")) return;
 				}
 				nodeIndex++;
 				break;
@@ -317,23 +317,13 @@ new (class exHentaiCtrl {
 		}
 	};
 
-	goBack() {
-		if (this.options.firstLastColumnPageNav && this.gallery.prev) {
-			this.active = null // set to false so you don't interrupt the page change with another page change		
-			window.location = this.gallery.prev;
-			return true;
-		}
-		return false;
-	};
-
-	goForward() {
-		if (this.options.firstLastColumnPageNav && this.gallery.next) {
-			this.active = null // set to false so you don't interrupt the page change with another page change		
-			window.location = this.gallery.next;
-			return true;
-		}
-		return false;
-	};
+	navigateTo(direction) {
+		if (!this.options.firstLastColumnPageNav) return false;
+		const goto = direction === "prev" ? this.gallery.prev : this.gallery.next
+		this.active = null // set to false so you don't interrupt the page change with another page change
+		window.location = goto;
+		return true;
+	}
 
 	boundsCheck(node) {
 		const nodeBounds = node.getBoundingClientRect();
