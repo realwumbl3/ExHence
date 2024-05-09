@@ -165,7 +165,7 @@ new (class exHentaiCtrl {
 						<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
 					</span>
 					<div class=Options>
-						<div class=Opt title="What to do when you reach the bottom of the posts.">
+						<div class=Opt title="What to do when you reach the bottom of the posts and keep going.">
 							<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
 						</div>
 					</table>
