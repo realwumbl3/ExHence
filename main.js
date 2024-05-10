@@ -21,9 +21,10 @@ new (class exHentaiCtrl {
 			bottomingOut: "nothing"
 		};
 		this.state = {
-			thisPage: null,
 			galleryHistory: [],
 		};
+		this.page = this.getPath();
+
 		this.thisTabID = null;
 
 		this.keyTimeout = new zyX.timeoutLimiter(70);
@@ -45,6 +46,7 @@ new (class exHentaiCtrl {
 
 	logSelf() {
 		console.log("[ExHentaiCTRL] | this ", this);
+		console.log("[ExHentaiCTRL] | this.getPath() ", this.getPath());
 	}
 
 	async loadOptions() {
@@ -95,6 +97,10 @@ new (class exHentaiCtrl {
 		})
 	};
 
+	getPath() {
+		return window.location.href.split(window.location.origin)[1];
+	}
+
 	async initGallery(gallery) {
 		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
 			gallery = gallery.firstChild
@@ -102,11 +108,8 @@ new (class exHentaiCtrl {
 
 		await this.loadTab();
 
-		const path = window.location.href.split(window.location.origin)[1];
-		this.state.thisPage = path;
-
-		if (this.state.galleryHistory.length === 0 || this.state.galleryHistory[0].path !== path) {
-			this.state.galleryHistory.unshift({ path: path })
+		if (this.state.galleryHistory.length === 0 || this.state.galleryHistory[0].path !== this.page) {
+			this.state.galleryHistory.unshift({ path: this.page })
 			this.saveState();
 		}
 
@@ -115,7 +118,7 @@ new (class exHentaiCtrl {
 		this.readNavBar();
 		const nodes = this.getGalleryNodes();
 
-		if (this.state.galleryHistory[0].path === path) {
+		if (this.state.galleryHistory[0].path === this.page) {
 			this.restorePageState(this.state.galleryHistory[0])
 		}
 
@@ -365,7 +368,7 @@ new (class exHentaiCtrl {
 	pressQ() {
 		if (!this.active) return
 		if (this.state.galleryHistory.length > 0) {
-			const previous = this.state.galleryHistory.find(_ => _.path !== this.state.thisPage)
+			const previous = this.state.galleryHistory.find(_ => _.path !== this.page)
 			if (!previous) return false
 			this.state.galleryHistory = this.state.galleryHistory.splice(this.state.galleryHistory.indexOf(previous))
 			this.saveState();
