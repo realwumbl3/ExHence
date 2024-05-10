@@ -26,14 +26,24 @@ new (class exHentaiCtrl {
 		this.page = this.getPath();
 		this.thisTabID = null;
 
-		this.keyTimeout = new zyX.timeoutLimiter(70);
+		this.keyTimeout = new zyX.timeoutLimiter(100);
+
 		window.addEventListener("keydown", this.keydown.bind(this));
-		observe(document, "#nb", this.attachHeader.bind(this))
+		observe(document, "#nb", this.headerAttached.bind(this))
 		observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
 		observe(document, ".sni", this.initView.bind(this))
 
 		this.cooledDownStart = false; // Prevents multiple keypresses in quick succession.
 		this.coolDownPause(200)
+	}
+
+	zyXImgAllImages() {
+		const images = [...document.querySelectorAll("img")]
+		for (const img of images) {
+			const src = img.src
+			const newZyxImage = new ZyXImage({ src })
+			img.replaceWith(newZyxImage.element);
+		}
 	}
 
 	coolDownPause(timeout) {
@@ -123,6 +133,7 @@ new (class exHentaiCtrl {
 
 		this.selectThumbnail(this.thumbnail.active || firstInView(nodes));
 		this.active = "gallery";
+		// this.zyXImgAllImages(); // TODO
 	};
 
 	restorePageState(state) {
@@ -136,6 +147,7 @@ new (class exHentaiCtrl {
 		await this.loadTab();
 		this.view.container = view;
 		this.active = "view";
+		// this.zyXImgAllImages(); // TODO
 	}
 
 	saveState() {
@@ -153,7 +165,7 @@ new (class exHentaiCtrl {
 		this.saveState()
 	}
 
-	attachHeader(exheader) {
+	headerAttached(exheader) {
 		zyX.html`
 		<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
 		<div><span this=help class="nbw custom">Show Hotkeys</span></div>
@@ -171,6 +183,9 @@ new (class exHentaiCtrl {
 	};
 
 	showOptions() {
+		const bottomOutRepr = (state) => state === "nothing" ? "do nothing" : "goto next page";
+		const sidesRepr = (state) => state === "sides" ? "side columns" : "first/last thumbnail";
+
 		[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach(_ => _.remove());
 		zyX.html`
 		<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
@@ -179,10 +194,10 @@ new (class exHentaiCtrl {
 			</span>
 			<div class=Options>
 				<div class=Opt title="What to do when you reach the bottom of the posts and keep going">
-					<div>Bottoming out: </div><div this=bottomout class=Toggle>${this.options.bottomingOut}</div>
+					<div>Bottoming out: </div><div this=bottomout class=Toggle>${bottomOutRepr(this.options.bottomingOut)}</div>
 				</div>
 				<div class=Opt title="How do you want to navigate pages">
-					<div>Navigates pages:</div><div this=sides class=Toggle>${this.options.pageNav}</div>
+					<div>Navigates pages:</div><div this=sides class=Toggle>${sidesRepr(this.options.pageNav)}</div>
 				</div>
 			</div>
 		</div>
@@ -192,12 +207,12 @@ new (class exHentaiCtrl {
 				bottomout.addEventListener("click", (e) => {
 					this.options.bottomingOut = this.options.bottomingOut === "nothing" ? "next page" : "nothing";
 					this.saveOptions();
-					bottomout.textContent = this.options.bottomingOut;
+					bottomout.textContent = bottomOutRepr(this.options.bottomingOut);
 				})
 				sides.addEventListener("click", (e) => {
 					this.options.pageNav = this.options.pageNav === "sides" ? "first/last" : "sides";
 					this.saveOptions();
-					sides.textContent = this.options.pageNav;
+					sides.textContent = sidesRepr(this.options.pageNav);
 				})
 				close.addEventListener("click", (e) => menu.remove());
 			})
@@ -265,7 +280,7 @@ new (class exHentaiCtrl {
 
 	keydown(e) {
 		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused\
-		if (!this.keyTimeout() || this.cooledDownStart) return;
+		if (!this.keyTimeout(e.code) || this.cooledDownStart) return;
 		switch (e.code) {
 			case "KeyE":
 				if (this.active === "gallery") return this.pressEonThumb();
