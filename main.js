@@ -1,6 +1,6 @@
 new (class exHentaiCtrl {
 	constructor() {
-		this.verbose = true;
+		this.verbose = false;
 		this.active = null // "view" / "gallery"
 		this.gallery = {
 			container: null,
@@ -24,7 +24,6 @@ new (class exHentaiCtrl {
 			galleryHistory: [],
 		};
 		this.page = this.getPath();
-
 		this.thisTabID = null;
 
 		this.keyTimeout = new zyX.timeoutLimiter(70);
