@@ -147,7 +147,7 @@ new (class exHentaiCtrl {
 		await this.loadTab();
 		this.view.container = view;
 		this.active = "view";
-		// this.zyXImgAllImages(); // TODO
+		this.zyXImgAllImages(); // TODO: Improve this
 	}
 
 	saveState() {

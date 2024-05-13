@@ -1,8 +1,19 @@
+class singleCallSet extends Set {
+    constructor(...args) {
+        super(...args)
+    }
+    call(thing, func) {
+        if (this.has(thing)) return
+        this.add(thing)
+        func(thing)
+    }
+}
+
 function observe(container, query, func, once) {
     'use strict';
     once = once || false
     const nmo = new MutationObserver((mutationsList) => {
-        const set = new CallIfNotExistsSet()
+        const set = new singleCallSet()
         for (const mutation of mutationsList) if (mutation.type === 'childList') {
             for (const node of mutation.addedNodes) {
                 if (!node || node.nodeType !== 1) continue
@@ -22,18 +33,6 @@ function observe(container, query, func, once) {
     return nmo
 }
 
-class CallIfNotExistsSet extends Set {
-    constructor(...args) {
-        super(...args)
-    }
-    call(thing, func) {
-        if (this.has(thing)) return
-        this.add(thing)
-        func(thing)
-    }
-}
-
-
 function firstInView(nodes) {
     for (const node of nodes) {
         if (node.getBoundingClientRect().top >= 0) {
@@ -42,7 +41,6 @@ function firstInView(nodes) {
     }
     return false;
 }
-
 
 class ZyXImage {
     constructor({ src, mode = "img", targetForEvents, autoBindDoubleClick = true, className } = {}) {
@@ -59,19 +57,13 @@ class ZyXImage {
         this.img = new Image();
         this.img.addEventListener("load", this.imgLoaded.bind(this));
 
-        if (this.mode === "canvas") {
-            // create canvas
-            this.canvas = document.createElement("canvas");
-            this.ctx = this.canvas.getContext("2d");
-            this.canvas.setAttribute("img-x-canvas", "");
-            this.element.appendChild(this.canvas);
-        } else {
-            this.img.setAttribute("img-x-img", "");
-            this.img.setAttribute("ondragstart", "return false");
-            this.element.appendChild(this.img);
-        }
 
-        this.panZoom = new ZoomAndPan(this.element, this.canvas, { targetForEvents, autoBindDoubleClick });
+        this.img.setAttribute("img-x-img", "");
+        this.img.setAttribute("ondragstart", "return false");
+        this.element.appendChild(this.img);
+
+
+        this.panZoom = new ZoomAndPan(this.element, { targetForEvents, autoBindDoubleClick });
         this.resetTransform = this.panZoom.resetTransform.bind(this.panZoom);
 
         if (src) this.src = src;
@@ -94,14 +86,12 @@ class ZyXImage {
 
     set src(src) {
         this.img.setAttribute("img-x-img", "");
-        if (this.mode === "canvas" && src === null) this.clearCanvas();
         if (!src) return this.img.src = "";
         this.img.src = src;
     }
 
     imgLoaded() {
         this.element.dispatchEvent(new CustomEvent("load"));
-        this.mode === "canvas" && this.drawCanvas();
         this.img.setAttribute("img-x-img", "loaded");
         this.updateRatio();
     }
@@ -122,34 +112,11 @@ class ZyXImage {
         }
     }
 
-    // canvas mode only methods below this line //
-
-    clearCanvas() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-
-    drawCanvas() {
-        this.canvas.width = this.img.naturalWidth;
-        this.canvas.height = this.img.naturalHeight;
-        this.clearCanvas();
-        this.ctx.drawImage(this.img, 0, 0);
-    }
-}
-
-// get common divisor
-function common_divisor(a, b) {
-    return b === 0 ? a : common_divisor(b, a % b);
-}
-
-function aspectRatio(width, height) {
-    const divisor = common_divisor(width, height);
-    return [width / divisor, height / divisor];
 }
 
 class ZoomAndPan {
-    constructor(element, canvas, { autoBindDoubleClick = true, targetForEvents } = {}) {
+    constructor(element) {
         this.element = element;
-        this.canvas = canvas;
         this.animating = false;
         this.frameFraction = 2;
         this.zoomLimits = { min: 1, max: 10 };
@@ -163,16 +130,12 @@ class ZoomAndPan {
         this.multiTouch = {};
         this.reset();
 
-        this.eventTarget = targetForEvents ?? this.element
-
-        this.eventTarget.addEventListener("pointerdown", this.pointerdown.bind(this), { passive: true })
-        this.eventTarget.addEventListener("wheel", this.wheel.bind(this));
-
-        autoBindDoubleClick && this.eventTarget.addEventListener("dblclick", this.dblclick.bind(this));
+        this.element.addEventListener("pointerdown", this.pointerDown.bind(this), { passive: true })
+        this.element.addEventListener("wheel", this.wheel.bind(this));
+        this.element.addEventListener("dblclick", this.dblClick.bind(this));
 
         window.addEventListener("blur", this.reset);
-        window.addEventListener("mouseup", this.mousseUp);
-
+        window.addEventListener("mouseup", this.mouseUp);
     }
 
     setParentContext(keyvalues) {
@@ -185,32 +148,32 @@ class ZoomAndPan {
     }
 
     updateParentContext(key, value) {
-        this.eventTarget.classList.toggle(`img-x-${key}`, value);
+        this.element.classList.toggle(`img-x-${key}`, value);
     }
 
     addListeners() {
-        this.eventTarget.addEventListener("pointermove", this.pointermove);
-        document.addEventListener("pointerup", this.pointerup);
-        document.addEventListener("pointercancel", this.pointerup);
+        this.element.addEventListener("pointermove", this.pointermove.bind(this));
+        document.addEventListener("pointerup", this.pointerUp.bind(this));
+        document.addEventListener("pointercancel", this.pointerUp.bind(this));
     }
 
     removeListeners() {
-        this.eventTarget.removeEventListener("pointermove", this.pointermove);
-        document.removeEventListener("pointerup", this.pointerup);
-        document.removeEventListener("pointercancel", this.pointerup);
+        this.element.removeEventListener("pointermove", this.pointermove.bind(this));
+        document.removeEventListener("pointerup", this.pointerUp.bind(this));
+        document.removeEventListener("pointercancel", this.pointerUp.bind(this));
     }
 
     destructor() {
-        window.removeEventListener("mouseup", this.mouseup);
-        window.removeEventListener("blur", this.reset);
+        window.removeEventListener("mouseup", this.mouseUp.bind(this));
+        window.removeEventListener("blur", this.reset.bind(this));
         this.removeListeners();
     }
 
-    mousseUp = (e) => {
+    mouseUp(e) {
         if (outsideWindowBounds(e.clientX, e.clientY)) this.reset();
     };
 
-    reset = () => {
+    reset() {
         this.multiTouch.active = false;
         this.multiTouch.distance = null;
         this.multiTouch.firstE = null;
@@ -219,7 +182,7 @@ class ZoomAndPan {
         this.multiTouch.secondId = null;
     };
 
-    pointerdown = (e) => {
+    pointerDown(e) {
         if (this.multiTouch.firstId === null) {
             this.multiTouch.firstId = e.pointerId;
             this.addListeners();
@@ -229,14 +192,14 @@ class ZoomAndPan {
         }
     };
 
-    cancelSecondTouch = () => {
+    cancelSecondTouch() {
         this.multiTouch.active = false;
         this.multiTouch.secondId = null;
         this.multiTouch.secondE = null;
         this.multiTouch.distance = null;
     };
 
-    pointerup = (e) => {
+    pointerUp(e) {
         // if first pointer is released
         if (e.pointerId === this.multiTouch.firstId) {
             // if second pointer is not active all pointers become inactive
@@ -260,7 +223,7 @@ class ZoomAndPan {
         }
     };
 
-    pointermove = (e) => {
+    pointermove(e) {
         if (this.multiTouch.active) {
             if (e.pointerId === this.multiTouch.firstId) this.multiTouch.firstE = e;
             if (e.pointerId === this.multiTouch.secondId) this.multiTouch.secondE = e;
@@ -314,7 +277,7 @@ class ZoomAndPan {
         this.updateTarget({ zoom: this.target.zoom });
     }
 
-    dblclick(e) {
+    dblClick(e) {
         const [parentWidth, parentHeight] = this.getParentSize();
         const [width, height] = this.getRealSize();
         if (this.target.zoom > 1) return this.resetTransform();
@@ -366,23 +329,23 @@ class ZoomAndPan {
 
     targetAndCurrentDiff = () => Math.abs(this.target.x - this.current.x + this.target.y - this.current.y + this.target.zoom - this.current.zoom);
 
-    updateTransform() {
-        this.element.style.transformOrigin = `${this.current.x}% ${this.current.y}%`;
-        this.element.style.transform = `scale(${this.current.zoom})`;
-    }
-
     resetPosition = () => this.updateTarget({ x: 50, y: 50 });
 
     resetZoom = () => this.updateTarget({ zoom: 1 });
 
     resetTransform = () => this.resetPosition() || this.resetZoom();
 
-    zoomInOnCursor = (e) => {
+    updateTransform() {
+        this.element.style.transformOrigin = `${this.current.x}% ${this.current.y}%`;
+        this.element.style.transform = `scale(${this.current.zoom})`;
+    }
+
+    zoomInOnCursor(e) {
         const [screenXpercent, screenYpercent] = cursorPercentPosition(this.element, e.clientX, e.clientY);
         this.updateTarget({ x: nearEdge(screenXpercent), y: nearEdge(screenYpercent) });
     };
 
-    fillShortSide = (e) => {
+    fillShortSide(e) {
         const [width, height] = this.getRealSize();
         const [parentWidth, parentHeight] = this.getParentSize();
         this.zoomInOnCursor(e);
@@ -401,4 +364,13 @@ function nearEdge(input, buffer) {
 function cursorPercentPosition(container, x, y) {
     const rect = container.getBoundingClientRect();
     return [((x - rect.left) / rect.width) * 100, ((y - rect.top) / rect.height) * 100];
+}
+
+function common_divisor(a, b) {
+    return b === 0 ? a : common_divisor(b, a % b);
+}
+
+function aspectRatio(width, height) {
+    const divisor = common_divisor(width, height);
+    return [width / divisor, height / divisor];
 }
