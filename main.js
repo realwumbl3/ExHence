@@ -128,7 +128,8 @@ new (class exHentaiCtrl {
 
 		// If we're in a gallery and the previous state was also a gallery, remove the previous state.
 		// This is so going back from a gallery goes back to the page that led to the gallery istead of the previous gallery page.
-		if (this.pageType === "gallery" && pageType(previousState.path) === "gallery") {
+		if (previousState && pageType(previousState.path) === "gallery" && this.pageType === "gallery") {
+			console.log("removing previous gallery state")
 			this.state.galleryHistory.splice(1, 1)
 			this.saveState();
 		}
