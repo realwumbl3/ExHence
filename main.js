@@ -9,7 +9,6 @@ new (class exHentaiCtrl {
 			next: null,
 		};
 		this.view = {
-			downloadUrl: null,
 			container: null,
 		}
 		this.thumbnail = {
@@ -24,6 +23,8 @@ new (class exHentaiCtrl {
 			galleryHistory: [],
 		};
 		this.page = this.getPath();
+		this.pageType = pageType(this.page);
+
 		this.thisTabID = null;
 
 		this.keyTimeout = new zyX.timeoutLimiter(100);
@@ -122,13 +123,23 @@ new (class exHentaiCtrl {
 			this.saveState();
 		}
 
+		const currentState = this.state.galleryHistory[0]
+		const previousState = this.state.galleryHistory[1]
+
+		// If we're in a gallery and the previous state was also a gallery, remove the previous state.
+		// This is so going back from a gallery goes back to the page that led to the gallery istead of the previous gallery page.
+		if (this.pageType === "gallery" && pageType(previousState.path) === "gallery") {
+			this.state.galleryHistory.splice(1, 1)
+			this.saveState();
+		}
+
 		this.verbose && console.log("[ExHentaiCTRL] | initGalleryView", gallery);
 		this.gallery.container = gallery;
 		this.readNavBar();
 		const nodes = this.getGalleryNodes();
 
-		if (this.state.galleryHistory[0].path === this.page) {
-			this.restorePageState(this.state.galleryHistory[0])
+		if (currentState.path === this.page) {
+			this.restorePageState(currentState)
 		}
 
 		this.selectThumbnail(this.thumbnail.active || firstInView(nodes));
@@ -414,3 +425,9 @@ new (class exHentaiCtrl {
 	};
 })()
 
+function pageType(url) {
+	if (url.startsWith("/g/")) return "gallery";
+	if (url.startsWith("/s/")) return "view";
+	if (url.startsWith("/")) return "home";
+	return "unknown";
+}
