@@ -4,7 +4,6 @@ new (class exHentaiCtrl {
 		this.active = null // "view" / "gallery"
 		this.gallery = {
 			container: null,
-			columns: null,
 			prev: null,
 			next: null,
 		};
@@ -55,8 +54,7 @@ new (class exHentaiCtrl {
 
 	logSelf() {
 		console.log("[ExHentaiCTRL] | this ", this);
-		console.log("[ExHentaiCTRL] | this.getPath() ", this.getPath());
-	}
+		}
 
 	async loadOptions() {
 		return new Promise((res, rej) => {
@@ -321,10 +319,9 @@ new (class exHentaiCtrl {
 		switch (e.code) {
 			case "KeyW": // UP
 			case "ArrowUp":
-				nodeIndex = Math.max(0, nodeIndex - collums);
+				nodeIndex -= collums;
 				if (nodeIndex < 0) { // OUT OF BOUNDS, (BELOW FIRST ROW)
-					window.scrollTo(0, 0);
-					return;
+					return window.scrollTo(0, 0);
 				}
 				break;
 			case "KeyS": // DOWN
@@ -336,9 +333,9 @@ new (class exHentaiCtrl {
 				break;
 			case "KeyA": // LEFT
 			case "ArrowLeft":
-				nodeIndex;
-				if (nodeIndex % collums === 0) { // ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
-					if (nodeIndex === 0) { // ALREADY ON FIRST THUMBNAIL
+				nodeIndex--;
+				if ((nodeIndex + 1) % collums === 0) { // ALREADY ON FIRST COLUMN
+					if (nodeIndex === -1) { // OUT OF BOUNDS, (BEFORE FIRST THUMBNAIL)
 						if (this.options.pageNav === "first/last" && this.navigateTo("prev")) return;
 					}
 					if (this.options.pageNav === "sides" && this.navigateTo("prev")) return;
@@ -348,7 +345,7 @@ new (class exHentaiCtrl {
 			case "ArrowRight":
 				nodeIndex++;
 				if ((nodeIndex) % collums === 0) { // ALREADY ON LAST COLUMN
-					if (nodeIndex === nodes.length) { // ALREADY ON LAST THUMBNAIL
+					if (nodeIndex === nodes.length) { // OUT OF BOUNDS, (AFTER LAST THUMBNAIL)
 						if (this.options.pageNav === "first/last" && this.navigateTo("next")) return;
 					}
 					if (this.options.pageNav === "sides" && this.navigateTo("next")) return;
