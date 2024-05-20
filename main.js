@@ -38,13 +38,12 @@ new (class exHentaiCtrl {
 		this.coolDownPause(200)
 	}
 
-	zyXImgAllImages() {
-		const images = [...document.querySelectorAll("img")]
-		for (const img of images) {
-			const src = img.src
-			const newZyxImage = new ZyXImage({ src })
-			img.replaceWith(newZyxImage.element);
-		}
+	getPath() {
+		return window.location.href.split(window.location.origin)[1];
+	}
+
+	forEachImg(cb) {
+		for (const img of [...document.querySelectorAll("img")]) cb(img)
 	}
 
 	coolDownPause(timeout) {
@@ -91,8 +90,7 @@ new (class exHentaiCtrl {
 
 	async loadTab() {
 		await this.loadOptions();
-		const tabId = await this.getTabID();
-		this.thisTabID = tabId;
+		this.thisTabID = await this.getTabID();
 		return new Promise((res, rej) => {
 			const stateId = `${this.thisTabID}-state`
 			chrome.storage.local.get([stateId], (result) => {
@@ -107,9 +105,6 @@ new (class exHentaiCtrl {
 		})
 	};
 
-	getPath() {
-		return window.location.href.split(window.location.origin)[1];
-	}
 
 	async initGallery(gallery) {
 		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
@@ -145,7 +140,6 @@ new (class exHentaiCtrl {
 
 		this.selectThumbnail(this.thumbnail.active || firstInView(nodes));
 		this.active = "gallery";
-		// this.zyXImgAllImages(); // TODO
 	};
 
 	restorePageState(state) {
@@ -159,7 +153,6 @@ new (class exHentaiCtrl {
 		await this.loadTab();
 		this.view.container = view;
 		this.active = "view";
-		this.zyXImgAllImages(); // TODO: Improve this
 	}
 
 	saveState() {
@@ -328,44 +321,38 @@ new (class exHentaiCtrl {
 		switch (e.code) {
 			case "KeyW": // UP
 			case "ArrowUp":
-				if (nodeIndex < collums) {
-					// ALREADY ON FIRST THUMBNAIL ROW
+				nodeIndex = Math.max(0, nodeIndex - collums);
+				if (nodeIndex < 0) { // OUT OF BOUNDS, (BELOW FIRST ROW)
 					window.scrollTo(0, 0);
-					break;
+					return;
 				}
-				nodeIndex -= collums;
 				break;
 			case "KeyS": // DOWN
 			case "ArrowDown":
-				if (nodeIndex > nodes.length - collums - 1) {
-					// ALREADY ON LAST THUMBNAIL ROW
+				nodeIndex += collums;
+				if (nodeIndex > nodes.length - 1) { // OUT OF BOUNDS, (BEYOND LAST ROW)
 					if (this.options.bottomingOut === "next page" && this.navigateTo("next")) return;
 				}
-				nodeIndex += collums;
 				break;
 			case "KeyA": // LEFT
 			case "ArrowLeft":
-				if (nodeIndex === 0) {
-					// ALREADY ON FIRST THUMBNAIL
-					if (this.options.pageNav === "first/last" && this.navigateTo("prev")) return;
-				}
-				if (nodeIndex === 0 || nodeIndex % collums === 0) {
-					// ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
+				nodeIndex;
+				if (nodeIndex % collums === 0) { // ALREADY ON FIRST COLUMN OR FIRST THUMBNAIL
+					if (nodeIndex === 0) { // ALREADY ON FIRST THUMBNAIL
+						if (this.options.pageNav === "first/last" && this.navigateTo("prev")) return;
+					}
 					if (this.options.pageNav === "sides" && this.navigateTo("prev")) return;
 				}
-				nodeIndex--;
 				break;
 			case "KeyD": // RIGHT
 			case "ArrowRight":
-				if (nodeIndex === nodes.length - 1) {
-					// ALREADY ON LAST THUMBNAIL
-					if (this.options.pageNav === "first/last" && this.navigateTo("next")) return;
-				}
-				if ((nodeIndex + 1) % collums === 0 || nodeIndex === nodes.length - 1) {
-					// ALREADY ON LAST COLUMN OR LAST THUMBNAIL
+				nodeIndex++;
+				if ((nodeIndex) % collums === 0) { // ALREADY ON LAST COLUMN
+					if (nodeIndex === nodes.length) { // ALREADY ON LAST THUMBNAIL
+						if (this.options.pageNav === "first/last" && this.navigateTo("next")) return;
+					}
 					if (this.options.pageNav === "sides" && this.navigateTo("next")) return;
 				}
-				nodeIndex++;
 				break;
 		}
 		this.selectThumbnail(nodes[nodeIndex]);
