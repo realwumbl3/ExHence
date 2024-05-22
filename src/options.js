@@ -22,11 +22,14 @@ export default function () {
 				<div class=Opt title="How do you want to navigate pages">
 					<div>Navigates pages:</div><div this=sides class=Toggle>${sidesRepr(this.options.pageNav)}</div>
 				</div>
+                <div class=Opt title="How many pixels to pad the auto-scroll">
+                    <div>Auto-scroll padding:</div><input class="Toggle" this=padding type=number value=${this.options.autoScrollPadding} min=0 max=200>
+                </div>
 			</div>
 		</div>
 		`
         .appendTo(document.body)
-        .pass(({ menu, bottomout, close, sides }) => {
+        .pass(({ menu, bottomout, close, sides, padding }) => {
             bottomout.addEventListener("click", (e) => {
                 this.options.bottomingOut = this.options.bottomingOut === "nothing" ? "next page" : "nothing";
                 this.saveOptions();
@@ -38,5 +41,11 @@ export default function () {
                 sides.textContent = sidesRepr(this.options.pageNav);
             })
             close.addEventListener("click", (e) => menu.remove());
+
+            padding.addEventListener("change", (e) => {
+                this.options.autoScrollPadding = parseInt(padding.value);
+                this.saveOptions();
+            })
+
         })
 }

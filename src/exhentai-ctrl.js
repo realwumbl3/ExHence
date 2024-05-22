@@ -4,9 +4,9 @@ import { ZyXImage, firstInView, observe } from "./dependencies.js";
 
 import ExtendHeader from "./header.js";
 
-export default new (class exHentaiCtrl {
+export default class ExHentaiCtrl {
     constructor() {
-        this.verbose = false;
+        this.verbose = true;
         this.active = null // "view" / "gallery"
         this.gallery = {
             container: null,
@@ -21,7 +21,7 @@ export default new (class exHentaiCtrl {
             active: null,
         };
         this.options = {
-            autoScrollPadding: 20,
+            autoScrollPadding: 0,
             pageNav: "sides",
             bottomingOut: "nothing"
         };
@@ -37,13 +37,23 @@ export default new (class exHentaiCtrl {
         this.cooledDownStart = false; // Prevents multiple keypresses in quick succession.
         this.coolDownPause(200)
 
-        // Observe for header
-        observe(document, "#nb", ExtendHeader.bind(this))
-
+        // Observe for header // This is not working with document_start because loading is too fast for this script to load.
+        // observe(document, "#nb", ExtendHeader.bind(this))
         // Observe for gallery page
-        observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
+        // observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
         // Observe for view page
-        observe(document, ".sni", this.initView.bind(this))
+        // observe(document, ".sni", this.initView.bind(this))
+
+        this.vanillaHeader = document.querySelector("#nb")
+        if (this.vanillaHeader) ExtendHeader.bind(this)(this.vanillaHeader)
+
+        const gallery = document.querySelector("#gdt, .itg.gld, .itg.glte")
+        if (gallery) this.initGallery.bind(this)(gallery)
+
+        const view = document.querySelector(".sni")
+        if (view) this.initView.bind(this)(view)
+
+        this.verbose && console.log('[ExHentaiCTRL] | initialized and observing...');
 
         window.addEventListener("keydown", this.keydown.bind(this));
     }
@@ -158,7 +168,7 @@ export default new (class exHentaiCtrl {
 
     // initial view of the gallery
     async initView(view) {
-        console.log("initView", view)
+        this.verbose && console.log('[ExHentaiCTRL] | init view', view);
         await this.loadTab();
         this.view.container = view;
         this.active = "view";
@@ -175,7 +185,7 @@ export default new (class exHentaiCtrl {
 
     // navigation between pages is loaded in dynamically, we need to remodify the view each time.
     async viewPopulated(viewChildren) {
-        console.log("actualInitView", viewChildren)
+        this.verbose && console.log('[ExHentaiCTRL] | viewPopulated', viewChildren);
         const [h1, i2, i3, i4, i5, i6] = viewChildren
 
         // i2.prepend(this.view.header)
@@ -267,6 +277,7 @@ export default new (class exHentaiCtrl {
             case "ArrowLeft":
             case "ArrowDown":
             case "ArrowRight":
+                e.preventDefault();
                 this.moveHighlight(e);
                 break;
             default:
@@ -364,14 +375,16 @@ export default new (class exHentaiCtrl {
         const nodeBounds = node.getBoundingClientRect();
         switch (true) {
             case nodeBounds.top < 0:
-                window.scrollTo(0, window.scrollY + nodeBounds.top - this.options.autoScrollPadding);
+                window.scrollTo(0, window.scrollY + nodeBounds.top - (this.options.autoScrollPadding + this.vanillaHeader.clientHeight));
                 break;
             case nodeBounds.bottom > window.innerHeight:
                 window.scrollTo(0, window.scrollY + nodeBounds.bottom - window.innerHeight + this.options.autoScrollPadding);
                 break;
         }
     };
-})()
+}
+
+export const exHentaiCtrl = new ExHentaiCtrl();
 
 function pageType(url) {
     if (url.startsWith("/g/")) return "gallery";

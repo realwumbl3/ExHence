@@ -1,13 +1,30 @@
-/* Allow the header to show more options */
+/* Vanilla ExHentai Header */
+body {
+    padding-top: 0 !important;
+}
+
 body #nb {
-    max-width: 720px;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     max-height: unset;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(2em) brightness(70%);
+    max-width: unset;
+    width: 100%;
+    height: 3em;
 }
 
-/* Thumbnails / Posts */
+/* Header */
+.nbw.custom:hover {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Vanilla Thumbnails / Posts */
 .gl1t,
 .gdtl {
     transition: all 200ms ease;
@@ -23,14 +40,7 @@ body #nb {
     box-shadow: #ff0052 0px 0px 1.9em inset, rgb(255 255 255) 0 0 0 0.2em;
 }
 
-/* Header */
-.nbw.custom:hover {
-    color: white;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-/* Small top dark Window */
+/* The small black window over the header */
 .ExHentaiCTRL-Window {
     position: fixed;
     left: 50%;
@@ -76,7 +86,6 @@ body #nb {
 
 }
 
-
 /* Options */
 .ExHentaiCTRL-Options {
     &>.Options {
@@ -94,6 +103,7 @@ body #nb {
             align-items: center;
 
             &>.Toggle {
+                all: unset;
                 background-color: #0f0f0f;
                 border-radius: .3em;
                 color: white;
