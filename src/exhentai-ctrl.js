@@ -21,7 +21,7 @@ export default class ExHentaiCtrl {
             active: null,
         };
         this.options = {
-            autoScrollPadding: 0,
+            autoScrollPadding: 30,
             pageNav: "sides",
             bottomingOut: "nothing"
         };

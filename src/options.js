@@ -22,7 +22,7 @@ export default function () {
 				<div class=Opt title="How do you want to navigate pages">
 					<div>Navigates pages:</div><div this=sides class=Toggle>${sidesRepr(this.options.pageNav)}</div>
 				</div>
-                <div class=Opt title="How many pixels to pad the auto-scroll">
+                <div class=Opt title="How many pixels to pad auto-scrolling">
                     <div>Auto-scroll padding:</div><input class="Toggle" this=padding type=number value=${this.options.autoScrollPadding} min=0 max=200>
                 </div>
 			</div>
