@@ -23,14 +23,12 @@ body #nb {
     box-shadow: #ff0052 0px 0px 1.9em inset, rgb(255 255 255) 0 0 0 0.2em;
 }
 
-
 /* Header */
 .nbw.custom:hover {
     color: white;
     text-decoration: underline;
     cursor: pointer;
 }
-
 
 /* Small top dark Window */
 .ExHentaiCTRL-Window {
@@ -148,4 +146,18 @@ body #nb {
         }
 
     }
+}
+
+#i2 {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+}
+
+#i2>div {
+    height: max-content;
+}
+
+#i2>.sn {
+    padding: .3em 0;
 }

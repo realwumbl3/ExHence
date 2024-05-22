@@ -9,7 +9,7 @@ class singleCallSet extends Set {
     }
 }
 
-function observe(container, query, func, once) {
+export function observe(container, query, func, once) {
     'use strict';
     once = once || false
     const nmo = new MutationObserver((mutationsList) => {
@@ -33,7 +33,7 @@ function observe(container, query, func, once) {
     return nmo
 }
 
-function firstInView(nodes) {
+export function firstInView(nodes) {
     for (const node of nodes) {
         if (node.getBoundingClientRect().top >= 0) {
             return node;
@@ -42,13 +42,11 @@ function firstInView(nodes) {
     return false;
 }
 
-class ZyXImage {
-    constructor({ src, mode = "img", targetForEvents, autoBindDoubleClick = true, className } = {}) {
+export class ZyXImage {
+    constructor({ src, mode = "img" } = {}) {
         this.mode = mode;
         this.element = document.createElement("div");
         this.element.classList.add("zyx-image");
-
-        className && (Array.isArray(className) ? this.element.classList.add(...className) : this.element.classList.add(className));
 
         /* Image loading and layout calculation start */
         this.ratio = null;
@@ -57,13 +55,11 @@ class ZyXImage {
         this.img = new Image();
         this.img.addEventListener("load", this.imgLoaded.bind(this));
 
-
         this.img.setAttribute("img-x-img", "");
         this.img.setAttribute("ondragstart", "return false");
         this.element.appendChild(this.img);
 
-
-        this.panZoom = new ZoomAndPan(this.element, { targetForEvents, autoBindDoubleClick });
+        this.panZoom = new ZoomAndPan(this.element);
         this.resetTransform = this.panZoom.resetTransform.bind(this.panZoom);
 
         if (src) this.src = src;
@@ -118,8 +114,8 @@ class ZoomAndPan {
     constructor(element) {
         this.element = element;
         this.animating = false;
-        this.frameFraction = 2;
-        this.zoomLimits = { min: 1, max: 10 };
+        this.frameFraction = 4;
+        this.zoomLimits = { min: 1, max: 5 };
 
         this.context = { zoomedIn: false }
 
@@ -134,8 +130,8 @@ class ZoomAndPan {
         this.element.addEventListener("wheel", this.wheel.bind(this));
         this.element.addEventListener("dblclick", this.dblClick.bind(this));
 
-        window.addEventListener("blur", this.reset);
-        window.addEventListener("mouseup", this.mouseUp);
+        window.addEventListener("blur", this.reset.bind(this));
+        window.addEventListener("mouseup", this.mouseUp.bind(this));
     }
 
     setParentContext(keyvalues) {
@@ -263,8 +259,8 @@ class ZoomAndPan {
     }
 
     wheel(e) {
-        if (e.shiftKey) return;
-        e.preventDefault();
+        if (!e.shiftKey) return;
+        // e.preventDefault();
         if (e.deltaY < 0) {
             const [screenXpercent, screenYpercent] = cursorPercentPosition(this.element, e.clientX, e.clientY);
             const distance = Math.hypot(e.clientX - this.last_zoom_pos.x, e.clientY - this.last_zoom_pos.y);
@@ -306,13 +302,12 @@ class ZoomAndPan {
         width <= parentWidth && height > parentHeight && (this.target.x = 50);
         height <= parentHeight && width > parentWidth && (this.target.y = 50);
         this.setParentContext({ zoomedIn: this.target.zoom > 1 })
-        this.catchUpAnimationLoop();
+        this.animationLoop();
     }
 
-    catchUpAnimationLoop() {
+    animationLoop() {
         if (this.animating || !(this.animating = true)) return;
         const frame = () => {
-            console.log('animation frame')
             this.current.x += (this.target.x - this.current.x) / this.frameFraction;
             this.current.y += (this.target.y - this.current.y) / this.frameFraction;
             this.current.zoom += (this.target.zoom - this.current.zoom) / this.frameFraction;
