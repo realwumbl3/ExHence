@@ -2,6 +2,8 @@ import zyX, { html, timeoutLimiter } from "./zyX-es6.js";
 
 import { ZyXImage, firstInView, observe } from "./dependencies.js";
 
+import ExtendHeader from "./header.js";
+
 export default new (class exHentaiCtrl {
     constructor() {
         this.verbose = false;
@@ -36,7 +38,8 @@ export default new (class exHentaiCtrl {
         this.coolDownPause(200)
 
         // Observe for header
-        observe(document, "#nb", this.headerAttached.bind(this))
+        observe(document, "#nb", ExtendHeader.bind(this))
+
         // Observe for gallery page
         observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
         // Observe for view page
@@ -206,83 +209,6 @@ export default new (class exHentaiCtrl {
         };
         this.saveState()
     }
-
-    headerAttached(exheader) {
-        html`
-		<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
-		<div><span this=help class="nbw custom">Show Hotkeys</span></div>
-		<div><span this=cleartab class="nbw custom">Clear History.</span></div>
-		`
-            .appendTo(exheader)
-            .pass(({ opts, cleartab, help }) => {
-                opts.addEventListener("click", (e) => this.showOptions())
-                help.addEventListener("click", (e) => this.showHotkeys())
-                cleartab.addEventListener("click", (e) => this.clearState())
-            })
-
-    };
-
-    showOptions() {
-        const bottomOutRepr = (state) => state === "nothing" ? "do nothing" : "goto next page";
-        const sidesRepr = (state) => state === "sides" ? "side columns" : "first/last thumbnail";
-
-        [...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach(_ => _.remove());
-        html`
-		<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
-			<span class=Header>
-				<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
-			</span>
-			<div class=Options>
-				<div class=Opt title="What to do when you reach the bottom of the posts and keep going">
-					<div>Bottoming out: </div><div this=bottomout class=Toggle>${bottomOutRepr(this.options.bottomingOut)}</div>
-				</div>
-				<div class=Opt title="How do you want to navigate pages">
-					<div>Navigates pages:</div><div this=sides class=Toggle>${sidesRepr(this.options.pageNav)}</div>
-				</div>
-			</div>
-		</div>
-		`
-            .appendTo(document.body)
-            .pass(({ menu, bottomout, close, sides }) => {
-                bottomout.addEventListener("click", (e) => {
-                    this.options.bottomingOut = this.options.bottomingOut === "nothing" ? "next page" : "nothing";
-                    this.saveOptions();
-                    bottomout.textContent = bottomOutRepr(this.options.bottomingOut);
-                })
-                sides.addEventListener("click", (e) => {
-                    this.options.pageNav = this.options.pageNav === "sides" ? "first/last" : "sides";
-                    this.saveOptions();
-                    sides.textContent = sidesRepr(this.options.pageNav);
-                })
-                close.addEventListener("click", (e) => menu.remove());
-            })
-    };
-
-    showHotkeys() {
-        [...document.body.querySelectorAll(".ExHentaiCTRL-Help")].forEach(_ => _.remove());
-        html`
-		<div this=menu class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
-			<span class=Header>
-				<div class=Title>ExHentai-CTRL</div><div this=close class=Close>X</div>
-			</span>
-			<div class=Hotkeys>
-				<div class=Hotkey title="[Gallery] Navigate thumbnails/pages using these keys">
-					<div this=Action>Up/Down/Left/Right navigation</div><div class=Keys>WASD/Arrows</div>
-				</div>
-				<div class=Hotkey title="[Gallery] Enter a thumbnail || [Post] Download the image">
-					<div this=Action>Enter thumbnail/Download image</div><div class=Keys>E</div>
-				</div>
-				<div class=Hotkey title="[Gallery/Post] Go back to the previous gallery page">
-					<div this=Action>Go back</div><div class=Keys>Q</div>
-				</div>
-			</div>
-		</div>
-		`
-            .appendTo(document.body)
-            .pass(({ menu, close }) => {
-                close.addEventListener("click", (e) => menu.remove());
-            })
-    };
 
     readNavBar() {
         const galleryNavBar = [...document.querySelectorAll("#uprev,#unext")]

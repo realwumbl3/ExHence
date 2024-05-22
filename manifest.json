@@ -26,9 +26,7 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "exhentai-ctrl.js",
-        "dependencies.js",
-        "zyX-es6.js"
+        "src/*"
       ],
       "matches": [
         "*://exhentai.org/*"
