@@ -2,10 +2,6 @@ import zyX, { html, timeoutLimiter } from "./zyX-es6.js";
 
 import { ZyXImage, firstInView, observe } from "./dependencies.js";
 
-export function myFunction() {
-    console.log("myFunction")
-}
-
 export default new (class exHentaiCtrl {
     constructor() {
         this.verbose = false;
