@@ -21,7 +21,7 @@ export default class ExHentaiCtrl {
             active: null,
         };
         this.options = {
-            autoScrollPadding: 30,
+            autoScrollPadding: 100,
             pageNav: "sides",
             bottomingOut: "nothing"
         };
@@ -36,13 +36,6 @@ export default class ExHentaiCtrl {
         this.keyTimeout = new timeoutLimiter(100);
         this.cooledDownStart = false; // Prevents multiple keypresses in quick succession.
         this.coolDownPause(200)
-
-        // Observe for header // This is not working with document_start because loading is too fast for this script to load.
-        // observe(document, "#nb", ExtendHeader.bind(this))
-        // Observe for gallery page
-        // observe(document, "#gdt, .itg.gld, .itg.glte", this.initGallery.bind(this))
-        // Observe for view page
-        // observe(document, ".sni", this.initView.bind(this))
 
         this.vanillaHeader = document.querySelector("#nb")
         if (this.vanillaHeader) ExtendHeader.bind(this)(this.vanillaHeader)

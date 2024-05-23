@@ -12,7 +12,7 @@ import showHelper from './helper.js';
 export default function (exheader) {
     this.verbose && console.log('[ExHentaiCTRL] | Extending vanilla header...');
     html`
-		<div><span this=opts class="nbw custom">exHentai-CTRL Options</span></div>
+		<div><span this=opts class="nbw custom">CTRL Options</span></div>
 		<div><span this=help class="nbw custom">Show Hotkeys</span></div>
 		<div><span this=cleartab class="nbw custom">Clear History.</span></div>
 		`

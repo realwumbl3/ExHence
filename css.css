@@ -17,10 +17,8 @@ body #nb {
     max-width: 100%;
     width: 100%;
     height: 3em;
-    padding: 0;
-    &>:first-child {
-        margin-left: 1em;
-    }
+    padding: 0 0 0 2em;
+    box-sizing: border-box
 }
 
 /* Header */
