@@ -254,12 +254,12 @@ export default class ExHentaiCtrl {
             case "KeyE":
                 if (this.active === "gallery") return this.pressEonThumb();
                 else if (this.active === "view") return this.downloadView();
-                break;
             case "KeyQ":
-                this.pressQ();
-                break;
+                return this.pressQ();
             case "KeyL":
-                this.logSelf();
+                return this.logSelf();
+            case "KeyF":
+                window.location = window.location.origin
                 break;
             case "KeyE":
             case "KeyW":
@@ -271,10 +271,13 @@ export default class ExHentaiCtrl {
             case "ArrowDown":
             case "ArrowRight":
                 e.preventDefault();
-                this.moveHighlight(e);
-                break;
-            default:
-                break;
+                return this.moveHighlight(e);
+            case "Home":
+                e.preventDefault();
+                return this.selectThumbnail(this.getGalleryNodes()[0]);
+            case "End":
+                e.preventDefault();
+                return this.selectThumbnail(this.getGalleryNodes().slice(-1)[0]);
         }
     };
 
