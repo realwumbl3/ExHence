@@ -1,3 +1,11 @@
+export function injectScript(src) {
+	const script = document.createElement("script");
+	script.type = "text/javascript";
+	script.src = src;
+	document.body.appendChild(script);
+	script.addEventListener("load", () => script.remove());
+}
+
 class singleCallSet extends Set {
 	constructor(...args) {
 		super(...args);
@@ -141,13 +149,9 @@ class ZoomAndPan {
 		for (const [key, value] of Object.entries(keyvalues)) {
 			if (this.context[key] !== value || this.context[key] === undefined) {
 				this.context[key] = value;
-				this.updateParentContext(key, value);
+				this.element.classList.toggle(key, value);
 			}
 		}
-	}
-
-	updateParentContext(key, value) {
-		this.element.classList.toggle(`img-x-${key}`, value);
 	}
 
 	addListeners() {

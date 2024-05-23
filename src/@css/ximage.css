@@ -1,0 +1,32 @@
+.zyx-image {
+	position: relative;
+	display: grid;
+	place-items: center;
+	aspect-ratio: var(--aspect-ratio);
+	contain: size;
+}
+
+.zyx-image.zoomed-in {
+	touch-action: none;
+}
+
+.zyx-image[img-x-ratio="wide"] {
+	width: 100%;
+	height: auto;
+}
+
+.zyx-image[img-x-ratio="tall"] {
+	height: 100%;
+	width: auto;
+}
+
+.zyx-image>img {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	opacity: 0;
+}
+
+.zyx-image>img[img-x-img="loaded"] {
+	opacity: 1;
+}

@@ -1,6 +1,6 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import ExHentaiCtrl from "./exhentai-ctrl.js";
+import ExHentaiCtrl from "./main.js";
 import showOptions from "./options.js";
 import showHelper from "./helper.js";
 

@@ -1,7 +1,13 @@
-import zyX, { html, timeoutLimiter } from "./zyX-es6.js";
+import zyX, { html, css, timeoutLimiter } from "./zyX-es6.js";
 
-import { ZyXImage, firstInView, observe } from "./dependencies.js";
+import { ZyXImage, firstInView, observe, injectScript } from "./dependencies.js";
 import ExtendHeader from "./header.js";
+
+css`
+	@import url(${chrome.runtime.getURL("src/@css/ximage.css")});
+`;
+
+injectScript(chrome.runtime.getURL("src/overrides.js"));
 
 export default class ExHentaiCtrl {
 	constructor() {
@@ -48,6 +54,11 @@ export default class ExHentaiCtrl {
 		this.verbose && console.log("[ExHentaiCTRL] | initialized and observing...");
 
 		window.addEventListener("keydown", this.keydown.bind(this));
+
+		window.addEventListener("message", (event) => {
+			if (event.source != window) return; // We only accept messages from the current window
+			if (event.data?.type === "APPLY_JSON_STATE") this.viewUpdated(event.data);
+		});
 	}
 
 	goToLocation(url) {
@@ -183,23 +194,19 @@ export default class ExHentaiCtrl {
 		await this.loadTab();
 		this.view.container = view;
 		this.active = "view";
-		const viewChildren = [...view.children];
-		const [h1, i2, i3, i4, i5, i6] = viewChildren;
-		this.view.header = h1;
-
-		const viewObserver = new MutationObserver((mutations) => {
-			console.log("viewObserver", mutations);
-		});
-		viewObserver.observe(view, { childList: true, subtree: true });
-		this.viewPopulated(viewChildren);
+		this.view.header = this.view.container.firstChild;
+		this.viewPopulated();
 	}
 
 	// navigation between pages is loaded in dynamically, we need to remodify the view each time.
-	async viewPopulated(viewChildren) {
+	async viewPopulated() {
+		const viewChildren = [...this.view.container.children];
 		this.verbose && console.log("[ExHentaiCTRL] | viewPopulated", viewChildren);
-		const [h1, i2, i3, i4, i5, i6] = viewChildren;
+		const { i2, i3, i4, i5, i6 } = Object.fromEntries(
+			viewChildren.map((_) => [_.id || _.tagName.toLowerCase(), _])
+		);
 
-		// i2.prepend(this.view.header)
+		i2.prepend(this.view.header);
 
 		const i3Anchror = i3.querySelector("a");
 		const i3Img = i3Anchror.querySelector("img");
@@ -216,6 +223,11 @@ export default class ExHentaiCtrl {
 		const newZyxImg = new ZyXImage({ src: i3Img.src });
 		i3Img.after(newZyxImg.element);
 		i3Img.style.display = "none";
+	}
+
+	viewUpdated(replaced_data) {
+		console.log("viewUpdated", replaced_data);
+		this.viewPopulated();
 	}
 
 	saveState() {
@@ -273,9 +285,11 @@ export default class ExHentaiCtrl {
 		if (!this.keyTimeout(e.code) || this.cooledDownStart) return;
 		switch (e.code) {
 			case "KeyE":
+			case "Enter":
 				if (this.active === "gallery") return this.pressEonThumb();
 				else if (this.active === "view") return this.downloadView();
 			case "KeyQ":
+			case "Backspace":
 				return this.pressQ();
 			case "KeyL":
 				return this.logSelf();
@@ -283,7 +297,6 @@ export default class ExHentaiCtrl {
 				return this.goToLocation("/");
 			case "KeyF":
 				return this.goToLocation("/favorites.php");
-			case "KeyE":
 			case "KeyW":
 			case "KeyA":
 			case "KeyS":

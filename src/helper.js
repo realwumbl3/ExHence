@@ -1,6 +1,6 @@
 import zyX, { html } from "./zyX-es6.js";
 
-import ExHentaiCtrl from "./exhentai-ctrl.js";
+import ExHentaiCtrl from "./main.js";
 
 /**
  * @this {ExHentaiCtrl}
