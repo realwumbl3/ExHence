@@ -1,7 +1,6 @@
 import zyX, { html, timeoutLimiter } from "./zyX-es6.js";
 
 import { ZyXImage, firstInView, observe } from "./dependencies.js";
-
 import ExtendHeader from "./header.js";
 
 export default class ExHentaiCtrl {
@@ -33,9 +32,9 @@ export default class ExHentaiCtrl {
 
         this.thisTabID = null;
 
-        this.keyTimeout = new timeoutLimiter(100);
-        this.cooledDownStart = false; // Prevents multiple keypresses in quick succession.
-        this.coolDownPause(200)
+        this.keyTimeout = new timeoutLimiter(100); // Prevents multiple keypresses in quick succession.
+        this.cooledDownStart = false;
+        this.coolDownPause(200) // Prevents keypresses on page load to prevent spamming requests.
 
         this.vanillaHeader = document.querySelector("#nb")
         if (this.vanillaHeader) ExtendHeader.bind(this)(this.vanillaHeader)
