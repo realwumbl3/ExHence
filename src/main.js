@@ -9,6 +9,10 @@ css`
 
 injectScript(chrome.runtime.getURL("src/overrides.js"));
 
+import SetupLogging from "./logging.js";
+
+SetupLogging();
+
 export default class ExHentaiCtrl {
 	constructor() {
 		this.verbose = false;
@@ -284,6 +288,9 @@ export default class ExHentaiCtrl {
 		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused\
 		if (!this.keyTimeout(e.code) || this.cooledDownStart) return;
 		switch (e.code) {
+			case "KeyY":
+				throw new Error("Test error");
+
 			case "KeyE":
 			case "Enter":
 				if (this.active === "gallery") return this.pressEonThumb();
