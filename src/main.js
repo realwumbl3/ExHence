@@ -1,6 +1,6 @@
 import zyX, { html, css, timeoutLimiter } from "./zyX-es6.js";
 
-import { ZyXImage, firstInView, observe, injectScript } from "./dependencies.js";
+import { ZyXImage, firstInView, injectScript } from "./dependencies.js";
 import ExtendHeader from "./header.js";
 
 css`
