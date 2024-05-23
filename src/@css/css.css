@@ -28,7 +28,8 @@ body #nb {
 
 /* Vanilla Thumbnails / Posts */
 .gl1t,
-.gdtl {
+.gdtl,
+.glte>tbody>tr {
     transition: all 200ms ease;
     position: relative;
 }
@@ -38,7 +39,8 @@ body #nb {
 }
 
 .gl1t.highlighted-thumb,
-.gdtl.highlighted-thumb {
+.gdtl.highlighted-thumb,
+.glte>tbody>tr.highlighted-thumb {
     z-index: 2;
     transform: scale(1.03);
     backdrop-filter: blur(2px);
