@@ -25,8 +25,11 @@ export default function () {
 				<div class=Hotkey title="[Gallery/Post] Go back to the previous gallery page">
 					<div this=Action>Go Back</div><div class=Keys>Q</div>
 				</div>
+				<div class=Hotkey title="[ExHentai] Go to your ExHentai favorites">
+					<div this=Action>Go To Favorites</div><div class=Keys>F</div>
+				</div>
 				<div class=Hotkey title="[ExHentai] Go to the ExHentai homepage">
-					<div this=Action>Go Home</div><div class=Keys>F</div>
+					<div this=Action>Go Home</div><div class=Keys>X</div>
 				</div>
 			</div>
 		</div>

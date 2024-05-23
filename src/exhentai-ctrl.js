@@ -51,6 +51,10 @@ export default class ExHentaiCtrl {
         window.addEventListener("keydown", this.keydown.bind(this));
     }
 
+    goToLocation(url) {
+        window.location = window.location.origin + url || "/";
+    }
+
     getPath() {
         return window.location.href.split(window.location.origin)[1];
     }
@@ -258,9 +262,10 @@ export default class ExHentaiCtrl {
                 return this.pressQ();
             case "KeyL":
                 return this.logSelf();
+            case "KeyX":
+                return this.goToLocation("/");
             case "KeyF":
-                window.location = window.location.origin
-                break;
+                return this.goToLocation("/favorites.php");
             case "KeyE":
             case "KeyW":
             case "KeyA":
