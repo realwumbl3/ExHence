@@ -13,6 +13,13 @@ export default class ExView {
 		this.container = view;
 		this.header = this.container.firstChild;
 
+		this.links = {
+			first: null,
+			prev: null,
+			next: null,
+			last: null,
+		};
+
 		this.zyXImg = new ZyXImage({ src: this.getImgSrc() });
 
 		html`
@@ -22,6 +29,11 @@ export default class ExView {
 						${CustomEHLogo}
 						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
 						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
+						<span class="Button" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
+						<span class="Button" zyx-click="${_ => this.links.prev.click()}">&lt</span>
+						<span this=range class="Range">- / -</span>
+						<span class="Button" zyx-click="${_ => this.links.next.click()}">&gt</span>
+						<span class="Button" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
 					</div>
 					<span class="Spacer"></span>
 					<div this=info class=Info></div>
@@ -70,6 +82,12 @@ export default class ExView {
 		else zyX(this).clearDelay("headerhide");
 	}
 
+	vanillaLoadImage(page, id) {
+		chrome.runtime.executeScript({
+			code: `load_image(${page}, ${id})`
+		})
+	}
+
 	hideHeader() {
 		this.header.classList.remove("Visible");
 	}
@@ -90,11 +108,21 @@ export default class ExView {
 		const [filename, resolution, size] = fileInfo
 		const postTitle = h1.textContent;
 
-		this.info.innerHTML = `<b>⠣ Post </b>⠕ ${postTitle} ⠪</br><b>⠣ Page </b>⠕ ${filename} ⠪`;
+		this.info.innerHTML = `< b >⠣ Post </b>⠕ ${postTitle} ⠪</br > <b>⠣ Page </b>⠕ ${filename} ⠪`;
 		this.info.title = `${resolution} ⠪ ⠕ ${size}`;
 
 		this.panZoom.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
+
+		const navigator = i4.querySelector(".sn")
+		const [first, prev, range, next, last] = [...navigator.children];
+		const [current, total] = range.textContent.split(" / ").map(_ => parseInt(_));
+
+		this.links = {
+			first, prev, next, last
+		}
+
+		this.range.textContent = `${current} / ${total}`;
 
 		this.showHeaderFor(2000);
 	}

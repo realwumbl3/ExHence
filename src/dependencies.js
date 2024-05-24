@@ -65,7 +65,6 @@ export class ZyXImage {
 	}
 
 	calcParentRelationRatio() {
-		console.log("calcParentRelationRatio");
 		try {
 			if (!this.ratio) return false;
 			const widerThanParent =

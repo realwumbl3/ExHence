@@ -25,7 +25,7 @@ import ExView from "./view.js";
 
 export default class Exhence {
 	constructor() {
-		this.verbose = true;
+		this.verbose = false;
 
 		this.options = {
 			autoScrollPadding: 250,
