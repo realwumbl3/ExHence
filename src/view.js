@@ -8,8 +8,6 @@ export default class ExView {
 		this.container = view;
 		this.header = this.container.firstChild;
 
-		this.container.style.display = "none";
-
 		this.zyXImg = new ZyXImage({ src: this.getImgSrc() });
 
 		html`

@@ -176,6 +176,10 @@ body #nb {
     }
 }
 
+#i1 {
+    display: none;
+}
+
 .dp {
     display: none;
 }
