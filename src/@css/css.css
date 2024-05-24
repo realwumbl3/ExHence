@@ -26,19 +26,6 @@ body #nb {
     cursor: pointer;
 }
 
-/* Vanilla Thumbnails / Posts */
-/* 
-body .ido {
-    max-width: 100vw !important;
-} */
-
-/* 
-body .gld {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); 
-}  */
-
-
 .gl1t,
 .gdtl,
 .glte>tbody>tr {
@@ -69,7 +56,6 @@ body .gld {
     }
 
 }
-
 
 /* The small black window over the header */
 .ExHentaiCTRL-Window {
@@ -189,6 +175,7 @@ body .gld {
     }
 }
 
+/* Hide vanilla ExHentai viewer */
 #i1 {
     display: none;
 }
@@ -197,6 +184,7 @@ body .gld {
     display: none;
 }
 
+/* ExView */
 .ExView {
     position: absolute;
     inset: 0;
