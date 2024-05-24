@@ -28,12 +28,26 @@ export default class ExView {
 			if (event.data?.type === "APPLY_JSON_STATE") this.viewPopulated();
 		});
 
+		this.main.addEventListener("pointermove", (e) => {
+			const infield = e.clientY < window.innerHeight / 4
+			if (infield) return this.showHeaderFor(0);
+			this.hideHeader();
+		});
+
 		this.viewPopulated();
 	}
-
-	showHeaderFor(time = 2000) {
+	/**
+	 * 
+	 * @param {number} time - Time in milliseconds to show the header for. If 0, the header will not hide. 
+	 */
+	showHeaderFor(time = 1000) {
 		this.header.classList.add("Visible");
-		zyX(this).delay("headerhide", time, () => this.header.classList.remove("Visible"));
+		if (time) zyX(this).delay("headerhide", time, () => this.hideHeader());
+		else zyX(this).clearDelay("headerhide");
+	}
+
+	hideHeader() {
+		this.header.classList.remove("Visible");
 	}
 
 	getImgSrc() {
@@ -52,13 +66,13 @@ export default class ExView {
 		const [filename, resolution, size] = fileInfo
 		const postTitle = h1.textContent;
 
-		this.header.textContent = `${postTitle} ⠪ ⠕ ${filename}`;
+		this.header.innerHTML = `<b>⠣ Post ⠜</b>⠕ ${postTitle} ⠪</br><b>⠣ Page ⠜</b>⠕ ${filename} ⠪`;
 		this.header.title = `${resolution} ⠪ ⠕ ${size}`;
 
 		this.zyXImg.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
 
-		this.showHeaderFor();
+		this.showHeaderFor(2000);
 	}
 
 	getViewDownload() {

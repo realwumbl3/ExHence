@@ -213,7 +213,8 @@ body .gld {
         width: 100%;
         z-index: 10;
         backdrop-filter: blur(1em) brightness(0.5);
-        height: 2em;
+        height: max-content;
+        padding: .4em;
         display: grid;
         place-items: center;
 
