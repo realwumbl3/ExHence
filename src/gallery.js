@@ -6,12 +6,12 @@ import { pageType } from "./main.js";
 export default class ExGallery {
 	constructor(ExHence, gallery) {
 		this.ExHence = ExHence;
+		this.ExHence.log("initGalleryView", gallery);
 
 		this.ExHence.storePageInHistory();
 
 		const currentState = this.ExHence.state.galleryHistory[0];
 		const previousState = this.ExHence.state.galleryHistory[1];
-
 		// If we're in a gallery and the previous state was also a gallery, remove the previous state.
 		// This is so going back from a gallery goes back to the page that led to the gallery istead of the previous gallery page.
 		if (previousState && pageType(previousState.path) === "gallery") {
@@ -20,38 +20,18 @@ export default class ExGallery {
 			this.ExHence.saveState();
 		}
 
-		this.ExHence.log("initGalleryView", gallery);
-
-		if (gallery.matches(".itg.glte")) {
-			// Extended view nodes are wrapped in a table container.
+		this.container = gallery;
+		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
 			gallery = gallery.firstChild;
 		}
-
 		this.prev = null;
 		this.next = null;
-		this.container = gallery;
 		this.thumbnail = {
 			active: null,
 		};
-
 		this.readNavBar();
-
 		this.restorePageState(currentState);
-
 		this.selectThumbnail(this.selectedThumbnail || firstInView(this.getGalleryNodes()));
-	}
-
-	restorePageState(state) {
-		const lastThumbnailHref = state.selectedThumb;
-		if (!lastThumbnailHref) return console.log("No last thumbnail href found in state.");
-		const selectedThumb = this.getGalleryNodes().find(
-			(node) => node.querySelector("a").href === lastThumbnailHref
-		);
-		if (!selectedThumb)
-			return console.log(
-				"No thumbnail found in gallery for last thumbnail href in state."
-			);
-		this.selectedThumbnail = selectedThumb;
 	}
 
 	readNavBar() {
@@ -66,6 +46,19 @@ export default class ExGallery {
 			this.prev = comicNavBar[0].firstChild?.href;
 			this.next = comicNavBar[comicNavBar.length - 1].firstChild?.href;
 		}
+	}
+
+	restorePageState(state) {
+		const lastThumbnailHref = state.selectedThumb;
+		if (!lastThumbnailHref) return console.log("No last thumbnail href found in state.");
+		const selectedThumb = this.getGalleryNodes().find(
+			(node) => node.querySelector("a").href === lastThumbnailHref
+		);
+		if (!selectedThumb)
+			return console.log(
+				"No thumbnail found in gallery for last thumbnail href in state."
+			);
+		this.selectedThumbnail = selectedThumb;
 	}
 
 	getGalleryNodes() {

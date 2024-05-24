@@ -20,7 +20,7 @@ export default class ExView {
 
 		window.addEventListener("message", (event) => {
 			if (event.source != window) return; // We only accept messages from the current window
-			if (event.data?.type === "APPLY_JSON_STATE") this.viewUpdated(event.data);
+			if (event.data?.type === "APPLY_JSON_STATE") this.viewUpdated();
 		});
 
 		this.viewPopulated();
@@ -30,8 +30,7 @@ export default class ExView {
 		return this.container.querySelector("#i3 img").src;
 	}
 
-	viewUpdated(data) {
-		this.Exhence.log("[ExHentaiCTRL] | viewUpdated", data);
+	viewUpdated() {
 		this.viewPopulated();
 	}
 
@@ -44,7 +43,6 @@ export default class ExView {
 		);
 		this.zyXImg.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
-
 	}
 
 	getViewDownload() {
@@ -54,13 +52,13 @@ export default class ExView {
 		if (downloadButton.startsWith("https://exhentai.org/fullimg/")) return downloadButton;
 		const viewImage = this.container.querySelector("#img").src;
 		if (viewImage) return viewImage;
-		console.error("[ExHentaiCTRL] | No download link found.");
+		this.Exhence.log("[ExHentaiCTRL] | No download link found.");
 	}
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload();
 		if (this.Exhence.coolDownPause(1000)) return;
-		this.Exhence.log("[ExHentaiCTRL] | downloadView", viewDownload);
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload });
+		this.Exhence.log("[ExHentaiCTRL] | downloadView", viewDownload);
 	}
 }
