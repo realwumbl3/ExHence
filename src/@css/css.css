@@ -176,16 +176,15 @@ body #nb {
     }
 }
 
-#i2 {
+.dp {
+    display: none;
+}
+
+.ExView {
+    position: absolute;
+    inset: 0;
     display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-}
-
-#i2>div {
-    height: max-content;
-}
-
-#i2>.sn {
-    padding: .3em 0;
+    place-items: center;
+    overflow: hidden;
+    contain: content;
 }

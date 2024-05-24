@@ -4,6 +4,7 @@
 	place-items: center;
 	aspect-ratio: var(--aspect-ratio);
 	contain: size;
+	overflow: hidden;
 }
 
 .zyx-image.zoomed-in {
