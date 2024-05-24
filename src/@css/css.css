@@ -216,7 +216,27 @@ body .gld {
         height: max-content;
         padding: .4em;
         display: grid;
-        place-items: center;
+        align-items: center;
+        justify-content: space-between;
+        grid-auto-flow: column;
+
+        &>.ExViewHeaderLeft {
+            display: grid;
+            grid-auto-flow: column;
+            gap: .5em;
+            align-items: center;
+
+            &>.Button {
+                background-color: #ff0052;
+                border-radius: .3em;
+                color: white;
+                cursor: pointer;
+                padding: .3em .5em;
+                font-weight: bold;
+                user-select: none;
+            }
+
+        }
 
         &.Visible {
             transform: translateY(0);
