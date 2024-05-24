@@ -11,6 +11,9 @@ export default function () {
 	const sidesRepr = (state) =>
 		state === "sides" ? "side columns" : "first/last thumbnail";
 
+	const defaultSelectRepr = (state) =>
+		state === "center" ? "center thumbnail" : "first thumbnail";
+
 	[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach((_) => _.remove());
 	html`
 		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
@@ -31,6 +34,11 @@ export default function () {
 					<div this="sides" class="Toggle">${sidesRepr(this.options.pageNav)}</div>
 				</div>
 
+				<div class="Opt" title="What thumbnail to select by default">
+					<div>Default selected:</div>
+					<div this="defaultSelect" class="Toggle">${defaultSelectRepr(this.options.defaultSelect)}</div>
+				</div>
+
 				<div class="Opt" title="How many pixels is the thumbnail auto-scrolling padding">
 					<div>Auto-scroll padding:</div>
 					<input
@@ -46,7 +54,7 @@ export default function () {
 		</div>
 	`
 		.appendTo(document.body)
-		.pass(({ menu, bottomout, close, sides, padding }) => {
+		.pass(({ menu, bottomout, close, sides, padding, defaultSelect }) => {
 			bottomout.addEventListener("click", (e) => {
 				this.options.bttmOut =
 					this.options.bttmOut === "nothing" ? "next page" : "nothing";
@@ -64,5 +72,12 @@ export default function () {
 				this.options.autoScrollPadding = parseInt(padding.value);
 				this.saveOptions();
 			});
+
+			defaultSelect.addEventListener("click", (e) => {
+				this.options.defaultSelect = this.options.defaultSelect === "center" ? "first" : "center";
+				this.saveOptions();
+				defaultSelect.textContent = defaultSelectRepr(this.options.defaultSelect);
+			});
+
 		});
 }

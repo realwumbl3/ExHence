@@ -31,7 +31,7 @@ export default class Exhence {
 			autoScrollPadding: 250,
 			pageNav: "sides",
 			bttmOut: "nothing",
-			maxCollumns: 5,
+			defaultSelect: "center",
 		};
 
 		this.state = {
