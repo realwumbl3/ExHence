@@ -23,10 +23,9 @@ export default class ExView {
 						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
 						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
 					</div>
-					<div this=info class=ExViewInfo></div>
-				<div>
-		</div>
-			</div>
+					<span class="Spacer"></span>
+					<div this=info class=Info></div>
+				</div>
 				<div class=ImageContainer>
 					${this.zyXImg.element}
 				</div>
@@ -91,7 +90,7 @@ export default class ExView {
 		const [filename, resolution, size] = fileInfo
 		const postTitle = h1.textContent;
 
-		this.info.innerHTML = `<b>⠣ Post ⠜</b>⠕ ${postTitle} ⠪</br><b>⠣ Page ⠜</b>⠕ ${filename} ⠪`;
+		this.info.innerHTML = `<b>⠣ Post </b>⠕ ${postTitle} ⠪</br><b>⠣ Page </b>⠕ ${filename} ⠪`;
 		this.info.title = `${resolution} ⠪ ⠕ ${size}`;
 
 		this.panZoom.resetTransform();
