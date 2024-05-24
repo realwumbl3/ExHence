@@ -33,7 +33,7 @@ export default class ExView {
 
 	showHeaderFor(time = 2000) {
 		this.header.classList.add("Visible");
-		setTimeout(() => this.header.classList.remove("Visible"), time);
+		zyX(this).delay("headerhide", time, () => this.header.classList.remove("Visible"));
 	}
 
 	getImgSrc() {

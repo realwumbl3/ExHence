@@ -10,7 +10,6 @@ export default function () {
 		state === "nothing" ? "do nothing" : "goto next page";
 	const sidesRepr = (state) =>
 		state === "sides" ? "side columns" : "first/last thumbnail";
-
 	const defaultSelectRepr = (state) =>
 		state === "center" ? "center thumbnail" : "first thumbnail";
 
@@ -67,17 +66,14 @@ export default function () {
 				sides.textContent = sidesRepr(this.options.pageNav);
 			});
 			close.addEventListener("click", (e) => menu.remove());
-
 			padding.addEventListener("change", (e) => {
 				this.options.autoScrollPadding = parseInt(padding.value);
 				this.saveOptions();
 			});
-
 			defaultSelect.addEventListener("click", (e) => {
 				this.options.defaultSelect = this.options.defaultSelect === "center" ? "first" : "center";
 				this.saveOptions();
 				defaultSelect.textContent = defaultSelectRepr(this.options.defaultSelect);
 			});
-
 		});
 }

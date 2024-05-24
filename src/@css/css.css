@@ -208,7 +208,7 @@ body .gld {
 
     &>.ExViewHeader {
         position: absolute;
-        transition: transform 200ms ease;
+        transition: transform 600ms ease;
         transform: translateY(-100%);
         width: 100%;
         z-index: 10;
