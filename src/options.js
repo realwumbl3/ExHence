@@ -24,24 +24,24 @@ export default function () {
 			</span>
 			<div class="Options">
 
-				${this.gallery && html`<div class="Opt" title="When you reach the bottom of the posts and keep going">
+				<div class="Opt" visible="${this.gallery ? "true" : "false"}" title="When you reach the bottom of the posts and keep going">
 					<div>Bottoming out:</div>
 					<div this="bottomout" class="Toggle">
 						${bottomOutRepr(this.options.bttmOut)}
 					</div>
-				</div>`}
+				</div>
 
-				${this.gallery && html`<div class="Opt" title="How do you want to navigate pages">
+				<div class="Opt" visible="${this.gallery ? "true" : "false"}" title="How do you want to navigate pages">
 					<div>Navigates pages:</div>
 					<div this="sides" class="Toggle">${sidesRepr(this.options.pageNav)}</div>
-				</div>`}
+				</div>
 
-				${this.gallery && html`<div class="Opt" title="What thumbnail to select by default">
+				<div class="Opt" visible="${this.gallery ? "true" : "false"}" title="What thumbnail to select by default">
 					<div>Default selected:</div>
 					<div this="defaultSelect" class="Toggle">${defaultSelectRepr(this.options.defaultSelect)}</div>
-				</div>`}
+				</div>
 
-				${this.gallery && html`<div class="Opt" title="How many pixels is the thumbnail auto-scrolling padding">
+				<div class="Opt" visible="${this.gallery ? "true" : "false"}" title="How many pixels is the thumbnail auto-scrolling padding">
 					<div>Auto-scroll padding:</div>
 					<input
 						class="Toggle"
@@ -51,19 +51,21 @@ export default function () {
 						min="0"
 						max="2000"
 					/>
-				</div>`}
+				</div>
 
-				${this.view && html`<div class="Opt" title="View image handling">
+				<div class="Opt" visible="${this.view ? "true" : "false"}" title="View image handling">
 					<div>View scrolling</div>
 					<div this="viewBehavior" class="Toggle">${viewBehaviorRepr(this.options.viewBehavior)}</div>
-				</div>`}
+				</div>
 
 			</div>
 		</div>
 	`
 		.appendTo(document.body)
-		.pass(({ menu, close, bottomout, sides, padding, defaultSelect, viewBehavior }) => {
+		.pass(({ menu, close, bottomout, sides, padding, defaultSelect, viewBehavior } = {}) => {
 			close.addEventListener("click", (e) => menu.remove());
+
+			console.log({ menu, close, bottomout, sides, padding, defaultSelect, viewBehavior })
 
 			bottomout?.addEventListener("click", (e) => {
 				this.options.bttmOut =

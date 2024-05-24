@@ -119,6 +119,10 @@ body #nb {
             min-height: 1.4em;
             align-items: center;
 
+            &[visible="false"] {
+                display: none;
+            }
+
             &>.Toggle {
                 all: unset;
                 background-color: #0f0f0f;
