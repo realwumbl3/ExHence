@@ -5,6 +5,7 @@ import {
 } from "./dependencies.js";
 
 import showOptions from "./options.js";
+import { CustomEHLogo } from "./header.js";
 
 export default class ExView {
 	constructor(Exhence, view) {
@@ -18,10 +19,7 @@ export default class ExView {
 			<div this=main class=ExView>
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
-						<span
-							class="EhLogo"
-							style="background-image: url('https://exhentai.org/favicon.ico');"
-						></span>
+						${CustomEHLogo}
 						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
 						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
 					</div>

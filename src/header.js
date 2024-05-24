@@ -4,6 +4,16 @@ import ExHentaiCtrl from "./main.js";
 import showOptions from "./options.js";
 import showHelper from "./helper.js";
 
+export function CustomEHLogo() {
+	return html`
+		<a
+			class="EhLogo" href="https://exhentai.org"
+			style="background-image: url('https://exhentai.org/favicon.ico');"
+		></a>
+	`;
+}
+
+
 /**
  * @this {ExHentaiCtrl}
  * @param {HTMLElement} exheader - the vanilla exheader element
@@ -32,12 +42,7 @@ export default function (exheader) {
 		})
 		.appendTo(exheader);
 
-	html`
-		<span
-			class="EhLogo"
-			style="background-image: url('https://exhentai.org/favicon.ico');"
-		></span>
-	`.prependTo(exheader);
+	CustomEHLogo().prependTo(exheader);
 }
 
 css`
