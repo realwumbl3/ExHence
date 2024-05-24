@@ -108,7 +108,7 @@ export default class ExView {
 		const [filename, resolution, size] = fileInfo
 		const postTitle = h1.textContent;
 
-		this.info.innerHTML = `< b >⠣ Post </b>⠕ ${postTitle} ⠪</br > <b>⠣ Page </b>⠕ ${filename} ⠪`;
+		this.info.innerHTML = `<b>⠣ Post </b>⠕ ${postTitle} ⠪</br > <b>⠣ Page </b>⠕ ${filename} ⠪`;
 		this.info.title = `${resolution} ⠪ ⠕ ${size}`;
 
 		this.panZoom.resetTransform();
