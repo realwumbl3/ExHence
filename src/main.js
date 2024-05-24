@@ -11,7 +11,7 @@ injectScript(chrome.runtime.getURL("src/overrides.js"));
 
 import SetupLogging from "./logging.js";
 
-SetupLogging();
+// SetupLogging();
 
 export function pageType(url) {
 	if (url.startsWith("/g/")) return "gallery";
@@ -31,6 +31,7 @@ export default class Exhence {
 			autoScrollPadding: 250,
 			pageNav: "sides",
 			bttmOut: "nothing",
+			maxCollumns: 5,
 		};
 
 		this.state = {
@@ -68,7 +69,7 @@ export default class Exhence {
 	}
 
 	logSelf() {
-		this.log.log("this", this);
+		this.log("this", this);
 	}
 
 	storePageInHistory() {
@@ -154,11 +155,8 @@ export default class Exhence {
 	}
 
 	clearState() {
-		this.state = {
-			thisPage: null,
-			galleryHistory: [{ path: window.location.href.split(window.location.origin)[1] }],
-		};
-		this.saveState();
+		this.state = { galleryHistory: [] };
+		this.storePageInHistory();
 	}
 
 	keydown(e) {

@@ -15,6 +15,7 @@ export function firstInView(nodes) {
 	return false;
 }
 
+
 export class ZyXImage {
 	constructor({ src, mode = "img" } = {}) {
 		this.mode = mode;

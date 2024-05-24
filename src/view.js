@@ -12,7 +12,7 @@ export default class ExView {
 
 		html`
 			<div this=main class=ExView>
-				<div this=header class=ExViewHeader></div>
+				<div this=header class="ExViewHeader Visible"></div>
 				<div class=ImageContainer>
 					${this.zyXImg.element}
 				</div>
@@ -31,6 +31,11 @@ export default class ExView {
 		this.viewPopulated();
 	}
 
+	showHeaderFor(time = 2000) {
+		this.header.classList.add("Visible");
+		setTimeout(() => this.header.classList.remove("Visible"), time);
+	}
+
 	getImgSrc() {
 		return this.container.querySelector("#i3 img").src;
 	}
@@ -38,7 +43,7 @@ export default class ExView {
 	// navigation between pages is loaded in dynamically, we need to remodify the view each time.
 	async viewPopulated() {
 		const viewChildren = [...this.container.children];
-		this.Exhence.log("[ExHentaiCTRL] | viewPopulated", viewChildren);
+		this.Exhence.log("[ExView.viewPopulated]", viewChildren);
 		const { h1, i2, i3, i4, i5, i6 } = Object.fromEntries(
 			viewChildren.map((_) => [_.id || _.tagName.toLowerCase(), _])
 		);
@@ -47,9 +52,13 @@ export default class ExView {
 		const [filename, resolution, size] = fileInfo
 		const postTitle = h1.textContent;
 
-		this.header.textContent = `${postTitle} | ${filename} | ${resolution} | ${size}`;
+		this.header.textContent = `${postTitle} ⠪ ⠕ ${filename}`;
+		this.header.title = `${resolution} ⠪ ⠕ ${size}`;
+
 		this.zyXImg.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
+
+		this.showHeaderFor();
 	}
 
 	getViewDownload() {
@@ -59,13 +68,13 @@ export default class ExView {
 		if (downloadButton.startsWith("https://exhentai.org/fullimg/")) return downloadButton;
 		const viewImage = this.container.querySelector("#img").src;
 		if (viewImage) return viewImage;
-		this.Exhence.log("[ExHentaiCTRL] | No download link found.");
+		this.Exhence.log("[ExView.getViewDownload] error, No download link found");
 	}
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload();
 		if (this.Exhence.coolDownPause(1000)) return;
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload });
-		this.Exhence.log("[ExHentaiCTRL] | downloadView", viewDownload);
+		this.Exhence.log("[ExView.downloadView]", viewDownload);
 	}
 }

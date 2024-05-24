@@ -3,6 +3,9 @@
 	display: grid;
 	place-items: center;
 	aspect-ratio: var(--aspect-ratio);
+	contain: content;
+    max-width: 100vw;
+    max-height: 100vh;
 }
 
 .zyx-image.zoomed-in {

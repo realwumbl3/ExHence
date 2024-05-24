@@ -6,7 +6,7 @@ import { pageType } from "./main.js";
 export default class ExGallery {
 	constructor(ExHence, gallery) {
 		this.ExHence = ExHence;
-		this.ExHence.log("initGalleryView", gallery);
+		this.ExHence.log("[new ExGallery.contructor]", gallery);
 
 		this.ExHence.storePageInHistory();
 
@@ -15,7 +15,6 @@ export default class ExGallery {
 		// If we're in a gallery and the previous state was also a gallery, remove the previous state.
 		// This is so going back from a gallery goes back to the page that led to the gallery istead of the previous gallery page.
 		if (previousState && pageType(previousState.path) === "gallery") {
-			console.log("removing previous gallery state");
 			this.ExHence.state.galleryHistory.splice(1, 1);
 			this.ExHence.saveState();
 		}
@@ -31,17 +30,24 @@ export default class ExGallery {
 		};
 		this.readNavBar();
 		this.restorePageState(currentState);
-		this.selectThumbnail(this.selectedThumbnail || firstInView(this.getGalleryNodes()));
+
+		this.selectThumbnail(this.selectedThumbnail || this.getGalleryNodes()[this.getCenterish()]);
+	}
+
+	getCenterish() {
+		const columnCount = this.calculateGrid();
+		const centerish = Math.floor(columnCount / 2)
+		return columnCount % 2 ? centerish : centerish - 1;
 	}
 
 	readNavBar() {
 		const galleryNavBar = [...document.querySelectorAll("#uprev,#unext")];
 		if (galleryNavBar.length === 2) {
-			this.ExHence.log("[ExHentaiCTRL] | read gallery navBar");
+			this.ExHence.log("[ExGallery.readNavBar] Read gallery nav bar");
 			this.prev = galleryNavBar[0]?.href;
 			this.next = galleryNavBar[1]?.href;
 		} else {
-			this.ExHence.log("[ExHentaiCTRL] | read post pages navBar");
+			this.ExHence.log("[ExGallery.readNavBar] Read comic nav bar");
 			const comicNavBar = [...document.querySelectorAll("table.ptt>tbody>tr>td")];
 			this.prev = comicNavBar[0].firstChild?.href;
 			this.next = comicNavBar[comicNavBar.length - 1].firstChild?.href;
@@ -66,7 +72,7 @@ export default class ExGallery {
 	}
 
 	calculateGrid() {
-		return Math.floor(this.container.clientWidth / this.selectedThumbnail.clientWidth);
+		return Math.floor(this.container.clientWidth / this.container.firstChild.clientWidth);
 	}
 
 	selectThumbnail(node) {
