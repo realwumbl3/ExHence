@@ -167,7 +167,6 @@ export default class Exhence {
 		switch (e.code) {
 			case "KeyY":
 				throw new Error("Test error");
-
 			case "KeyE":
 			case "Enter":
 				if (this.gallery) return this.gallery.pressEonThumb();

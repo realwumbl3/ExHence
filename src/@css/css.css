@@ -188,7 +188,15 @@ body #nb {
     position: absolute;
     inset: 0;
     display: grid;
-    place-items: center;
+    place-items: stretch;
     overflow: hidden;
     contain: content;
+    grid-template-rows: max-content auto;
+
+
+
+    &>.ImageContainer {
+        display: grid;
+        place-items: center;
+    }
 }

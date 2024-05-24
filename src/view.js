@@ -11,7 +11,12 @@ export default class ExView {
 		this.zyXImg = new ZyXImage({ src: this.getImgSrc() });
 
 		html`
-			<div this=main class=ExView>${this.zyXImg.element}</div>
+			<div this=main class=ExView>
+				<div this=header class=ExViewHeader></div>
+				<div class=ImageContainer>
+					${this.zyXImg.element}
+				</div>
+			</div>
 		`
 			.bind(this)
 			.const();
@@ -20,7 +25,7 @@ export default class ExView {
 
 		window.addEventListener("message", (event) => {
 			if (event.source != window) return; // We only accept messages from the current window
-			if (event.data?.type === "APPLY_JSON_STATE") this.viewUpdated();
+			if (event.data?.type === "APPLY_JSON_STATE") this.viewPopulated();
 		});
 
 		this.viewPopulated();
@@ -30,17 +35,19 @@ export default class ExView {
 		return this.container.querySelector("#i3 img").src;
 	}
 
-	viewUpdated() {
-		this.viewPopulated();
-	}
-
 	// navigation between pages is loaded in dynamically, we need to remodify the view each time.
 	async viewPopulated() {
 		const viewChildren = [...this.container.children];
 		this.Exhence.log("[ExHentaiCTRL] | viewPopulated", viewChildren);
-		const { i2, i3, i4, i5, i6 } = Object.fromEntries(
+		const { h1, i2, i3, i4, i5, i6 } = Object.fromEntries(
 			viewChildren.map((_) => [_.id || _.tagName.toLowerCase(), _])
 		);
+
+		const fileInfo = i4.firstChild.textContent.split(" :: ");
+		const [filename, resolution, size] = fileInfo
+		const postTitle = h1.textContent;
+
+		this.header.textContent = `${postTitle} | ${filename} | ${resolution} | ${size}`;
 		this.zyXImg.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
 	}

@@ -36,10 +36,6 @@ export class ZyXImage {
 		this.resetTransform = this.panZoom.resetTransform.bind(this.panZoom);
 
 		if (src) this.src = src;
-	}
-
-	attachTo(parentElement) {
-		parentElement.appendChild(this.element);
 		this.resizeObserver.observe(this.element);
 	}
 
@@ -72,6 +68,7 @@ export class ZyXImage {
 	}
 
 	calcParentRelationRatio() {
+		console.log("calcParentRelationRatio");
 		try {
 			if (!this.ratio) return false;
 			const widerThanParent =
@@ -245,8 +242,7 @@ class ZoomAndPan {
 	}
 
 	wheel(e) {
-		if (!e.shiftKey) return;
-		// e.preventDefault();
+		e.preventDefault();
 		if (e.deltaY < 0) {
 			const [screenXpercent, screenYpercent] = cursorPercentPosition(
 				this.element,
@@ -330,11 +326,11 @@ class ZoomAndPan {
 	targetAndCurrentDiff = () =>
 		Math.abs(
 			this.target.x -
-				this.current.x +
-				this.target.y -
-				this.current.y +
-				this.target.zoom -
-				this.current.zoom
+			this.current.x +
+			this.target.y -
+			this.current.y +
+			this.target.zoom -
+			this.current.zoom
 		);
 
 	resetPosition = () => this.updateTarget({ x: 50, y: 50 });
