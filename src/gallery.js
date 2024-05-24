@@ -31,8 +31,8 @@ export default class ExGallery {
 		this.readNavBar();
 		this.restorePageState(currentState);
 
-		const initiallySelected = this.selectedThumbnail || this.ExHence.options.defaultSelect === "center" ? this.getCenterish() : 0;
-		this.selectThumbnail(this.getGalleryNodes()[initiallySelected]);
+		const initiallySelected = this.ExHence.options.defaultSelect === "center" ? this.getCenterish() : 0;
+		this.selectThumbnail(this.selectedThumbnail || this.getGalleryNodes()[initiallySelected]);
 	}
 
 	getCenterish() {
