@@ -29,9 +29,10 @@ export default class Exhence {
 
 		this.options = {
 			autoScrollPadding: 250,
-			pageNav: "sides",
-			bttmOut: "nothing",
-			defaultSelect: "center",
+			pageNav: "sides", // sides / first/last
+			bttmOut: "nothing", // nothing / prev/next
+			defaultSelect: "center", // center / first
+			viewBehavior: "scrollZoom", // scrollZoom / scrollPan
 		};
 
 		this.state = {

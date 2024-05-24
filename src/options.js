@@ -12,6 +12,8 @@ export default function () {
 		state === "sides" ? "side columns" : "first/last thumbnail";
 	const defaultSelectRepr = (state) =>
 		state === "center" ? "center thumbnail" : "first thumbnail";
+	const viewBehaviorRepr = (state) =>
+		state === "scrollZoom" ? "zoom, +shift pan" : "pan, +shift zoom";
 
 	[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach((_) => _.remove());
 	html`
@@ -38,6 +40,11 @@ export default function () {
 					<div this="defaultSelect" class="Toggle">${defaultSelectRepr(this.options.defaultSelect)}</div>
 				</div>
 
+				<div class="Opt" title="View image handling">
+					<div>View scrolling</div>
+					<div this="viewBehavior" class="Toggle">${viewBehaviorRepr(this.options.viewBehavior)}</div>
+				</div>
+
 				<div class="Opt" title="How many pixels is the thumbnail auto-scrolling padding">
 					<div>Auto-scroll padding:</div>
 					<input
@@ -53,10 +60,10 @@ export default function () {
 		</div>
 	`
 		.appendTo(document.body)
-		.pass(({ menu, bottomout, close, sides, padding, defaultSelect }) => {
+		.pass(({ menu, bottomout, close, sides, padding, defaultSelect, viewBehavior }) => {
 			bottomout.addEventListener("click", (e) => {
 				this.options.bttmOut =
-					this.options.bttmOut === "nothing" ? "next page" : "nothing";
+					this.options.bttmOut === "nothing" ? "next" : "nothing";
 				this.saveOptions();
 				bottomout.textContent = bottomOutRepr(this.options.bttmOut);
 			});
@@ -75,5 +82,11 @@ export default function () {
 				this.saveOptions();
 				defaultSelect.textContent = defaultSelectRepr(this.options.defaultSelect);
 			});
+			viewBehavior.addEventListener("click", (e) => {
+				this.options.viewBehavior = this.options.viewBehavior === "scrollZoom" ? "panZoom" : "scrollZoom";
+				this.saveOptions();
+				viewBehavior.textContent = viewBehaviorRepr(this.options.viewBehavior);
+			});
+
 		});
 }

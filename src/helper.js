@@ -24,11 +24,11 @@ export default function () {
 				</div>
 				<div class="Hotkey" title="[Gallery] View a post || [Post] Download the image">
 					<div this="Action">View Post/Download Image</div>
-					<div class="Keys">E</div>
+					<div class="Keys">E / Enter</div>
 				</div>
 				<div class="Hotkey" title="[Gallery/Post] Go back to the previous gallery page">
 					<div this="Action">Go Back</div>
-					<div class="Keys">Q</div>
+					<div class="Keys">Q / Backspace</div>
 				</div>
 				<div class="Hotkey" title="[ExHentai] Go to your ExHentai favorites">
 					<div this="Action">Go To Favorites</div>

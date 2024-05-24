@@ -1,6 +1,10 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import { ZyXImage } from "./dependencies.js";
+import {
+	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
+
+
+} from "./dependencies.js";
 
 export default class ExView {
 	constructor(Exhence, view) {
@@ -22,6 +26,16 @@ export default class ExView {
 			.const();
 
 		this.container.after(this.main);
+
+		this.panZoom = new ZoomAndPan(this.zyXImg.element, {
+			wheelDeterminer: (e) => {
+				if (this.Exhence.options.viewBehavior === "scrollZoom") {
+					return e.shiftKey ? SHIFT_PAN : SHIFT_ZOOM;
+				} else {
+					return e.shiftKey ? SHIFT_ZOOM : SHIFT_PAN;
+				}
+			}
+		})
 
 		window.addEventListener("message", (event) => {
 			if (event.source != window) return; // We only accept messages from the current window

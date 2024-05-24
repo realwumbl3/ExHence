@@ -33,16 +33,12 @@ export class ZyXImage {
 		this.img.setAttribute("ondragstart", "return false");
 		this.element.appendChild(this.img);
 
-		this.panZoom = new ZoomAndPan(this.element);
-		this.resetTransform = this.panZoom.resetTransform.bind(this.panZoom);
-
 		if (src) this.src = src;
 		this.resizeObserver.observe(this.element);
 	}
 
 	detach() {
 		this.resizeObserver.unobserve(this.element);
-		this.panZoom.destructor();
 		this.element.remove();
 	}
 
@@ -82,12 +78,19 @@ export class ZyXImage {
 	}
 }
 
-class ZoomAndPan {
-	constructor(element) {
+export const SHIFT_PAN = 0;
+export const SHIFT_ZOOM = 1;
+
+export class ZoomAndPan {
+	constructor(element, {
+		wheelDeterminer = (e) => (e.shiftKey ? SHIFT_ZOOM : SHIFT_PAN),
+	} = {}) {
 		this.element = element;
 		this.animating = false;
 		this.frameFraction = 4;
 		this.zoomLimits = { min: 1, max: 5 };
+
+		this.wheelDeterminer = wheelDeterminer;
 
 		this.context = { zoomedIn: false };
 
@@ -244,6 +247,9 @@ class ZoomAndPan {
 
 	wheel(e) {
 		e.preventDefault();
+
+		if (this.wheelDeterminer(e) === SHIFT_PAN) return this.pan(e);
+
 		if (e.deltaY < 0) {
 			const [screenXpercent, screenYpercent] = cursorPercentPosition(
 				this.element,
@@ -262,8 +268,15 @@ class ZoomAndPan {
 				this.last_zoom_pos = { x: e.clientX, y: e.clientY };
 			}
 		}
+
 		this.target.zoom *= Math.pow(1.001, -e.deltaY);
+
 		this.updateTarget({ zoom: this.target.zoom });
+	}
+
+	pan(e) {
+		const movementY = (e.deltaY * .3) / this.target.zoom;
+		this.updateTarget({ y: this.target.y + movementY });
 	}
 
 	dblClick(e) {

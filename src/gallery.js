@@ -105,7 +105,7 @@ export default class ExGallery {
 				nodeIndex += collums;
 				if (nodeIndex > nodes.length - 1) {
 					// OUT OF BOUNDS, (BEYOND LAST ROW)
-					if (this.ExHence.options.bttmOut === "next page" && this.navigateTo("next"))
+					if (this.ExHence.options.bttmOut === "next" && this.navigateTo("next"))
 						return;
 				}
 				break;
