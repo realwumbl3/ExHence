@@ -221,7 +221,7 @@ body #nb {
             align-items: center;
 
             &>.Button {
-                background-color: #ff0052;
+                background-color: #5b0b13;
                 border-radius: .3em;
                 color: white;
                 cursor: pointer;

@@ -1,5 +1,7 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
+import Exhence from "./main.js";
+
 import {
 	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
 } from "./dependencies.js";
@@ -8,6 +10,11 @@ import showOptions from "./options.js";
 import { CustomEHLogo } from "./header.js";
 
 export default class ExView {
+	/**
+	 * 
+	 * @param {Exhence} Exhence - Exhence instance
+	 * @param {view} HTMLElement - Vanilla view element
+	 */
 	constructor(Exhence, view) {
 		this.Exhence = Exhence;
 		this.container = view;
@@ -27,13 +34,16 @@ export default class ExView {
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
 						${CustomEHLogo}
-						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
+						<span class="Button" zyx-click="${_ => this.Exhence.pressQ()}">Back</span>
+						<span class="Spacer"></span>
 						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
 						<span class="Button" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
 						<span class="Button" zyx-click="${_ => this.links.prev.click()}">&lt</span>
 						<span this=range class="Range">- / -</span>
 						<span class="Button" zyx-click="${_ => this.links.next.click()}">&gt</span>
 						<span class="Button" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
+						<span class="Spacer"></span>
+						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
 					</div>
 					<span class="Spacer"></span>
 					<div this=info class=Info></div>
