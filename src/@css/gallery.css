@@ -20,7 +20,7 @@
     box-shadow: rgb(255, 0, 82) 0px 0px 3.0em inset, rgb(255, 255, 255) 0px 0px 0px 0.1em;
     border-radius: 0.5em;
 
-    &::before {
+    &::after {
         content: "";
         position: absolute;
         inset: 0;
