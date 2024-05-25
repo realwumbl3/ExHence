@@ -1,0 +1,54 @@
+/* ExGallery */
+.gl1t,
+.gdtl,
+.glte>tbody>tr {
+    transition: all 200ms ease;
+    position: relative;
+}
+
+.gl5t {
+    width: 100%;
+}
+
+.gl1t.highlighted-thumb,
+.gdtl.highlighted-thumb,
+.glte>tbody>tr.highlighted-thumb {
+    z-index: 2;
+    transform: scale(1.03);
+    backdrop-filter: blur(2px);
+    filter: brightness(1.1);
+    box-shadow: rgb(255, 0, 82) 0px 0px 3.0em inset, rgb(255, 255, 255) 0px 0px 0px 0.1em;
+    border-radius: 0.5em;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 0.5em;
+        background: linear-gradient(10deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 49%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0) 100%);
+        animation: Shine 500ms ease forwards;
+        background-size: 100% 200%;
+        background-repeat: no-repeat;
+        background-position: 0% 50%;
+        z-index: -1;
+    }
+
+    & .gl5t {
+        background-color: #00000047;
+    }
+
+    & .glname {
+        font-weight: bold;
+    }
+
+}
+
+@keyframes Shine {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 0% 20%;
+    }
+}

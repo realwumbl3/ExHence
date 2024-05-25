@@ -26,36 +26,7 @@ body #nb {
     cursor: pointer;
 }
 
-.gl1t,
-.gdtl,
-.glte>tbody>tr {
-    transition: all 200ms ease;
-    position: relative;
-}
 
-.gl5t {
-    width: 100%;
-}
-
-.gl1t.highlighted-thumb,
-.gdtl.highlighted-thumb,
-.glte>tbody>tr.highlighted-thumb {
-    z-index: 2;
-    transform: scale(1.03);
-    backdrop-filter: blur(2px);
-    filter: brightness(1.1);
-    box-shadow: rgb(255, 0, 82) 0px 0px 3.0em inset, rgb(255, 255, 255) 0px 0px 0px 0.1em;
-    border-radius: 0.5em;
-
-    & .gl5t {
-        background-color: #00000047;
-    }
-
-    & .glname {
-        font-weight: bold;
-    }
-
-}
 
 /* The small black window over the header */
 .ExHentaiCTRL-Window {

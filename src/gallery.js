@@ -3,6 +3,10 @@ import zyX, { html, css } from "./zyX-es6.js";
 import { firstInView } from "./dependencies.js";
 import { pageType } from "./main.js";
 
+css`
+	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
+`
+
 export default class ExGallery {
 	constructor(ExHence, gallery) {
 		this.ExHence = ExHence;
