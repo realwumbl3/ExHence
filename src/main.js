@@ -180,6 +180,10 @@ export default class ExHence {
 				return this.goToLocation("/");
 			case "KeyF":
 				return this.goToLocation("/favorites.php");
+			case "KeyP":
+				return this.goToLocation("/popular");
+			case "KeyG":
+				return this.goToLocation("/watched");
 			case "KeyW":
 			case "KeyA":
 			case "KeyS":

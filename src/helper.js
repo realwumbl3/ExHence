@@ -36,6 +36,14 @@ export default function () {
 					<div this="Action">Go To Favorites</div>
 					<div class="Keys">F</div>
 				</div>
+				<div class="Hotkey" title="[ExHentai] Go to ExHentai popular posts">
+					<div this="Action">Go To Popular</div>
+					<div class="Keys">P</div>
+				</div>
+				<div class="Hotkey" title="[ExHentai] Go to your watched ExHentai tags">
+					<div this="Action">Go To Watched Tags</div>
+					<div class="Keys">G</div>
+				</div>
 				<div class="Hotkey" title="[ExHentai] Go to the ExHentai homepage">
 					<div this="Action">Go Home</div>
 					<div class="Keys">X</div>

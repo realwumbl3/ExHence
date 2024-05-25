@@ -13,6 +13,10 @@ export function CustomEHLogo() {
 	`;
 }
 
+function ButtonHotkeyIndicator(key, { label }) {
+	html`<span class="ExButtonHotkeyIndicator">${label}</span>`.appendTo(key);
+}
+
 
 /**
  * @this {ExHentaiCtrl}
@@ -23,15 +27,27 @@ export default function (exheader) {
 
 	const headerNodes = [...exheader.childNodes]
 	const frontpage = headerNodes[0]
-	const { watched, popular, torrents, favorites, uconfig, manage, mytags } =
-		Object.fromEntries(headerNodes.map(e => [e.firstChild.href.split("/").pop().split(".")[0], e]));
-
 	frontpage.remove();
+	headerNodes.shift();
 
-	for (const node of headerNodes) {
-		node.firstChild.innerHTML = node.firstChild.textContent;
-		node.replaceWith(node.firstChild)
-	}
+	const flattedNodes = headerNodes.map(node => {
+		const firstChild = node.firstChild;
+		node.replaceWith(firstChild)
+		return firstChild;
+	})
+
+	flattedNodes.forEach(node => {
+		node.innerHTML = node.textContent;
+	})
+
+	const { watched, popular, torrents, favorites, uconfig, manage, mytags } =
+		Object.fromEntries(flattedNodes.map(e => [e.href.split("/").pop().split(".")[0], e]));
+
+	torrents.before(favorites);
+
+	ButtonHotkeyIndicator(favorites, { label: "F" });
+	ButtonHotkeyIndicator(watched, { label: "G" });
+	ButtonHotkeyIndicator(popular, { label: "P" });
 
 	html`
 		${CustomEHLogo}
