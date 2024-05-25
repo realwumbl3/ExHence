@@ -27,13 +27,13 @@ class HighlightedThumb {
 
 	select(node) {
 		this.target?.classList.remove("highlighted");
-		node.appendChild(this.highlight);
 		this.target = node;
 		this.target.classList.add("highlighted");
+		node.appendChild(this.highlight);
 	}
 
 	indexInParent() {
-		return [...this.target.parentNode.childNodes].indexOf(this.target);
+		return this.ExGallery.getGalleryNodes().indexOf(this.target);
 	}
 
 	boundsCheck() {
@@ -78,10 +78,10 @@ export default class ExGallery {
 
 		this.prev = null;
 		this.next = null;
+		this.readNavBar();
 
 		this.highlight = new HighlightedThumb(this);
 
-		this.readNavBar();
 		this.restorePageState(currentState);
 
 		if (!this.highlight.target) {
