@@ -14,8 +14,8 @@ body #nb {
     max-width: unset;
     width: 100%;
     max-height: unset;
-    height: 3.3em;
-    padding: 0 0 0 2em;
+    height: max-content;
+    padding: .4em;
 
     box-sizing: border-box;
 
@@ -36,9 +36,6 @@ body #nb {
     color: white;
     text-decoration: underline;
     cursor: pointer;
-
-
-
 }
 
 /* The small black window over the header */

@@ -34,7 +34,7 @@ export default function (exheader) {
 
 	html`
 		${CustomEHLogo}
-		<span class="Button" zyx-click="${_ => this.pressQ()}">&lt</span>
+		<span class="Button" zyx-click="${_ => this.pressQ()}">Back</span>
 		<span class="Button" zyx-click="${showOptions.bind(this)}">Options</span>
 		<span class="Button" zyx-click="${showHelper.bind(this)}">Keys</span>
 	`.prependTo(exheader);
