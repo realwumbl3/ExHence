@@ -23,7 +23,7 @@ export function pageType(url) {
 import ExGallery from "./gallery.js";
 import ExView from "./view.js";
 
-export default class Exhence {
+export default class ExHence {
 	constructor() {
 		this.verbose = false;
 
@@ -218,4 +218,4 @@ export default class Exhence {
 	}
 }
 
-export const exhence = new Exhence();
+export const exHence = new ExHence();

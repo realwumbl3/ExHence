@@ -16,7 +16,19 @@ body #nb {
     max-height: unset;
     height: 3.3em;
     padding: 0 0 0 2em;
-    box-sizing: border-box
+
+    box-sizing: border-box;
+
+    &>.Button {
+        background-color: #5b0b13;
+        border-radius: .3em;
+        color: white;
+        cursor: pointer;
+        padding: .3em .5em;
+        font-weight: bold;
+        user-select: none;
+        margin-right: 0.5em;
+    }
 }
 
 /* Header */
@@ -24,6 +36,9 @@ body #nb {
     color: white;
     text-decoration: underline;
     cursor: pointer;
+
+
+
 }
 
 /* The small black window over the header */

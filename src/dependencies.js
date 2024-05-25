@@ -247,7 +247,7 @@ export class ZoomAndPan {
 	wheel(e) {
 		e.preventDefault();
 
-		if (this.wheelDeterminer(e) === SHIFT_PAN) return this.pan(e);
+		if (this.wheelDeterminer(e) == SHIFT_PAN) return this.pan(e);
 
 		if (e.deltaY < 0) {
 			const [screenXpercent, screenYpercent] = cursorPercentPosition(

@@ -1,6 +1,6 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import Exhence from "./main.js";
+import ExHence from "./main.js";
 
 import {
 	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
@@ -16,11 +16,11 @@ css`
 export default class ExView {
 	/**
 	 * 
-	 * @param {Exhence} Exhence - Exhence instance
+	 * @param {ExHence} ExHence - ExHence instance
 	 * @param {view} HTMLElement - Vanilla view element
 	 */
-	constructor(Exhence, view) {
-		this.Exhence = Exhence;
+	constructor(ExHence, view) {
+		this.ExHence = ExHence;
 		this.container = view;
 		this.header = this.container.firstChild;
 
@@ -38,7 +38,7 @@ export default class ExView {
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
 						${CustomEHLogo}
-						<span class="Button" zyx-click="${_ => this.Exhence.pressQ()}">Back</span>
+						<span class="Button" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 						<span class="Spacer"></span>
 						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
 						<span class="Button" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
@@ -47,7 +47,7 @@ export default class ExView {
 						<span class="Button" zyx-click="${_ => this.links.next.click()}">&gt</span>
 						<span class="Button" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
 						<span class="Spacer"></span>
-						<span class="Button" zyx-click="${showOptions.bind(this.Exhence)}">Options</span>
+						<span class="Button" zyx-click="${showOptions.bind(this.ExHence)}">Options</span>
 					</div>
 					<span class="Spacer"></span>
 					<div this=info class=Info></div>
@@ -65,7 +65,7 @@ export default class ExView {
 
 		this.panZoom = new ZoomAndPan(this.zyXImg.element, {
 			wheelDeterminer: (e) => {
-				if (this.Exhence.options.viewBehavior === "scrollZoom") {
+				if (this.ExHence.options.viewBehavior === "scrollZoom") {
 					return e.shiftKey ? SHIFT_PAN : SHIFT_ZOOM;
 				} else {
 					return e.shiftKey ? SHIFT_ZOOM : SHIFT_PAN;
@@ -113,7 +113,7 @@ export default class ExView {
 	// navigation between pages is loaded in dynamically, we need to remodify the view each time.
 	async viewPopulated() {
 		const viewChildren = [...this.container.children];
-		this.Exhence.log("[ExView.viewPopulated]", viewChildren);
+		this.ExHence.log("[ExView.viewPopulated]", viewChildren);
 		const { h1, i2, i3, i4, i5, i6 } = Object.fromEntries(
 			viewChildren.map((_) => [_.id || _.tagName.toLowerCase(), _])
 		);
@@ -148,13 +148,13 @@ export default class ExView {
 		if (downloadButton.startsWith("https://exhentai.org/fullimg/")) return downloadButton;
 		const viewImage = this.container.querySelector("#img").src;
 		if (viewImage) return viewImage;
-		this.Exhence.log("[ExView.getViewDownload] error, No download link found");
+		this.ExHence.log("[ExView.getViewDownload] error, No download link found");
 	}
 
 	async downloadView() {
 		const viewDownload = this.getViewDownload();
-		if (this.Exhence.coolDownPause(1000)) return;
+		if (this.ExHence.coolDownPause(1000)) return;
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload });
-		this.Exhence.log("[ExView.downloadView]", viewDownload);
+		this.ExHence.log("[ExView.downloadView]", viewDownload);
 	}
 }

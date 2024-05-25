@@ -10,7 +10,7 @@ export default function () {
 	html`
 		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
 			<span class="Header">
-				<div class="Title">ExHentai-CTRL</div>
+				<div class="Title">ExHence Hotkeys</div>
 				<div this="close" class="Close">X</div>
 			</span>
 			<div class="Hotkeys">

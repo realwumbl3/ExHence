@@ -19,7 +19,7 @@ export default function () {
 	html`
 		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
 			<span class="Header">
-				<div class="Title">ExHence settings.</div>
+				<div class="Title">ExHence Options</div>
 				<div this="close" class="Close">X</div>
 			</span>
 			<div class="Options">
