@@ -4,38 +4,53 @@ body {
 }
 
 body #nb {
+    backdrop-filter: blur(2em) brightness(70%);
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    z-index: 100;
     position: sticky;
     top: 0;
-    z-index: 100;
-    backdrop-filter: blur(2em) brightness(70%);
-    max-width: unset;
-    width: 100%;
-    max-height: unset;
-    height: max-content;
-    padding: .4em;
-
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
     box-sizing: border-box;
+    width: 100%;
+    max-width: unset;
+    height: max-content;
+    min-height: 3.3em;
+    max-height: unset;
+    padding: unset;
 
-    &>.Button {
-        background-color: #5b0b13;
-        border-radius: .3em;
-        color: white;
-        cursor: pointer;
-        padding: .3em .5em;
-        font-weight: bold;
-        user-select: none;
-        margin-right: 0.5em;
+    &>.ExButton {
+        margin: .4em;
+        margin-right: 0;
+    }
 
-        &:hover {
-            outline: 0.1em solid #ffffff;
-        }
+    &>a {
+        display: flex;
+        align-items: center;
+        margin-left: .4em;
+    }
+}
 
-        &:active {
-            outline: 0.1em solid #ff0000;
-        }
+.ExButton {
+    place-items: center;
+    display: grid;
+    height: auto;
+    padding: 0 .5em;
+    border-radius: .3em;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    user-select: none;
+    background-color: #5b0b13;
+    transition: outline 200ms ease;
+
+    &:hover {
+        outline: 0.1em solid #ffffff;
+    }
+
+    &:active {
+        outline: 0.1em solid #ff0000;
     }
 }
 
@@ -46,46 +61,56 @@ body #nb {
     cursor: pointer;
 }
 
+.EhLogo {
+    display: inline-block;
+    width: 2em;
+    height: auto;
+    margin-right: 0.5em;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
 /* The small black window over the header */
 .ExHentaiCTRL-Window {
-    position: fixed;
-    left: 50%;
-    top: 2em;
-    transform: translateX(-50%);
-    z-index: 1000;
-    background-color: rgba(14, 14, 14, 0.733);
     backdrop-filter: blur(1em);
-    outline: 0.1em solid #ff0052;
+    gap: 1em;
+    grid-auto-flow: row;
+    display: grid;
+    z-index: 1000;
+    position: fixed;
+    top: 2em;
+    left: 50%;
+    min-width: 22em;
     padding: .5em;
     border-radius: .3em;
+    outline: 0.1em solid #ff0052;
     color: rgb(202, 202, 202);
+    background-color: rgba(14, 14, 14, 0.733);
     box-shadow: 0 0 5em 1em rgba(0, 0, 0, 1);
-    gap: 1em;
-    display: grid;
-    grid-auto-flow: row;
-    min-width: 22em;
+    transform: translateX(-50%);
 
     &>.Header {
-        display: grid;
         grid-auto-flow: column;
+        display: grid;
         justify-content: space-between;
         font-size: 1.5em;
 
         &>.Close {
-            background-color: #ff0052;
-            border-radius: .3em;
             aspect-ratio: 1/1;
             height: 1.2em;
-            text-align: center;
-            line-height: 1.3em;
+            border-radius: .3em;
             font-weight: 700;
-            user-select: none;
+            line-height: 1.3em;
+            text-align: center;
             cursor: pointer;
+            user-select: none;
+            background-color: #ff0052;
         }
 
         &>.Title {
-            font-weight: bold;
             margin-bottom: 1em;
+            font-weight: bold;
         }
 
     }
@@ -95,18 +120,18 @@ body #nb {
 /* Options */
 .ExHentaiCTRL-Options {
     &>.Options {
-        display: grid;
-        grid-auto-flow: row;
-        user-select: none;
         gap: .3em;
+        grid-auto-flow: row;
+        display: grid;
+        user-select: none;
 
         &>.Opt {
-            display: grid;
             grid-auto-flow: column;
-            font-size: 1.2em;
+            display: grid;
             justify-content: space-between;
-            min-height: 1.4em;
             align-items: center;
+            min-height: 1.4em;
+            font-size: 1.2em;
 
             &[visible="false"] {
                 display: none;
@@ -114,12 +139,12 @@ body #nb {
 
             &>.Toggle {
                 all: unset;
-                background-color: #0f0f0f;
+                height: 100%;
+                padding: 0 .5em;
                 border-radius: .3em;
                 color: white;
                 cursor: pointer;
-                height: 100%;
-                padding: 0 .5em;
+                background-color: #0f0f0f;
             }
         }
 
@@ -129,38 +154,38 @@ body #nb {
 /* Hotkeys */
 .ExHentaiCTRL-Help {
     &>.Hotkeys {
-        display: grid;
-        grid-auto-flow: row;
-        user-select: none;
         gap: .3em;
+        grid-auto-flow: row;
+        display: grid;
+        user-select: none;
 
         &>.Hotkey {
-            display: grid;
-            grid-auto-flow: column;
-            font-size: 1.2em;
-            justify-content: space-between;
-            min-height: 1.4em;
-            align-items: center;
             gap: .3em;
+            grid-auto-flow: column;
+            display: grid;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 1.4em;
+            font-size: 1.2em;
 
             &>.Action {
-                background-color: #0f0f0f;
+                height: 100%;
+                padding: 0 .5em;
                 border-radius: .3em;
                 color: white;
                 cursor: pointer;
-                height: 100%;
-                padding: 0 .5em;
+                background-color: #0f0f0f;
             }
 
             &>.Keys {
-                background-color: #0f0f0f;
+                display: grid;
+                align-items: center;
+                height: 100%;
+                padding: 0 .5em;
                 border-radius: .3em;
                 color: white;
                 cursor: pointer;
-                height: 100%;
-                padding: 0 .5em;
-                align-items: center;
-                display: grid;
+                background-color: #0f0f0f;
             }
 
         }

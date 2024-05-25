@@ -19,42 +19,27 @@ body .ido {
 .gl1t,
 .gdtl,
 .glte>tbody>tr {
+    position: relative;
+    border-radius: 0.6em;
     transition: all 200ms ease;
     transform: scale(.98);
-    border-radius: 0.5em;
-    position: relative;
 }
 
 .gl5t {
     width: 100%;
 }
 
-.gl1t.highlighted,
-.gdtl.highlighted,
-.glte>tbody>tr.highlighted {
+.gl1t.highlighted-thumb,
+.gdtl.highlighted-thumb,
+.glte>tbody>tr.highlighted-thumb {
     backdrop-filter: blur(2px);
     z-index: 2;
+    border-radius: 0.5em;
+    box-shadow: rgb(255, 0, 82) 0px 0px 3.0em inset, rgb(255, 255, 255) 0px 0px 0px 0.1em;
     filter: brightness(1.1);
     transform: scale(1.03);
 
-    & .gl5t {
-        background-color: #00000047;
-    }
-
-    & .glname {
-        font-weight: bold;
-    }
-
-}
-
-.thumbHighlight {
-    border-radius: 0.5em;
-    box-shadow: rgb(255, 0, 82) 0px 0px 3.0em inset, rgb(255, 255, 255) 0px 0px 0px 0.1em;
-    position: absolute;
-    inset: 0;
-
-    &::before {
-        display: inline-block;
+    &::after {
         inset: 0;
         z-index: -1;
         position: absolute;
@@ -66,8 +51,16 @@ body .ido {
         background-size: 100% 200%;
         animation: Shine 500ms ease forwards;
     }
-}
 
+    & .gl5t {
+        background-color: #00000047;
+    }
+
+    & .glname {
+        font-weight: bold;
+    }
+
+}
 
 @keyframes Shine {
     0% {

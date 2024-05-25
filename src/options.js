@@ -15,7 +15,9 @@ export default function () {
 	const viewBehaviorRepr = (state) =>
 		state === "scrollZoom" ? "zoom, +shift pan" : "pan, +shift zoom";
 
-	[...document.body.querySelectorAll(".ExHentaiCTRL-Options")].forEach((_) => _.remove());
+	const alreadyOpened = [...document.body.querySelectorAll(".ExHentaiCTRL-Options")]
+	if (alreadyOpened.length) return alreadyOpened.forEach((_) => _.remove());
+
 	html`
 		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
 			<span class="Header">

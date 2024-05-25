@@ -20,8 +20,28 @@ export function CustomEHLogo() {
  */
 export default function (exheader) {
 	this.verbose && console.log("[ExHentaiCTRL] | Extending vanilla header...");
+
+	const headerNodes = [...exheader.childNodes]
+	const frontpage = headerNodes[0]
+	const { watched, popular, torrents, favorites, uconfig, manage, mytags } =
+		Object.fromEntries(headerNodes.map(e => [e.firstChild.href.split("/").pop().split(".")[0], e]));
+
+	frontpage.remove();
+
+	for (const node of headerNodes) {
+		node.firstChild.innerHTML = node.firstChild.textContent;
+		node.replaceWith(node.firstChild)
+	}
+
 	html`
-		<div><span this="cleartab" class="nbw custom">Clear History.</span></div>
+		${CustomEHLogo}
+		<span class="ExButton" zyx-click="${_ => this.pressQ()}"><div>Back</div></span>
+		<span class="ExButton" zyx-click="${showOptions.bind(this)}"><div>Options</div></span>
+		<span class="ExButton" zyx-click="${showHelper.bind(this)}"><div>Keys</div></span>
+	`.prependTo(exheader);
+
+	html`
+		<a this="cleartab" class="nbw custom">Clear History.</a>
 	`
 		.pass(({ cleartab }) => {
 			cleartab.addEventListener("click", () => {
@@ -32,22 +52,4 @@ export default function (exheader) {
 		})
 		.appendTo(exheader);
 
-	html`
-		${CustomEHLogo}
-		<span class="Button" zyx-click="${_ => this.pressQ()}">Back</span>
-		<span class="Button" zyx-click="${showOptions.bind(this)}">Options</span>
-		<span class="Button" zyx-click="${showHelper.bind(this)}">Keys</span>
-	`.prependTo(exheader);
-
 }
-
-css`
-	.EhLogo {
-		display: inline-block;
-		width: 2em;
-		aspect-ratio: 1/1;
-		background-size: contain;
-		background-repeat: no-repeat;
-		margin-right: 0.5em;
-	}
-`;

@@ -4,8 +4,9 @@ import { injectScript } from "./dependencies.js";
 import ExtendHeader from "./header.js";
 
 css`
-	@import url(${chrome.runtime.getURL("src/@css/ximage.css")});
 `;
+// @import url(${chrome.runtime.getURL("src/@css/css.css")});
+
 
 injectScript(chrome.runtime.getURL("src/overrides.js"));
 
@@ -168,7 +169,7 @@ export default class ExHence {
 				throw new Error("Test error");
 			case "KeyE":
 			case "Enter":
-				if (this.gallery) return this.gallery.pressEonThumb();
+				if (this.gallery) return this.gallery.highlight.goToHref();
 				if (this.view) return this.view.downloadView();
 			case "KeyQ":
 			case "Backspace":

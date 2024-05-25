@@ -9,9 +9,9 @@ import {
 import showOptions from "./options.js";
 import { CustomEHLogo } from "./header.js";
 
-css`
-	@import url("${chrome.runtime.getURL("src/@css/view.css")}");
-`
+// css`
+// 	@import url("${chrome.runtime.getURL("src/@css/view.css")}");
+// `
 
 export default class ExView {
 	/**
@@ -38,16 +38,16 @@ export default class ExView {
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
 						${CustomEHLogo}
-						<span class="Button" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
+						<span class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 						<span class="Spacer"></span>
-						<span class="Button" zyx-click="${this.downloadView.bind(this)}">Download</span>
-						<span class="Button" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
-						<span class="Button" zyx-click="${_ => this.links.prev.click()}">&lt</span>
+						<span class="ExButton" zyx-click="${this.downloadView.bind(this)}">Download</span>
+						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
+						<span class="ExButton" zyx-click="${_ => this.links.prev.click()}">&lt</span>
 						<span this=range class="Range">- / -</span>
-						<span class="Button" zyx-click="${_ => this.links.next.click()}">&gt</span>
-						<span class="Button" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
+						<span class="ExButton" zyx-click="${_ => this.links.next.click()}">&gt</span>
+						<span class="ExButton" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
 						<span class="Spacer"></span>
-						<span class="Button" zyx-click="${showOptions.bind(this.ExHence)}">Options</span>
+						<span class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}">Options</span>
 					</div>
 					<span class="Spacer"></span>
 					<div this=info class=Info></div>

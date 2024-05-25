@@ -6,7 +6,9 @@ import ExHentaiCtrl from "./main.js";
  * @this {ExHentaiCtrl}
  */
 export default function () {
-	[...document.body.querySelectorAll(".ExHentaiCTRL-Help")].forEach((_) => _.remove());
+	const alreadyOpened = [...document.body.querySelectorAll(".ExHentaiCTRL-Help")];
+	if (alreadyOpened.length) return alreadyOpened.forEach((_) => _.remove());
+
 	html`
 		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
 			<span class="Header">

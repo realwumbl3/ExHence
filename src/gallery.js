@@ -3,9 +3,56 @@ import zyX, { html, css } from "./zyX-es6.js";
 import { firstInView } from "./dependencies.js";
 import { pageType } from "./main.js";
 
-css`
-	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
-`
+// css`
+// 	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
+// `
+
+class HighlightedThumb {
+	constructor(ExGallery) {
+		this.ExGallery = ExGallery;
+		this.ExHence = ExGallery.ExHence;
+		this.target = null;
+		html`
+			<div this=highlight class="thumbHighlight"></div>
+		`.bind(this)
+	}
+
+	goToHref() {
+		window.location = this.highlightedHref();
+	}
+
+	highlightedHref() {
+		return this.target.querySelector("a").href;
+	}
+
+	select(node) {
+		this.target?.classList.remove("highlighted");
+		node.appendChild(this.highlight);
+		this.target = node;
+		this.target.classList.add("highlighted");
+	}
+
+	indexInParent() {
+		return [...this.target.parentNode.childNodes].indexOf(this.target);
+	}
+
+	boundsCheck() {
+		const nodeBounds = this.target.getBoundingClientRect();
+		const padding = this.ExHence.options.autoScrollPadding;
+		const headerPadding = this.ExHence.vanillaHeader.clientHeight;
+		switch (true) {
+			case nodeBounds.top < 0:
+				window.scrollTo(0, window.scrollY + nodeBounds.top - (padding + headerPadding));
+				break;
+			case nodeBounds.bottom > window.innerHeight:
+				window.scrollTo(
+					0,
+					window.scrollY + nodeBounds.bottom - window.innerHeight + padding
+				);
+				break;
+		}
+	}
+}
 
 export default class ExGallery {
 	constructor(ExHence, gallery) {
@@ -31,15 +78,16 @@ export default class ExGallery {
 
 		this.prev = null;
 		this.next = null;
-		this.thumbnail = {
-			active: null,
-		};
+
+		this.highlight = new HighlightedThumb(this);
+
 		this.readNavBar();
 		this.restorePageState(currentState);
 
-		let initiallySelected = this.ExHence.options.defaultSelect === "center" ? this.getCenterish() : 0;
-		initiallySelected = Math.min(initiallySelected, this.getGalleryNodes().length - 1);
-		this.selectThumbnail(this.selectedThumbnail || this.getGalleryNodes()[initiallySelected]);
+		if (!this.highlight.target) {
+			let initiallySelected = this.ExHence.options.defaultSelect === "center" ? this.getCenterish() : 0;
+			this.selectThumbnail(initiallySelected);
+		}
 	}
 
 	getCenterish() {
@@ -72,7 +120,7 @@ export default class ExGallery {
 			return console.log(
 				"No thumbnail found in gallery for last thumbnail href in state."
 			);
-		this.selectedThumbnail = selectedThumb;
+		this.selectThumbnail(selectedThumb);
 	}
 
 	getGalleryNodes() {
@@ -83,21 +131,22 @@ export default class ExGallery {
 		return Math.floor(this.container.clientWidth / this.container.firstChild.clientWidth);
 	}
 
-	selectThumbnail(node) {
-		if (!node) return false;
-		this.selectedThumbnail?.classList.remove("highlighted-thumb");
-		this.selectedThumbnail = node;
-		this.selectedThumbnail.classList.add("highlighted-thumb");
-		this.boundsCheck(node);
-		const selectedHref = node.querySelector("a").href;
-		this.ExHence.state.galleryHistory[0].selectedThumb = selectedHref;
+	selectThumbnail(indexOrIndex) {
+		if (typeof indexOrIndex === "number") {
+			const nodes = this.getGalleryNodes();
+			indexOrIndex = nodes[Math.min(Math.max(indexOrIndex, 0), nodes.length - 1)];
+		}
+		if (!indexOrIndex) return false;
+		this.highlight.select(indexOrIndex);
+		this.highlight.boundsCheck();
+		this.ExHence.state.galleryHistory[0].selectedThumb = this.highlight.highlightedHref();
 		this.ExHence.saveState();
 	}
 
 	moveHighlight(e) {
 		const collums = this.calculateGrid();
 		const nodes = this.getGalleryNodes();
-		let nodeIndex = nodes.indexOf(this.selectedThumbnail);
+		let nodeIndex = this.highlight.indexInParent()
 		switch (e.code) {
 			case "KeyW": // UP
 			case "ArrowUp":
@@ -143,12 +192,7 @@ export default class ExGallery {
 				}
 				break;
 		}
-		this.selectThumbnail(nodes[nodeIndex]);
-	}
-
-	pressEonThumb() {
-		const thumbnailAnchor = this.selectedThumbnail.querySelector("a");
-		window.location = thumbnailAnchor.href;
+		this.selectThumbnail(nodeIndex);
 	}
 
 	navigateTo(direction) {
@@ -159,20 +203,4 @@ export default class ExGallery {
 		return true;
 	}
 
-	boundsCheck(node) {
-		const nodeBounds = node.getBoundingClientRect();
-		const padding = this.ExHence.options.autoScrollPadding;
-		const headerPadding = this.ExHence.vanillaHeader.clientHeight;
-		switch (true) {
-			case nodeBounds.top < 0:
-				window.scrollTo(0, window.scrollY + nodeBounds.top - (padding + headerPadding));
-				break;
-			case nodeBounds.bottom > window.innerHeight:
-				window.scrollTo(
-					0,
-					window.scrollY + nodeBounds.bottom - window.innerHeight + padding
-				);
-				break;
-		}
-	}
 }
