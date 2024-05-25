@@ -9,6 +9,10 @@ import {
 import showOptions from "./options.js";
 import { CustomEHLogo } from "./header.js";
 
+css`
+	@import url("${chrome.runtime.getURL("src/@css/view.css")}");
+`
+
 export default class ExView {
 	/**
 	 * 

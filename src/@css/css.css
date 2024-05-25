@@ -26,8 +26,6 @@ body #nb {
     cursor: pointer;
 }
 
-
-
 /* The small black window over the header */
 .ExHentaiCTRL-Window {
     position: fixed;
@@ -147,77 +145,5 @@ body #nb {
 
         }
 
-    }
-}
-
-/* Hide vanilla ExHentai viewer */
-#i1 {
-    display: none;
-}
-
-.dp {
-    display: none;
-}
-
-/* ExView */
-.ExView {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: stretch;
-    overflow: hidden;
-    contain: content;
-    grid-template-rows: auto;
-
-    &>.ExViewHeader {
-        position: absolute;
-        transition: transform 600ms ease;
-        transform: translateY(-100%);
-        width: 100%;
-        z-index: 10;
-        backdrop-filter: blur(1em) brightness(0.5);
-        height: max-content;
-        padding: .4em;
-        display: grid;
-        align-items: center;
-        grid-template-columns: max-content auto 1fr;
-        grid-auto-flow: column;
-        box-sizing: border-box;
-        gap: .5em;
-
-        &>.ExViewHeaderLeft {
-            display: grid;
-            grid-auto-flow: column;
-            gap: .5em;
-            align-items: center;
-
-            &>.Button {
-                background-color: #5b0b13;
-                border-radius: .3em;
-                color: white;
-                cursor: pointer;
-                padding: .3em .5em;
-                font-weight: bold;
-                user-select: none;
-            }
-
-        }
-
-        &>.Info {
-            text-align: right;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        &.Visible {
-            transform: translateY(0);
-        }
-    }
-
-    &>.ImageContainer {
-        display: grid;
-        place-items: center;
-        contain: content;
     }
 }
