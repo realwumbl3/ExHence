@@ -23,10 +23,12 @@ export default class ExGallery {
 			this.ExHence.saveState();
 		}
 
-		this.container = gallery;
 		if (gallery.matches(".itg.glte")) { // Extended view nodes are wrapped in a table container.
 			gallery = gallery.firstChild;
 		}
+
+		this.container = gallery;
+
 		this.prev = null;
 		this.next = null;
 		this.thumbnail = {
