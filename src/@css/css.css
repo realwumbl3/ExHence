@@ -28,6 +28,14 @@ body #nb {
         font-weight: bold;
         user-select: none;
         margin-right: 0.5em;
+
+        &:hover {
+            outline: 0.1em solid #ffffff;
+        }
+
+        &:active {
+            outline: 0.1em solid #ff0000;
+        }
     }
 }
 
