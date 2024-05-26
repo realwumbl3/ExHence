@@ -6,15 +6,6 @@ export function injectScript(src) {
 	script.addEventListener("load", () => script.remove());
 }
 
-export function firstInView(nodes) {
-	for (const node of nodes) {
-		if (node.getBoundingClientRect().top >= 0) {
-			return node;
-		}
-	}
-	return false;
-}
-
 /**
  * 
  * @param {String} html
@@ -28,7 +19,7 @@ export function extractImagesAndLinks(doc) {
 }
 
 // Function to fetch the full page content
-export async function fetchPageContent(url) {
+export async function fetchDocument(url) {
 	try {
 		const response = await fetch(url);
 		const html = await response.text();

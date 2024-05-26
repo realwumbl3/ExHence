@@ -1,6 +1,6 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import { firstInView, extractImagesAndLinks, fetchPageContent } from "./dependencies.js";
+import { extractImagesAndLinks, fetchDocument } from "./dependencies.js";
 import { pageType } from "./main.js";
 
 // css`
@@ -19,7 +19,7 @@ class HighlightedThumb {
 	}
 
 	async virtuallyOpen() {
-		return await fetchPageContent(this.highlightedHref());
+		return await fetchDocument(this.highlightedHref());
 	}
 
 	async download() {
