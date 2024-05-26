@@ -33,11 +33,11 @@ export default function () {
 					<div class="Keys">E / Enter</div>
 				</div>
 				<div class="Hotkey" title="[Gallery] Download a post || [Post] Download the image">
-					<div this="Action">Download Post/Image</div>
+					<div this="Action">Download Post/View</div>
 					<div class="Keys">Shift + E / Shift + Enter</div>
 				</div>
-				<div class="Hotkey" title="[Gallery] Favorite the highlited post / Gallery you're viewing">
-					<div this="Action">Favorite Post / Gallery</div>
+				<div class="Hotkey" title="[Gallery] Favorite the highlited post / The gallery you're currently viewing">
+					<div this="Action">Favorite Post/Gallery</div>
 					<div class="Keys">Shift + F</div>
 				</div>
 				<div class="Hotkey" title="[ExHentai] Go to your ExHentai favorites">

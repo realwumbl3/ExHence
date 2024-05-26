@@ -201,7 +201,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
         user-select: none;
 
         &>.Hotkey {
-            gap: .3em;
+            gap: 1em;
             grid-auto-flow: column;
             display: grid;
             justify-content: space-between;
