@@ -1,6 +1,6 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import { firstInView, extractImagesAndLinks } from "./dependencies.js";
+import { firstInView, extractImagesAndLinks, fetchPageContent } from "./dependencies.js";
 import { pageType } from "./main.js";
 
 // css`
@@ -19,13 +19,13 @@ class HighlightedThumb {
 	}
 
 	async virtuallyOpen() {
-		const task = await chrome.runtime.sendMessage({ func: "fetchPageContent", url: this.highlightedHref() })
-		if (task.error) return console.error("Failed to fetch page content:", task.error);
-		return extractImagesAndLinks(task.html);
+		return await fetchPageContent(this.highlightedHref());
 	}
 
 	async download() {
-		const { links, imgs } = await this.virtuallyOpen();
+		const { doc, error } = await this.virtuallyOpen();
+		if (error) return console.error("Download failed:", error);
+		const { imgs, links } = extractImagesAndLinks(doc);
 		const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
 		if (download) {
 			chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: download });

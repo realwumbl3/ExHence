@@ -20,13 +20,25 @@ export function firstInView(nodes) {
  * @param {String} html
  * @returns {links[String], imgs[String]}
  */
-export function extractImagesAndLinks(html) {
-	const parser = new DOMParser();
-	const doc = parser.parseFromString(html, 'text/html');
+export function extractImagesAndLinks(doc) {
 	// Example: Extract all links from the page
 	const links = [...doc.querySelectorAll('a')].map(a => a.href);
 	const imgs = [...doc.querySelectorAll('img')].map(img => img.src);
 	return { links, imgs };
+}
+
+// Function to fetch the full page content
+export async function fetchPageContent(url) {
+	try {
+		const response = await fetch(url);
+		const html = await response.text();
+		const parser = new DOMParser();
+		const doc = parser.parseFromString(html, 'text/html');
+		return { doc };
+	} catch (error) {
+		console.error('Error fetching the page:', error);
+		return { error };
+	}
 }
 
 export class ZyXImage {
