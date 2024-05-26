@@ -16,6 +16,10 @@ export default function () {
 				<div this="close" class="Close">X</div>
 			</span>
 			<div class="Hotkeys">
+				<div class="Hotkey" title="[Gallery/Post] Go back to the previous gallery page">
+					<div this="Action">Go Back</div>
+					<div class="Keys">Q / Backspace</div>
+				</div>
 				<div class="Hotkey" title="[Gallery] Navigate posts/pages using these keys">
 					<div this="Action">Post Navigation</div>
 					<div class="Keys">WASD / Arrows</div>
@@ -32,9 +36,9 @@ export default function () {
 					<div this="Action">Download Post/Image</div>
 					<div class="Keys">Shift + E / Shift + Enter</div>
 				</div>
-				<div class="Hotkey" title="[Gallery/Post] Go back to the previous gallery page">
-					<div this="Action">Go Back</div>
-					<div class="Keys">Q / Backspace</div>
+				<div class="Hotkey" title="[Gallery] Favorite the highlited post / Gallery you're viewing">
+					<div this="Action">Favorite Post / Gallery</div>
+					<div class="Keys">Shift + F</div>
 				</div>
 				<div class="Hotkey" title="[ExHentai] Go to your ExHentai favorites">
 					<div this="Action">Go To Favorites</div>
