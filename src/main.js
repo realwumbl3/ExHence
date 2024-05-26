@@ -1,26 +1,13 @@
 import zyX, { css, timeoutLimiter } from "./zyX-es6.js";
 
-import { injectScript } from "./dependencies.js";
-import ExtendHeader from "./header.js";
-
 css`
+	/*@import url(${chrome.runtime.getURL("src/@css/css.css")}); */
 `;
-// @import url(${chrome.runtime.getURL("src/@css/css.css")});
-
 
 injectScript(chrome.runtime.getURL("src/overrides.js"));
 
-import SetupLogging from "./logging.js";
-
-// SetupLogging();
-
-export function pageType(url) {
-	if (url.startsWith("/g/")) return "gallery";
-	if (url.startsWith("/s/")) return "view";
-	if (url.startsWith("/")) return "home";
-	return "unknown";
-}
-
+import { injectScript, pageType } from "./functions.js";
+import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
 import ExView from "./view.js";
 
@@ -202,14 +189,10 @@ export default class ExHence {
 				if (this.gallery) return this.gallery.moveHighlight(e);
 			case "Home":
 				e.preventDefault();
-				if (this.gallery)
-					return this.gallery.selectThumbnail(this.gallery.getGalleryNodes()[0]);
+				if (this.gallery) return this.gallery.selectFirstThumbnail();
 			case "End":
 				e.preventDefault();
-				if (this.gallery)
-					return this.gallery.selectThumbnail(
-						this.gallery.getGalleryNodes().slice(-1)[0]
-					);
+				if (this.gallery) return this.gallery.selectLastThumbnail()
 		}
 	}
 

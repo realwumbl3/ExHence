@@ -4,7 +4,7 @@ import ExHence from "./main.js";
 
 import {
 	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
-} from "./dependencies.js";
+} from "./zyXImage.js";
 
 import showOptions from "./options.js";
 import { CustomEHLogo } from "./header.js";

@@ -21,3 +21,5 @@ export default function SetupLogging() {
 		}
 	};
 }
+
+// implement into js-logging

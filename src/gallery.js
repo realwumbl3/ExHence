@@ -1,11 +1,11 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import { extractImagesAndLinks, fetchDocument } from "./dependencies.js";
-import { pageType } from "./main.js";
-
 // css`
 // 	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
 // `
+
+import { pageType, favoritePost } from "./functions.js";
+import HighlightedThumb from "./highlight.js";
 
 export default class ExGallery {
 	constructor(ExHence, gallery) {
@@ -64,16 +64,11 @@ export default class ExGallery {
 	}
 
 	restorePageState(state) {
-		const lastThumbnailHref = state.selectedThumb;
-		if (!lastThumbnailHref) return console.log("No last thumbnail href found in state.");
+		if (!state.selectedThumb) return false;
 		const selectedThumb = this.getGalleryNodes().find(
-			(node) => node.querySelector("a").href === lastThumbnailHref
+			(node) => node.querySelector("a").href === state.selectedThumb
 		);
-		if (!selectedThumb)
-			return console.log(
-				"No thumbnail found in gallery for last thumbnail href in state."
-			);
-		this.selectThumbnail(selectedThumb);
+		if (selectedThumb) return this.selectThumbnail(selectedThumb);
 	}
 
 	getGalleryNodes() {
@@ -84,13 +79,14 @@ export default class ExGallery {
 		return Math.floor(this.container.clientWidth / this.container.firstChild.clientWidth);
 	}
 
-	selectThumbnail(indexOrIndex) {
-		if (typeof indexOrIndex === "number") {
+	selectThumbnail(nodeOrIndex) {
+		if (typeof nodeOrIndex === "number") {
+			if (nodeOrIndex < 0) nodeOrIndex = nodes.length + nodeOrIndex;
 			const nodes = this.getGalleryNodes();
-			indexOrIndex = nodes[Math.min(Math.max(indexOrIndex, 0), nodes.length - 1)];
+			nodeOrIndex = nodes[Math.min(Math.max(nodeOrIndex, 0), nodes.length - 1)];
 		}
-		if (!indexOrIndex) return false;
-		this.highlight.select(indexOrIndex);
+		if (!nodeOrIndex) return false;
+		this.highlight.select(nodeOrIndex);
 		this.highlight.boundsCheck();
 		this.ExHence.state.galleryHistory[0].selectedThumb = this.highlight.highlightedHref();
 		this.ExHence.saveState();
@@ -156,6 +152,14 @@ export default class ExGallery {
 		return true;
 	}
 
+	selectFirstThumbnail() {
+		this.selectThumbnail(0);
+	}
+
+	selectLastThumbnail() {
+		this.selectThumbnail(-1);
+	}
+
 	favoriteHighlighted() {
 		this.highlight.favorite();
 		this.ExHence.header.highlightFavoriteButton();
@@ -166,97 +170,4 @@ export default class ExGallery {
 		this.ExHence.header.highlightFavoriteButton();
 	}
 
-}
-
-class HighlightedThumb {
-	constructor(ExGallery) {
-		this.ExGallery = ExGallery;
-		this.ExHence = ExGallery.ExHence;
-		this.target = null;
-		html`
-			<div this=highlight class="thumbHighlight"></div>
-		`.bind(this)
-	}
-
-	async favorite() {
-		await favoritePost(this.highlightedHref());
-	}
-
-	async download() {
-		const { doc, error } = await fetchDocument(this.highlightedHref());
-		if (error) return console.error("Download failed:", error);
-		const { imgs, links } = extractImagesAndLinks(doc);
-		const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
-		if (download) {
-			chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: download });
-			return;
-		}
-		const fallback = imgs.find((img) => !img.startsWith("https://exhentai.org/img/"))
-		if (fallback) {
-			chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: fallback });
-			return;
-		}
-		console.error("No download link found.");
-	}
-
-	goToHref() {
-		window.location = this.highlightedHref();
-	}
-
-	highlightedHref() {
-		return this.target.querySelector("a").href;
-	}
-
-	/**	
-	* @param {HTMLElement} node
-	 */
-	select(node) {
-		this.target?.classList.remove("highlighted");
-		this.target = node;
-		this.target.classList.add("highlighted");
-		node.appendChild(this.highlight);
-	}
-
-	indexInParent() {
-		return this.ExGallery.getGalleryNodes().indexOf(this.target);
-	}
-
-	boundsCheck() {
-		const nodeBounds = this.target.getBoundingClientRect();
-		const padding = this.ExHence.options.autoScrollPadding;
-		const headerPadding = this.ExHence.vanillaHeader.clientHeight;
-		switch (true) {
-			case nodeBounds.top < 0:
-				window.scrollTo(0, window.scrollY + nodeBounds.top - (padding + headerPadding));
-				break;
-			case nodeBounds.bottom > window.innerHeight:
-				window.scrollTo(
-					0,
-					window.scrollY + nodeBounds.bottom - window.innerHeight + padding
-				);
-				break;
-		}
-	}
-}
-
-async function favoritePost(url) {
-	const [gid, t] = url.split("/").slice(-3);
-	const formUrl = `https://exhentai.org/gallerypopups.php?gid=${gid}&t=${t}&act=addfav`;
-	const formData = new FormData();
-	formData.append("favcat", 0);
-	formData.append("favnote", "");
-	formData.append("apply", "Apply Changes");
-	formData.append("update", 1);
-	const response = await fetch(formUrl, {
-		method: "POST",
-		credentials: "include",
-		body: formData,
-	});
-	if (response.ok) {
-		console.log("Post favorited.");
-	}
-	if (!response.ok) {
-		console.error("Failed to favorite post.", { response });
-	}
-	return response;
 }
