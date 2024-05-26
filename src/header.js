@@ -17,7 +17,6 @@ function ButtonHotkeyIndicator(key, { label }) {
 	html`<span class="ExButtonHotkeyIndicator">${label}</span>`.appendTo(key);
 }
 
-
 /**
  * @this {ExHentaiCtrl}
  * @param {HTMLElement} exheader - the vanilla exheader element
