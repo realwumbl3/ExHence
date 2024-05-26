@@ -40,7 +40,7 @@ export default class ExView {
 						${CustomEHLogo}
 						<span class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 						<span class="Spacer"></span>
-						<span class="ExButton" zyx-click="${this.downloadView.bind(this)}">Download</span>
+						<span class="ExButton" zyx-click="${this.download.bind(this)}">Download</span>
 						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
 						<span class="ExButton" zyx-click="${_ => this.links.prev.click()}">&lt</span>
 						<span this=range class="Range">- / -</span>
@@ -151,10 +151,10 @@ export default class ExView {
 		this.ExHence.log("[ExView.getViewDownload] error, No download link found");
 	}
 
-	async downloadView() {
+	async download() {
 		const viewDownload = this.getViewDownload();
 		if (this.ExHence.coolDownPause(1000)) return;
 		chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: viewDownload });
-		this.ExHence.log("[ExView.downloadView]", viewDownload);
+		this.ExHence.log("[ExView.download]", viewDownload);
 	}
 }
