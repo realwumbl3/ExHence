@@ -49,7 +49,7 @@ export default class ExHence {
 		this.coolDownPause(200); // Prevents keypresses on page load to prevent spamming requests.
 
 		this.vanillaHeader = document.querySelector("#nb");
-		if (this.vanillaHeader) ExtendHeader.bind(this)(this.vanillaHeader);
+		if (this.vanillaHeader) this.header = new ExtendHeader(this, this.vanillaHeader);
 
 		window.addEventListener("keydown", this.keydown.bind(this));
 
@@ -181,6 +181,9 @@ export default class ExHence {
 			case "KeyX":
 				return this.goToLocation("/");
 			case "KeyF":
+				if (e.shiftKey) {
+					if (this.gallery) return this.gallery.favoriteHighlighted();
+				}
 				return this.goToLocation("/favorites.php");
 			case "KeyP":
 				return this.goToLocation("/popular");

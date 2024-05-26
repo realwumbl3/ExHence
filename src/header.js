@@ -19,55 +19,64 @@ function ButtonHotkeyIndicator(key, { label }) {
 	html`<span class="ExButtonHotkeyIndicator">${label}</span>`.appendTo(key);
 }
 
-/**
- * @this {ExHentaiCtrl}
- * @param {HTMLElement} exheader - the vanilla exheader element
- */
-export default function (exheader) {
-	this.verbose && console.log("[ExHentaiCTRL] | Extending vanilla header...");
+export default class ExHeader {
+	/**
+	 * @param {ExHentaiCtrl} ExHence
+	 * @param {HTMLElement} exheader
+	 */
+	constructor(ExHence, exheader) {
+		this.ExHence = ExHence;
+		this.ExHence.log("[ExHentaiCTRL] | Extending vanilla header...");
 
-	const headerNodes = [...exheader.childNodes]
-	const frontpage = headerNodes[0]
-	frontpage.remove();
-	headerNodes.shift();
+		const headerNodes = [...exheader.childNodes]
+		const frontpage = headerNodes[0]
+		frontpage.remove();
+		headerNodes.shift();
 
-	const flattedNodes = headerNodes.map(node => {
-		const firstChild = node.firstChild;
-		node.replaceWith(firstChild)
-		return firstChild;
-	})
-
-	flattedNodes.forEach(node => {
-		node.innerHTML = node.textContent;
-		node.classList.add("custom");
-	})
-
-	const { watched, popular, torrents, favorites, uconfig, manage, mytags } =
-		Object.fromEntries(flattedNodes.map(e => [e.href.split("/").pop().split(".")[0], e]));
-
-	torrents.before(favorites);
-
-	ButtonHotkeyIndicator(favorites, { label: "F" });
-	ButtonHotkeyIndicator(watched, { label: "G" });
-	ButtonHotkeyIndicator(popular, { label: "P" });
-
-	html`
-		${CustomEHLogo}
-		<a class="ExButton" zyx-click="${_ => this.pressQ()}"><div>Back</div></a>
-		<a class="ExButton" zyx-click="${showOptions.bind(this)}"><div>Options</div></a>
-		<a class="ExButton" zyx-click="${showHelper.bind(this)}"><div>Keys</div></a>
-	`.prependTo(exheader);
-
-	html`
-		<a this="cleartab" class="nbw custom">Clear History.</a>
-	`
-		.pass(({ cleartab }) => {
-			cleartab.addEventListener("click", () => {
-				cleartab.textContent = "CTRL History Cleared!";
-				setTimeout(() => (cleartab.textContent = "Clear History."), 1000);
-				this.clearState();
-			});
+		const flattedNodes = headerNodes.map(node => {
+			const firstChild = node.firstChild;
+			node.replaceWith(firstChild)
+			return firstChild;
 		})
-		.appendTo(exheader);
+
+		flattedNodes.forEach(node => {
+			node.innerHTML = node.textContent;
+			node.classList.add("custom");
+		})
+
+		this.vanillaButtons = Object.fromEntries(flattedNodes.map(e => [e.href.split("/").pop().split(".")[0], e]));
+
+		const { watched, popular, favorites, torrents, uconfig, manage, mytags } = this.vanillaButtons;
+
+		ButtonHotkeyIndicator(favorites, { label: "F" });
+		ButtonHotkeyIndicator(watched, { label: "G" });
+		ButtonHotkeyIndicator(popular, { label: "P" });
+
+		exheader.innerHTML = "";
+
+		html`
+			${CustomEHLogo}
+			<a class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}"><div>Back</div></a>
+			<a class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}"><div>Options</div></a>
+			<a class="ExButton" zyx-click="${showHelper.bind(this.ExHence)}"><div>Keys</div></a>
+			${[watched, popular, favorites, torrents, uconfig, manage, mytags]}
+			<a this="cleartab" class="nbw custom">Clear History.</a>
+		`
+			.bind(this)
+			.pass(({ cleartab }) => {
+				cleartab.addEventListener("click", () => {
+					cleartab.textContent = "CTRL History Cleared!";
+					setTimeout(() => (cleartab.textContent = "Clear History."), 1000);
+					this.ExHence.clearState();
+				});
+			})
+			.appendTo(exheader);
+
+	}
+
+	highlightFavoriteButton() {
+		this.vanillaButtons.favorites.classList.add("highlighted");
+		zyX(this).delay("highlight", 1500, () => this.vanillaButtons.favorites.classList.remove("highlighted"));
+	}
 
 }

@@ -22,6 +22,11 @@ class HighlightedThumb {
 		return await fetchDocument(this.highlightedHref());
 	}
 
+	async favorite() {
+		const url = this.highlightedHref();
+		await favoritePost(url);
+	}
+
 	async download() {
 		const { doc, error } = await this.virtuallyOpen();
 		if (error) return console.error("Download failed:", error);
@@ -78,6 +83,29 @@ class HighlightedThumb {
 		}
 	}
 }
+
+async function favoritePost(url) {
+	const [gid, t] = url.split("/").slice(-3);
+	const formUrl = `https://exhentai.org/gallerypopups.php?gid=${gid}&t=${t}&act=addfav`;
+	const formData = new FormData();
+	formData.append("favcat", 0);
+	formData.append("favnote", "");
+	formData.append("apply", "Apply Changes");
+	formData.append("update", 1);
+	const response = await fetch(formUrl, {
+		method: "POST",
+		credentials: "include",
+		body: formData,
+	});
+	if (response.ok) {
+		console.log("Post favorited.");
+	}
+	if (!response.ok) {
+		console.error("Failed to favorite post.", { response });
+	}
+	return response;
+}
+
 
 export default class ExGallery {
 	constructor(ExHence, gallery) {
@@ -226,6 +254,11 @@ export default class ExGallery {
 		if (this.ExHence.coolDownPause(1000)) return;
 		window.location = goto;
 		return true;
+	}
+
+	favoriteHighlighted() {
+		this.highlight.favorite();
+		this.ExHence.header.highlightFavoriteButton();
 	}
 
 }

@@ -32,9 +32,15 @@ body #nb {
         position: relative;
         min-height: 3em;
         border-right: 0.1em solid #ffffff1a;
+        transition: background-color 200ms ease, box-shadow 200ms ease;
 
         &:hover {
             background-color: #0000001a;
+        }
+
+        &.highlighted {
+            background-color: #ff9100c4;
+            box-shadow: inset 0 0 0.5em 0.1em #ffd900c4;
         }
     }
 }
