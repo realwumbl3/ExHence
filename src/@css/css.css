@@ -28,9 +28,14 @@ body #nb {
     &>a {
         display: flex;
         align-items: center;
-        margin-left: .4em;
+        padding: 0 .4em;
         position: relative;
         min-height: 3em;
+        border-right: 0.1em solid #ffffff1a;
+
+        &:hover {
+            background-color: #0000001a;
+        }
     }
 }
 
@@ -48,7 +53,7 @@ span.ExButtonHotkeyIndicator {
     border-radius: 0.5em;
     top: 2px;
     position: absolute;
-    right: 0;
+    right: 2px;
     transition: opacity 200ms ease;
 }
 
@@ -87,12 +92,13 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 
 .EhLogo {
     display: inline-block;
-    width: 2em;
+    width: 2.5em;
     height: auto;
-    margin-right: 0.5em;
+    margin: 0 0.5em;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
+    image-rendering: pixelated;
 }
 
 /* The small black window over the header */

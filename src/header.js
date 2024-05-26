@@ -6,10 +6,10 @@ import showHelper from "./helper.js";
 
 export function CustomEHLogo() {
 	return html`
-		<a
+		<span
 			class="EhLogo" href="https://exhentai.org"
 			style="background-image: url('https://exhentai.org/favicon.ico');"
-		></a>
+		></span>
 	`;
 }
 
