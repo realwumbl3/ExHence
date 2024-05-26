@@ -178,17 +178,12 @@ class HighlightedThumb {
 		`.bind(this)
 	}
 
-	async virtuallyOpen() {
-		return await fetchDocument(this.highlightedHref());
-	}
-
 	async favorite() {
-		const url = this.highlightedHref();
-		await favoritePost(url);
+		await favoritePost(this.highlightedHref());
 	}
 
 	async download() {
-		const { doc, error } = await this.virtuallyOpen();
+		const { doc, error } = await fetchDocument(this.highlightedHref());
 		if (error) return console.error("Download failed:", error);
 		const { imgs, links } = extractImagesAndLinks(doc);
 		const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
