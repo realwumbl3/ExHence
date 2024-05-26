@@ -1,17 +1,12 @@
-import zyX, { html, css } from "./zyX-es6.js";
+import zyX, { html } from "./zyX-es6.js";
 
 import ExHence from "./main.js";
+import showOptions from "./options.js";
+import { CustomEHLogo } from "./header.js";
 
 import {
 	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
 } from "./zyXImage.js";
-
-import showOptions from "./options.js";
-import { CustomEHLogo } from "./header.js";
-
-// css`
-// 	@import url("${chrome.runtime.getURL("src/@css/view.css")}");
-// `
 
 export default class ExView {
 	/**

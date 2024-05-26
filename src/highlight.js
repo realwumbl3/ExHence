@@ -1,5 +1,6 @@
-import zyX, { html, css } from "./zyX-es6.js";
+import { html } from "./zyX-es6.js";
 
+import ExHence from "./main.js";
 import { extractImagesAndLinks, fetchDocument } from "./functions.js";
 import ExGallery from "./gallery.js";
 
@@ -10,8 +11,11 @@ export default class HighlightedThumb {
      */
     constructor(ExGallery) {
         this.ExGallery = ExGallery;
+        /** @type {ExHence} */
         this.ExHence = ExGallery.ExHence;
+
         this.target = null;
+
         html`
 			<div this=highlight class="thumbHighlight"></div>
 		`.bind(this)

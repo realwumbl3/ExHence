@@ -1,4 +1,4 @@
-import zyX, { html } from "./zyX-es6.js";
+import { html } from "./zyX-es6.js";
 
 import ExHentaiCtrl from "./main.js";
 
@@ -65,9 +65,8 @@ export default function () {
 	`
 		.appendTo(document.body)
 		.pass(({ menu, close, bottomout, sides, padding, defaultSelect, viewBehavior } = {}) => {
-			close.addEventListener("click", (e) => menu.remove());
 
-			console.log({ menu, close, bottomout, sides, padding, defaultSelect, viewBehavior })
+			close.addEventListener("click", (e) => menu.remove());
 
 			bottomout?.addEventListener("click", (e) => {
 				this.options.bttmOut =
@@ -75,20 +74,24 @@ export default function () {
 				this.saveOptions();
 				bottomout.textContent = bottomOutRepr(this.options.bttmOut);
 			});
+
 			sides?.addEventListener("click", (e) => {
 				this.options.pageNav = this.options.pageNav === "sides" ? "first/last" : "sides";
 				this.saveOptions();
 				sides.textContent = sidesRepr(this.options.pageNav);
 			});
+
 			padding?.addEventListener("change", (e) => {
 				this.options.autoScrollPadding = parseInt(padding.value);
 				this.saveOptions();
 			});
+
 			defaultSelect?.addEventListener("click", (e) => {
 				this.options.defaultSelect = this.options.defaultSelect === "center" ? "first" : "center";
 				this.saveOptions();
 				defaultSelect.textContent = defaultSelectRepr(this.options.defaultSelect);
 			});
+
 			viewBehavior?.addEventListener("click", (e) => {
 				this.options.viewBehavior = this.options.viewBehavior === "scrollZoom" ? "panZoom" : "scrollZoom";
 				this.saveOptions();
@@ -96,4 +99,5 @@ export default function () {
 			});
 
 		});
+
 }

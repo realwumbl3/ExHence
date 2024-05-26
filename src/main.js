@@ -1,15 +1,11 @@
-import zyX, { css, timeoutLimiter } from "./zyX-es6.js";
+import { timeoutLimiter } from "./zyX-es6.js";
 
-css`
-	/*@import url(${chrome.runtime.getURL("src/@css/css.css")}); */
-`;
-
-injectScript(chrome.runtime.getURL("src/overrides.js"));
-
-import { injectScript, pageType } from "./functions.js";
 import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
 import ExView from "./view.js";
+import { injectScript, pageType } from "./functions.js";
+
+injectScript(chrome.runtime.getURL("src/overrides.js"));
 
 export default class ExHence {
 	constructor() {

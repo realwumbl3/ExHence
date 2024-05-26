@@ -1,4 +1,4 @@
-import zyX, { html, css } from "./zyX-es6.js";
+import zyX, { html } from "./zyX-es6.js";
 
 import ExHentaiCtrl from "./main.js";
 import showOptions from "./options.js";

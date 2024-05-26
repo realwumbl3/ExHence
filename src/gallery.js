@@ -1,13 +1,12 @@
-import zyX, { html, css } from "./zyX-es6.js";
-
-// css`
-// 	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
-// `
-
-import { pageType, favoritePost } from "./functions.js";
+import ExHence from "./main.js";
 import HighlightedThumb from "./highlight.js";
+import { pageType, favoritePost } from "./functions.js";
 
 export default class ExGallery {
+	/**
+	 *	@param {ExHence} ExHence - ExHence instance
+	 *	@param {gallery} HTMLElement - Vanilla gallery element
+	 */
 	constructor(ExHence, gallery) {
 		this.ExHence = ExHence;
 		this.ExHence.log("[new ExGallery.contructor]", gallery);
