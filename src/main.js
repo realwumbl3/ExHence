@@ -165,12 +165,14 @@ export default class ExHence {
 		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused\
 		if (!this.keyTimeout(e.code) || this.cooledDownStart) return;
 		switch (e.code) {
-			case "KeyY":
-				throw new Error("Test error");
 			case "KeyE":
 			case "Enter":
+				if (e.shiftKey) {
+					if (this.pageType === "gallery") return this.gallery.highlight.download();
+					if (this.pageType === "view") return this.view.download();
+				}
 				if (this.gallery) return this.gallery.highlight.goToHref();
-				if (this.view) return this.view.downloadView();
+				break;
 			case "KeyQ":
 			case "Backspace":
 				return this.pressQ();

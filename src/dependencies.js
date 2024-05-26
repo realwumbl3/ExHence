@@ -15,6 +15,19 @@ export function firstInView(nodes) {
 	return false;
 }
 
+/**
+ * 
+ * @param {String} html
+ * @returns {links[String], imgs[String]}
+ */
+export function extractImagesAndLinks(html) {
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(html, 'text/html');
+	// Example: Extract all links from the page
+	const links = [...doc.querySelectorAll('a')].map(a => a.href);
+	const imgs = [...doc.querySelectorAll('img')].map(img => img.src);
+	return { links, imgs };
+}
 
 export class ZyXImage {
 	constructor({ src, mode = "img" } = {}) {

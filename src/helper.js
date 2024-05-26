@@ -17,16 +17,20 @@ export default function () {
 			</span>
 			<div class="Hotkeys">
 				<div class="Hotkey" title="[Gallery] Navigate posts/pages using these keys">
-					<div this="Action">Up/Down/Left/Right Navigation</div>
+					<div this="Action">Post Navigation</div>
 					<div class="Keys">WASD / Arrows</div>
 				</div>
 				<div class="Hotkey" title="[Gallery] Navigate to the first and last">
 					<div this="Action">Highlight First/Last</div>
 					<div class="Keys">Home / End</div>
 				</div>
-				<div class="Hotkey" title="[Gallery] View a post || [Post] Download the image">
-					<div this="Action">View Post/Download Image</div>
+				<div class="Hotkey" title="[Gallery] View a post">
+					<div this="Action">View Post</div>
 					<div class="Keys">E / Enter</div>
+				</div>
+				<div class="Hotkey" title="[Gallery] Download a post || [Post] Download the image">
+					<div this="Action">Download Post/Image</div>
+					<div class="Keys">Shift + E / Shift + Enter</div>
 				</div>
 				<div class="Hotkey" title="[Gallery/Post] Go back to the previous gallery page">
 					<div this="Action">Go Back</div>

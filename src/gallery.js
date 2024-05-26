@@ -1,11 +1,12 @@
 import zyX, { html, css } from "./zyX-es6.js";
 
-import { firstInView } from "./dependencies.js";
+import { firstInView, extractImagesAndLinks } from "./dependencies.js";
 import { pageType } from "./main.js";
 
 // css`
 // 	@import url("${chrome.runtime.getURL("src/@css/gallery.css")}");
 // `
+
 
 class HighlightedThumb {
 	constructor(ExGallery) {
@@ -15,6 +16,27 @@ class HighlightedThumb {
 		html`
 			<div this=highlight class="thumbHighlight"></div>
 		`.bind(this)
+	}
+
+	async virtuallyOpen() {
+		const task = await chrome.runtime.sendMessage({ func: "fetchPageContent", url: this.highlightedHref() })
+		if (task.error) return console.error("Failed to fetch page content:", task.error);
+		return extractImagesAndLinks(task.html);
+	}
+
+	async download() {
+		const { links, imgs } = await this.virtuallyOpen();
+		const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
+		if (download) {
+			chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: download });
+			return;
+		}
+		const fallback = imgs.find((img) => !img.startsWith("https://exhentai.org/img/"))
+		if (fallback) {
+			chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: fallback });
+			return;
+		}
+		console.error("No download link found.");
 	}
 
 	goToHref() {
