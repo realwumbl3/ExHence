@@ -182,7 +182,8 @@ export default class ExHence {
 				return this.goToLocation("/");
 			case "KeyF":
 				if (e.shiftKey) {
-					if (this.gallery) return this.gallery.favoriteHighlighted();
+					if (this.pageType === "gallery") return this.gallery.favoriteGallery();
+					if (this.pageType === "home") return this.gallery.favoriteHighlighted();
 				}
 				return this.goToLocation("/favorites.php");
 			case "KeyP":

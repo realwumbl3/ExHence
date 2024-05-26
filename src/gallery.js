@@ -261,4 +261,9 @@ export default class ExGallery {
 		this.ExHence.header.highlightFavoriteButton();
 	}
 
+	favoriteGallery() {
+		favoritePost(window.location.href);
+		this.ExHence.header.highlightFavoriteButton();
+	}
+
 }
