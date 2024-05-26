@@ -6,11 +6,13 @@ import showHelper from "./helper.js";
 
 export function CustomEHLogo() {
 	return html`
-		<span
-			class="EhLogo" href="https://exhentai.org"
+		<a
+			this=logo class="EhLogo"
 			style="background-image: url('https://exhentai.org/favicon.ico');"
-		></span>
-	`;
+		></a>
+	`.pass(({ logo }) => {
+		logo.addEventListener("click", () => window.location = window.location.origin);
+	});
 }
 
 function ButtonHotkeyIndicator(key, { label }) {
@@ -37,6 +39,7 @@ export default function (exheader) {
 
 	flattedNodes.forEach(node => {
 		node.innerHTML = node.textContent;
+		node.classList.add("custom");
 	})
 
 	const { watched, popular, torrents, favorites, uconfig, manage, mytags } =
@@ -50,9 +53,9 @@ export default function (exheader) {
 
 	html`
 		${CustomEHLogo}
-		<span class="ExButton" zyx-click="${_ => this.pressQ()}"><div>Back</div></span>
-		<span class="ExButton" zyx-click="${showOptions.bind(this)}"><div>Options</div></span>
-		<span class="ExButton" zyx-click="${showHelper.bind(this)}"><div>Keys</div></span>
+		<a class="ExButton" zyx-click="${_ => this.pressQ()}"><div>Back</div></a>
+		<a class="ExButton" zyx-click="${showOptions.bind(this)}"><div>Options</div></a>
+		<a class="ExButton" zyx-click="${showHelper.bind(this)}"><div>Keys</div></a>
 	`.prependTo(exheader);
 
 	html`

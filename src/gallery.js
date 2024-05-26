@@ -47,6 +47,9 @@ class HighlightedThumb {
 		return this.target.querySelector("a").href;
 	}
 
+	/**	
+	* @param {HTMLElement} node
+	 */
 	select(node) {
 		this.target?.classList.remove("highlighted");
 		this.target = node;

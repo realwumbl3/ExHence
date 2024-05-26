@@ -25,7 +25,7 @@ body #nb {
         margin-right: 0;
     }
 
-    &>a {
+    &>a.custom {
         display: flex;
         align-items: center;
         padding: 0 .4em;
@@ -99,6 +99,11 @@ body #nb:hover span.ExButtonHotkeyIndicator {
     background-position: center;
     background-size: contain;
     image-rendering: pixelated;
+    cursor: pointer;
+
+    &:hover {
+        filter: brightness(1.2);
+    }
 }
 
 /* The small black window over the header */
