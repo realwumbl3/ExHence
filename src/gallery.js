@@ -43,18 +43,19 @@ export default class ExGallery {
 		}
 
 		gallery.addEventListener("click", (e) => {
-			let target = pointerEventPathContainsMatching(e, ".gdtl,.gl1t,tr:has(.gl1e,.gl2e)")
-			if (target) {
-				console.log("click on thumbnail", { target });
+			const thumbnail = pointerEventPathContainsMatching(e, ".gdtl,.gl1t,tr:has(.gl1e,.gl2e)")
+			if (thumbnail) {
 				e.preventDefault();
-				this.selectThumbnail(target);
+				const targeting_a = pointerEventPathContainsMatching(e, "a");
+				if (!targeting_a) return;
+				const hrefType = pageType(targeting_a.href);
+				if (hrefType !== "gallery" && hrefType !== "view") return
+				this.selectThumbnail(thumbnail);
 				zyX(this).delay("click", 100, () => {
 					window.location = this.highlight.highlightedHref();
 				});
 			}
 		}, { capture: true });
-
-
 	}
 
 	getCenterish() {

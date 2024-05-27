@@ -217,6 +217,7 @@ export const exHence = new ExHence();
 	 * @returns {String} pageType
  */
 export function pageType(url) {
+	if (url.includes(window.location.origin)) url = url.split(window.location.origin)[1];
 	if (url.startsWith("/g/")) return "gallery";
 	if (url.startsWith("/s/")) return "view";
 	if (url.startsWith("/")) return "home";
