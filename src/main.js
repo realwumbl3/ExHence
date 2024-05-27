@@ -3,7 +3,7 @@ import { timeoutLimiter } from "./zyX-es6.js";
 import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
 import ExView from "./view.js";
-import { injectScript, pageType } from "./functions.js";
+import { injectScript } from "./functions.js";
 
 injectScript(chrome.runtime.getURL("src/overrides.js"));
 
@@ -209,3 +209,42 @@ export default class ExHence {
 }
 
 export const exHence = new ExHence();
+
+// Determine page type by url path
+/**
+	 *
+	 * @param {String} url
+	 * @returns {String} pageType
+ */
+export function pageType(url) {
+	if (url.startsWith("/g/")) return "gallery";
+	if (url.startsWith("/s/")) return "view";
+	if (url.startsWith("/")) return "home";
+	return "unknown";
+}
+
+/** Favorite a gallery by its url
+ * @param {*} url 
+ */
+export async function favoritePost(url) {
+	const [gid, t] = url.split("/").slice(-3);
+	const formUrl = `https://exhentai.org/gallerypopups.php?gid=${gid}&t=${t}&act=addfav`;
+	const formData = new FormData();
+	formData.append("favcat", 0);
+	formData.append("favnote", "");
+	formData.append("apply", "Apply Changes");
+	formData.append("update", 1);
+	const response = await fetch(formUrl, {
+		method: "POST",
+		credentials: "include",
+		body: formData,
+	});
+	if (response.ok) {
+		console.log("Post favorited.");
+	}
+	if (!response.ok) {
+		console.error("Failed to favorite post.", { response });
+	}
+	return response;
+}
+

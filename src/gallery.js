@@ -1,6 +1,7 @@
-import ExHence from "./main.js";
+import zyX, { pointerEventPathContainsMatching } from "./zyX-es6.js";
+
+import ExHence, { pageType, favoritePost } from "./main.js";
 import HighlightedThumb from "./highlight.js";
-import { pageType, favoritePost } from "./functions.js";
 
 export default class ExGallery {
 	/**
@@ -40,6 +41,20 @@ export default class ExGallery {
 			let initiallySelected = this.ExHence.options.defaultSelect === "center" ? this.getCenterish() : 0;
 			this.selectThumbnail(initiallySelected);
 		}
+
+		gallery.addEventListener("click", (e) => {
+			let target = pointerEventPathContainsMatching(e, ".gdtl,.gl1t,tr:has(.gl1e,.gl2e)")
+			if (target) {
+				console.log("click on thumbnail", { target });
+				e.preventDefault();
+				this.selectThumbnail(target);
+				zyX(this).delay("click", 100, () => {
+					window.location = this.highlight.highlightedHref();
+				});
+			}
+		}, { capture: true });
+
+
 	}
 
 	getCenterish() {

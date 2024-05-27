@@ -1,6 +1,6 @@
 import { html } from "./zyX-es6.js";
 
-import ExHence from "./main.js";
+import ExHence, { favoritePost } from "./main.js";
 import { extractImagesAndLinks, fetchDocument } from "./functions.js";
 import ExGallery from "./gallery.js";
 
@@ -26,8 +26,7 @@ export default class HighlightedThumb {
     }
 
     async download() {
-        const { doc, error } = await fetchDocument(this.highlightedHref());
-        if (error) return console.error("Download failed:", error);
+        const doc = await fetchDocument(this.highlightedHref());
         const { imgs, links } = extractImagesAndLinks(doc);
         const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
         if (download) {
