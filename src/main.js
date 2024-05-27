@@ -50,7 +50,7 @@ export default class ExHence {
 	}
 
 	log(...args) {
-		this.verbose && console.log("[ExHentaiCTRL] |", ...args);
+		this.log("[ExHentaiCTRL] |", ...args);
 	}
 
 	logSelf() {
@@ -200,7 +200,7 @@ export default class ExHence {
 				this.state.galleryHistory.indexOf(previous)
 			);
 			this.saveState();
-			this.verbose && console.log("going to", previous);
+			this.log("going to", previous);
 			if (this.coolDownPause(1000)) return;
 			window.location = previous.path;
 			return;
