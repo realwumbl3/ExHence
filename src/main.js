@@ -212,9 +212,9 @@ export const exHence = new ExHence();
 
 // Determine page type by url path
 /**
-	 *
-	 * @param {String} url
-	 * @returns {String} pageType
+ *
+ * @param {String} url
+ * @returns {String} pageType
  */
 export function pageType(url) {
 	if (url.includes(window.location.origin)) url = url.split(window.location.origin)[1];
