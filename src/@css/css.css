@@ -189,6 +189,13 @@ body #nb:hover span.ExButtonHotkeyIndicator {
             }
         }
 
+
+
+    }
+
+    &.About {
+        display: grid;
+        justify-items: center;
     }
 }
 

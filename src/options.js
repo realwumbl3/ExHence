@@ -60,6 +60,12 @@ export default function () {
 					<div this="viewBehavior" class="Toggle">${viewBehaviorRepr(this.options.viewBehavior)}</div>
 				</div>
 
+
+			</div>
+			<div class="About">
+				<img src="${chrome.runtime.getURL("src/@assets/icon.128.png")}"/>
+				<div>ExHence</div>
+				<a href="https://github.com/realwumbl3/ExHence">GitHub</a>
 			</div>
 		</div>
 	`
