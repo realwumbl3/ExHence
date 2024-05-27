@@ -65,7 +65,7 @@ export default class ExHeader {
 			.bind(this)
 			.pass(({ cleartab }) => {
 				cleartab.addEventListener("click", () => {
-					cleartab.textContent = "CTRL History Cleared!";
+					cleartab.textContent = "ExHence History Cleared!";
 					setTimeout(() => (cleartab.textContent = "Clear History."), 1000);
 					this.ExHence.clearState();
 				});
