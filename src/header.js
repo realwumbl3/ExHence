@@ -48,8 +48,6 @@ export default class ExHeader {
 
 		const { watched, popular, favorites, torrents, uconfig, manage, mytags, ...rest } = this.vanillaButtons;
 
-		console.log({ rest })
-
 		ButtonHotkeyIndicator(favorites, { label: "F" });
 		ButtonHotkeyIndicator(watched, { label: "G" });
 		ButtonHotkeyIndicator(popular, { label: "P" });
