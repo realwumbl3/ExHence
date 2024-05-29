@@ -239,7 +239,7 @@ export function pageType(url) {
  */
 export async function favoritePost(url) {
 	const [gid, t] = url.split("/").slice(-3);
-	const formUrl = `https://exhentai.org/gallerypopups.php?gid=${gid}&t=${t}&act=addfav`;
+	const formUrl = `${window.location.origin}/gallerypopups.php?gid=${gid}&t=${t}&act=addfav`;
 	const formData = new FormData();
 	formData.append("favcat", 0);
 	formData.append("favnote", "");

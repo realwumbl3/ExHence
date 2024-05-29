@@ -8,7 +8,7 @@ export function CustomEHLogo() {
 	return html`
 		<a
 			this=logo class="EhLogo"
-			style="background-image: url('https://exhentai.org/favicon.ico');"
+			style="background-image: url('https://e-hentai.org/favicon.ico');"
 		></a>
 	`.pass(({ logo }) => {
 		logo.addEventListener("click", () => window.location = window.location.origin);
@@ -46,7 +46,9 @@ export default class ExHeader {
 
 		this.vanillaButtons = Object.fromEntries(flattedNodes.map(e => [e.href.split("/").pop().split(".")[0], e]));
 
-		const { watched, popular, favorites, torrents, uconfig, manage, mytags } = this.vanillaButtons;
+		const { watched, popular, favorites, torrents, uconfig, manage, mytags, ...rest } = this.vanillaButtons;
+
+		console.log({ rest })
 
 		ButtonHotkeyIndicator(favorites, { label: "F" });
 		ButtonHotkeyIndicator(watched, { label: "G" });
@@ -59,7 +61,7 @@ export default class ExHeader {
 			<a class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}"><div>Back</div></a>
 			<a class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}"><div>Options</div></a>
 			<a class="ExButton" zyx-click="${showHelper.bind(this.ExHence)}"><div>Keys</div></a>
-			${[watched, popular, favorites, torrents, uconfig, manage, mytags]}
+			${[watched, popular, favorites, torrents, uconfig, manage, mytags, ...Object.values(rest)]}
 			<a this="cleartab" class="nbw custom">Clear History.</a>
 			<span this=right_container class="Right"></span>
 		`

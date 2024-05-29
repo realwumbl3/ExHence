@@ -18,6 +18,7 @@ body .ido {
 /* ExGallery */
 .gl1t,
 .gdtl,
+.gdtm, /* for ehentai.org only ???? */
 .glte>tbody>tr {
     transition: all 200ms ease;
     transform: scale(.98);

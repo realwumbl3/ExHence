@@ -131,7 +131,7 @@ export default class ExView {
 		const downloadButton = this.container
 			.querySelector("#i6")
 			.lastChild.querySelector("a").href;
-		if (downloadButton.startsWith("https://exhentai.org/fullimg/")) return downloadButton;
+		if (downloadButton.startsWith(`${window.location.origin}/fullimg/`)) return downloadButton;
 		const viewImage = this.container.querySelector("#img").src;
 		if (viewImage) return viewImage;
 		this.ExHence.logging.error("[ExView.getViewDownload], No download link found.");

@@ -31,12 +31,12 @@ export default class HighlightedThumb {
     async download() {
         const doc = await fetchDocument(this.highlightedHref());
         const { imgs, links } = extractImagesAndLinks(doc);
-        const download = links.find((url) => url.startsWith("https://exhentai.org/fullimg/"))
+        const download = links.find((url) => url.startsWith(`${window.location.origin}/fullimg/`))
         if (download) {
             chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: download });
             return;
         }
-        const fallback = imgs.find((img) => !img.startsWith("https://exhentai.org/img/"))
+        const fallback = imgs.find((img) => !img.startsWith(`${window.location.origin}/img/`))
         if (fallback) {
             chrome.runtime.sendMessage({ func: "chrome.downloads.download", url: fallback });
             return;

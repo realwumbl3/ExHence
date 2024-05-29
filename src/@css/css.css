@@ -4,7 +4,7 @@ body {
 }
 
 /* Vanilla Header */
-body #nb {
+html body #nb {
     backdrop-filter: blur(2em) brightness(70%);
     display: flex;
     z-index: 100;
