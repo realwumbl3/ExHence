@@ -1,4 +1,5 @@
 import zyX, { html } from "./zyX-es6.js";
+import { observe } from "./functions.js";
 
 import ExHence from "./main.js";
 import showOptions from "./options.js";
@@ -73,7 +74,14 @@ export default class ExHeader {
 				});
 			})
 			.appendTo(exheader);
+
 		exheader.style.opacity = 1;
+
+		// Observe the header for a later attached "Log out" button (Sad Panda extension).
+		observe(exheader, `a[href="#"]`, (node) => {
+			node.classList.add("custom");
+			this.cleartab.after(node);
+		}, true);
 	}
 
 	highlightFavoriteButton() {
