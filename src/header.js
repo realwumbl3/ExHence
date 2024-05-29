@@ -7,10 +7,7 @@ import showHelper from "./helper.js";
 
 export function CustomEHLogo() {
 	return html`
-		<a
-			this=logo class="EhLogo"
-			style="background-image: url('/favicon.ico');"
-		></a>
+		<a this=logo class="EhLogo" style="background-image: url('/favicon.ico');"></a>
 	`.pass(({ logo }) => {
 		logo.addEventListener("click", () => window.location = window.location.origin);
 	});

@@ -1,4 +1,4 @@
-/* Hide vanilla EHentai viewer */
+/* Hide vanilla E-hentai viewer */
 #i1 {
     display: none;
 }
@@ -42,9 +42,6 @@
             align-items: stretch;
             height: 100%;
 
-            &>span.Range {
-                align-self: center;
-            }
         }
 
         &>.ExViewHeaderRight {
@@ -53,6 +50,10 @@
             display: grid;
             align-items: stretch;
             height: 100%;
+
+            &>span.Range {
+                align-self: center;
+            }
 
             &>.Info {
                 overflow: hidden;

@@ -5,7 +5,7 @@ import showOptions from "./options.js";
 import { CustomEHLogo } from "./header.js";
 
 import {
-	ZyXImage, ZoomAndPan, SHIFT_PAN, SHIFT_ZOOM
+	ZyXImage, ZoomAndPan, PAN, ZOOM
 } from "./zyXImage.js";
 
 export default class ExView {
@@ -33,21 +33,19 @@ export default class ExView {
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
 						${CustomEHLogo}
-						<span class="Spacer"></span>
-						<span class="ExButton" zyx-click="${this.download.bind(this)}">Download</span>
-						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
-						<span class="ExButton" zyx-click="${_ => this.links.prev.click()}">&lt</span>
-						<span this=range class="Range" zyx-uplate>{x{--}} / {of{--}}</span>
-						<span class="ExButton" zyx-click="${_ => this.links.next.click()}">&gt</span>
-						<span class="ExButton" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
-						<span class="Spacer"></span>
 						<span class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}">Options</span>
+						<span class="ExButton" zyx-click="${this.download.bind(this)}">Download</span>
 					</div>
 					<div class="ExViewHeaderRight">
 						<div this=info class=Info zyx-uplate>
 							<b>Post</b> ⠕ {post{}} ⠪</br >
 							<b>Page</b> ⠕ {page{}} ⠪
 						</div>
+						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
+						<span class="ExButton" zyx-click="${_ => this.links.prev.click()}">&lt</span>
+						<span this=range class="Range" zyx-uplate>{x{--}} / {of{--}}</span>
+						<span class="ExButton" zyx-click="${_ => this.links.next.click()}">&gt</span>
+						<span class="ExButton" zyx-click="${_ => this.links.last.click()}">&gt&gt</span>
 						<span class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 					</div>
 				</div>
@@ -63,11 +61,8 @@ export default class ExView {
 
 		this.panZoom = new ZoomAndPan(this.zyXImg.element, {
 			wheelDeterminer: (e) => {
-				if (this.ExHence.options.viewBehavior === "scrollZoom") {
-					return e.shiftKey ? SHIFT_PAN : SHIFT_ZOOM;
-				} else {
-					return e.shiftKey ? SHIFT_ZOOM : SHIFT_PAN;
-				}
+				if (this.ExHence.options.viewBehavior === "scrollZoom") return e.shiftKey ? PAN : ZOOM;
+				else return e.shiftKey ? ZOOM : PAN;
 			}
 		})
 
@@ -111,16 +106,16 @@ export default class ExView {
 			viewChildren.map((_) => [_.id || _.tagName.toLowerCase(), _])
 		);
 		const postTitle = h1.textContent;
-		const [filename, resolution, size] = i4.firstChild.textContent.split(" :: ");
+		const [fileName, resolution, size] = i4.firstChild.textContent.split(" :: ");
+		this.info.flash({ post: postTitle, page: fileName });
+		this.info.title = `${resolution} ⠪ ⠕ ${size}`;
+
 		const navigator = i4.querySelector(".sn")
 		const [first, prev, range, next, last] = [...navigator.children];
-		const [current, total] = range.textContent.split(" / ").map(_ => parseInt(_));
-
 		this.links = { first, prev, next, last }
 
-		this.range.flash({ x: current, of: total });
-		this.info.flash({ post: postTitle, page: filename });
-		this.info.title = `${resolution} ⠪ ⠕ ${size}`;
+		const [x, of] = range.textContent.split(" / ").map(_ => parseInt(_));
+		this.range.flash({ x, of });
 
 		this.panZoom.resetTransform();
 		this.zyXImg.src = this.getImgSrc();

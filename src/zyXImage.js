@@ -59,12 +59,12 @@ export class ZyXImage {
     }
 }
 
-export const SHIFT_PAN = 0;
-export const SHIFT_ZOOM = 1;
+export const PAN = 0;
+export const ZOOM = 1;
 
 export class ZoomAndPan {
     constructor(element, {
-        wheelDeterminer = (e) => (e.shiftKey ? SHIFT_ZOOM : SHIFT_PAN),
+        wheelDeterminer = (e) => (e.shiftKey ? ZOOM : PAN),
     } = {}) {
         this.element = element;
         this.animating = false;
@@ -229,7 +229,7 @@ export class ZoomAndPan {
     wheel(e) {
         e.preventDefault();
 
-        if (this.wheelDeterminer(e) == SHIFT_PAN) return this.pan(e);
+        if (this.wheelDeterminer(e) == PAN) return this.pan(e);
 
         if (e.deltaY < 0) {
             const [screenXpercent, screenYpercent] = cursorPercentPosition(
