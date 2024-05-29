@@ -5,6 +5,11 @@ import { extractImagesAndLinks, fetchDocument } from "./functions.js";
 import ExGallery from "./gallery.js";
 
 export default class HighlightedThumb {
+    /** The highlighted thumbnail element.
+        * @type {HTMLElement}
+     */
+    #target = null;
+
     /**
      * 
      * @param {ExGallery} ExGallery 
@@ -13,8 +18,6 @@ export default class HighlightedThumb {
         this.ExGallery = ExGallery;
         /** @type {ExHence} */
         this.ExHence = ExGallery.ExHence;
-
-        this.target = null;
 
         html`
 			<div this=highlight class="thumbHighlight"></div>
@@ -46,25 +49,25 @@ export default class HighlightedThumb {
     }
 
     highlightedHref() {
-        return this.target.querySelector("a").href;
+        return this.#target.querySelector("a").href;
     }
 
     /**	
     * @param {HTMLElement} node
      */
     select(node) {
-        this.target?.classList.remove("highlighted");
-        this.target = node;
-        this.target.classList.add("highlighted");
+        this.#target?.classList.remove("highlighted");
+        this.#target = node;
+        this.#target.classList.add("highlighted");
         node.appendChild(this.highlight);
     }
 
     indexInParent() {
-        return this.ExGallery.getGalleryNodes().indexOf(this.target);
+        return this.ExGallery.getGalleryNodes().indexOf(this.#target);
     }
 
     boundsCheck() {
-        const nodeBounds = this.target.getBoundingClientRect();
+        const nodeBounds = this.#target.getBoundingClientRect();
         const padding = this.ExHence.options.autoScrollPadding;
         const headerPadding = this.ExHence.vanillaHeader.clientHeight;
         switch (true) {

@@ -29,6 +29,15 @@ body .ido {
     width: 100%;
 }
 
+body.blurImages .gdtl {
+    overflow: hidden;
+}
+
+body.blurImages .gl3t>a>img,
+body.blurImages .gdtl>a>img {
+    filter: blur(3em);
+}
+
 .gl1t.highlighted,
 .gdtl.highlighted,
 .glte>tbody>tr.highlighted {

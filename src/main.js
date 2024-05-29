@@ -1,15 +1,24 @@
-import { timeoutLimiter } from "./zyX-es6.js";
+import { css, timeoutLimiter } from "./zyX-es6.js";
+
+css`
+	@import url(${chrome.runtime.getURL("src/@css/css.css")});
+`;
 
 import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
 import ExView from "./view.js";
 import { injectScript } from "./functions.js";
 
+import { Logging } from "./logging.js";
+
 injectScript(chrome.runtime.getURL("src/overrides.js"));
 
 export default class ExHence {
 	constructor() {
-		this.verbose = false;
+
+		this.logging = new Logging()
+
+		this.verbose = true;
 
 		this.options = {
 			autoScrollPadding: 250,
@@ -37,24 +46,21 @@ export default class ExHence {
 		window.addEventListener("keydown", this.keydown.bind(this));
 
 		this.asynconstructor();
+
+		this.logging.assert(this instanceof ExHence, "This assetion should never fail.");
 	}
 
 	async asynconstructor() {
 		await this.loadTab();
-
 		const gallery = document.querySelector("#gdt, .itg.gld, .itg.glte");
 		if (gallery) this.gallery = new ExGallery(this, gallery);
-
 		const view = document.querySelector(".sni");
 		if (view) this.view = new ExView(this, view);
 	}
 
-	log(...args) {
-		this.log("[ExHentaiCTRL] |", ...args);
-	}
 
 	logSelf() {
-		this.log("this", this);
+		this.logging.info("this", this);
 	}
 
 	storePageInHistory() {
@@ -86,12 +92,12 @@ export default class ExHence {
 		return new Promise((res, rej) => {
 			chrome.storage.local.get(["ExHentaiCTRL"], async (result) => {
 				if (!result.hasOwnProperty("ExHentaiCTRL")) {
-					this.log("[ExHentaiCTRL] | No options set yet.");
+					this.logging.debug("[ExHentaiCTRL] | No options set yet.");
 					this.saveOptions();
 					return res(true);
 				}
 				this.options = result["ExHentaiCTRL"];
-				this.log("[ExHentaiCTRL] | loaded options ", this.options);
+				this.logging.debug("[ExHentaiCTRL] | loaded options ", this.options);
 				res(true);
 			});
 		});
@@ -99,7 +105,7 @@ export default class ExHence {
 
 	saveOptions() {
 		chrome.storage.local.set({ ExHentaiCTRL: this.options }, () => {
-			this.log("[ExHentaiCTRL] | saved options ", this.options);
+			this.logging.debug("[ExHentaiCTRL] | saved options ", this.options);
 		});
 	}
 
@@ -122,11 +128,11 @@ export default class ExHence {
 			const stateId = `${this.thisTabID}-state`;
 			chrome.storage.local.get([stateId], (result) => {
 				if (!result[stateId]) {
-					this.log("No init state set yet.");
+					this.logging.debug("No init state set yet.");
 					return res(true);
 				}
 				this.state = result[stateId];
-				this.log("[ExHentaiCTRL] | restored state ", this.state);
+				this.logging.debug("[ExHentaiCTRL] | restored state ", this.state);
 				res(true);
 			});
 		});
@@ -135,7 +141,7 @@ export default class ExHence {
 	saveState() {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
-			this.log("[ExHentaiCTRL] | saved state ", this.state);
+			this.logging.debug("[ExHentaiCTRL] | saved state ", this.state);
 		});
 	}
 
@@ -148,6 +154,11 @@ export default class ExHence {
 		if (document.body.querySelector("input:focus, textarea:focus")) return; // ignore if any input feild is focused\
 		if (!this.keyTimeout(e.code) || this.cooledDownStart) return;
 		switch (e.code) {
+			case "KeyZ":
+				this.options.blurThumbnails = !this.options.blurThumbnails;
+				this.saveOptions();
+				document.body.classList.toggle("blurImages", this.options.blurThumbnails);
+				break;
 			case "KeyE":
 			case "Enter":
 				if (e.shiftKey) {
@@ -200,7 +211,7 @@ export default class ExHence {
 				this.state.galleryHistory.indexOf(previous)
 			);
 			this.saveState();
-			this.log("going to", previous);
+			this.logging.debug("going to", previous);
 			if (this.coolDownPause(1000)) return;
 			window.location = previous.path;
 			return;

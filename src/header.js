@@ -26,7 +26,7 @@ export default class ExHeader {
 	 */
 	constructor(ExHence, exheader) {
 		this.ExHence = ExHence;
-		this.ExHence.log("[ExHentaiCTRL] | Extending vanilla header...");
+		this.ExHence.logging.info("[ExHentaiCTRL] | Extending vanilla header...");
 
 		const headerNodes = [...exheader.childNodes]
 		const frontpage = headerNodes[0]
@@ -61,6 +61,7 @@ export default class ExHeader {
 			<a class="ExButton" zyx-click="${showHelper.bind(this.ExHence)}"><div>Keys</div></a>
 			${[watched, popular, favorites, torrents, uconfig, manage, mytags]}
 			<a this="cleartab" class="nbw custom">Clear History.</a>
+			<span this=right_container class="Right"></span>
 		`
 			.bind(this)
 			.pass(({ cleartab }) => {
@@ -71,7 +72,7 @@ export default class ExHeader {
 				});
 			})
 			.appendTo(exheader);
-
+		exheader.style.opacity = 1;
 	}
 
 	highlightFavoriteButton() {

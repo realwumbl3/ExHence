@@ -15,10 +15,12 @@
         "*://exhentai.org/*"
       ],
       "css": [
-        "src/@css/css.css",
         "src/@css/view.css",
         "src/@css/ximage.css",
         "src/@css/gallery.css"
+      ],
+      "cssn't": [
+        "src/@css/css.css"
       ],
       "js": [
         "main.js"
