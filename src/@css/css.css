@@ -154,7 +154,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* The small black window over the header */
-.EHentaiCTRL-Window {
+.ExHence-Window {
     backdrop-filter: blur(1em);
     gap: 1em;
     grid-auto-flow: row;
@@ -200,12 +200,19 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* Options */
-.EHentaiCTRL-Options {
+.ExHence-Options {
+    color: white;
+
+    & a {
+        color: white;
+    }
+
     &>.Options {
         gap: .3em;
         grid-auto-flow: row;
         display: grid;
         user-select: none;
+
 
         &>.Opt {
             grid-auto-flow: column;
@@ -239,7 +246,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* Hotkeys */
-.EHentaiCTRL-Help {
+.ExHence-Help {
     &>.Hotkeys {
         gap: .3em;
         grid-auto-flow: row;

@@ -93,22 +93,22 @@ export default class ExHence {
 
 	async loadOptions() {
 		return new Promise((res, rej) => {
-			chrome.storage.local.get(["EHentaiCTRL"], async (result) => {
-				if (!result.hasOwnProperty("EHentaiCTRL")) {
-					this.logging.debug("[EHentaiCTRL] | No options set yet.");
+			chrome.storage.local.get(["ExHence"], async (result) => {
+				if (!result.hasOwnProperty("ExHence")) {
+					this.logging.debug("[ExHence] | No options set yet.");
 					this.saveOptions();
 					return res(true);
 				}
-				this.options = result["EHentaiCTRL"];
-				this.logging.debug("[EHentaiCTRL] | loaded options ", this.options);
+				this.options = result["ExHence"];
+				this.logging.debug("[ExHence] | loaded options ", this.options);
 				res(true);
 			});
 		});
 	}
 
 	saveOptions() {
-		chrome.storage.local.set({ EHentaiCTRL: this.options }, () => {
-			this.logging.debug("[EHentaiCTRL] | saved options ", this.options);
+		chrome.storage.local.set({ ExHence: this.options }, () => {
+			this.logging.debug("[ExHence] | saved options ", this.options);
 		});
 	}
 
@@ -117,7 +117,7 @@ export default class ExHence {
 			chrome.runtime.sendMessage("getTab", (response) => {
 				if (!response.hasOwnProperty("id"))
 					return console.error(
-						"[EHentaiCTRL] | No tab id response from background worker."
+						"[ExHence] | No tab id response from background worker."
 					);
 				res(response.id);
 			});
@@ -135,7 +135,7 @@ export default class ExHence {
 					return res(true);
 				}
 				this.state = result[stateId];
-				this.logging.debug("[EHentaiCTRL] | restored state ", this.state);
+				this.logging.debug("[ExHence] | restored state ", this.state);
 				res(true);
 			});
 		});
@@ -144,7 +144,7 @@ export default class ExHence {
 	saveState() {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
-			this.logging.debug("[EHentaiCTRL] | saved state ", this.state);
+			this.logging.debug("[ExHence] | saved state ", this.state);
 		});
 	}
 

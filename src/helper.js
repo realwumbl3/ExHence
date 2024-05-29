@@ -1,16 +1,16 @@
 import zyX, { html } from "./zyX-es6.js";
 
-import EHentaiCtrl from "./main.js";
+import ExHence from "./main.js";
 
 /**
- * @this {EHentaiCtrl}
+ * @this {ExHence}
  */
 export default function () {
-	const alreadyOpened = [...document.body.querySelectorAll(".EHentaiCTRL-Help")];
+	const alreadyOpened = [...document.body.querySelectorAll(".ExHence-Help")];
 	if (alreadyOpened.length) return alreadyOpened.forEach((_) => _.remove());
 
 	html`
-		<div this="menu" class="EHentaiCTRL-Window EHentaiCTRL-Help">
+		<div this="menu" class="ExHence-Window ExHence-Help">
 			<span class="Header">
 				<div class="Title">ExHence Hotkeys</div>
 				<div this="close" class="Close">X</div>

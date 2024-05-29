@@ -1,6 +1,6 @@
 import zyX, { html } from "./zyX-es6.js";
 
-import EHentaiCtrl from "./main.js";
+import ExHence from "./main.js";
 import showOptions from "./options.js";
 import showHelper from "./helper.js";
 
@@ -21,12 +21,12 @@ function ButtonHotkeyIndicator(key, { label }) {
 
 export default class ExHeader {
 	/**
-	 * @param {EHentaiCtrl} ExHence
+	 * @param {ExHence} ExHence
 	 * @param {HTMLElement} exheader
 	 */
 	constructor(ExHence, exheader) {
 		this.ExHence = ExHence;
-		this.ExHence.logging.info("[EHentaiCTRL] | Extending vanilla header...");
+		this.ExHence.logging.info("[ExHence] | Extending vanilla header...");
 
 		const headerNodes = [...exheader.childNodes]
 		const frontpage = headerNodes[0]
