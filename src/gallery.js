@@ -41,7 +41,7 @@ export default class ExGallery {
 				<a this=next zyx-click="${_ => this.navigateTo("next")}"><div>&gt</div></a>
 				<a this=last zyx-click="${_ => this.navigateTo("last")}"><div>&gt&gt</div></a>
 			</div>
-		`.appendTo(this.ExHence.header.right_container);
+		`.prependTo(this.ExHence.header.right_container);
 
 		this.navUrls = {}; // { first: "", prev: "", next: "", last: "" }
 		this.readNavBar();

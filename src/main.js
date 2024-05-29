@@ -2,6 +2,8 @@ import { css, timeoutLimiter } from "./zyX-es6.js";
 
 css`
 	@import url(${chrome.runtime.getURL("src/@css/css.css")});
+	@import url(${chrome.runtime.getURL("src/@css/gallery.css")});
+	@import url(${chrome.runtime.getURL("src/@css/view.css")});
 `;
 
 import ExtendHeader from "./header.js";
@@ -145,6 +147,8 @@ export default class ExHence {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
 			this.logging.debug("[ExHence] | saved state ", this.state);
+			this.logging.galleryug("[ExHence] | saved state ", this.state);
+			this.logging.viewg("[ExHence] | saved state ", this.state);
 		});
 	}
 

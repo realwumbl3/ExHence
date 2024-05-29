@@ -33,7 +33,6 @@ export default class ExView {
 				<div this=header class="ExViewHeader Visible">
 					<div class=ExViewHeaderLeft>
 						${CustomEHLogo}
-						<span class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 						<span class="Spacer"></span>
 						<span class="ExButton" zyx-click="${this.download.bind(this)}">Download</span>
 						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
@@ -44,10 +43,12 @@ export default class ExView {
 						<span class="Spacer"></span>
 						<span class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}">Options</span>
 					</div>
-					<span class="Spacer"></span>
-					<div this=info class=Info zyx-uplate>
-						<b>Post</b> ⠕ {post{}} ⠪</br >
-						<b>Page</b> ⠕ {page{}} ⠪
+					<div class="ExViewHeaderRight">
+						<div this=info class=Info zyx-uplate>
+							<b>Post</b> ⠕ {post{}} ⠪</br >
+							<b>Page</b> ⠕ {page{}} ⠪
+						</div>
+						<span class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}">Back</span>
 					</div>
 				</div>
 				<div class=ImageContainer>

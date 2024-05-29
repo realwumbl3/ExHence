@@ -21,7 +21,7 @@
         backdrop-filter: blur(1em) brightness(0.5);
         gap: .5em;
         grid-auto-flow: column;
-        grid-template-columns: max-content auto 1fr;
+        justify-content: space-between;
         display: grid;
         z-index: 10;
         position: absolute;
@@ -47,12 +47,21 @@
             }
         }
 
-        &>.Info {
-            overflow: hidden;
-            text-align: right;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        &>.ExViewHeaderRight {
+            gap: .5em;
+            grid-auto-flow: column;
+            display: grid;
+            align-items: stretch;
+            height: 100%;
+
+            &>.Info {
+                overflow: hidden;
+                text-align: right;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
         }
+
 
         &.Visible {
             transform: translateY(0);

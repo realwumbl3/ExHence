@@ -9,7 +9,7 @@ export function CustomEHLogo() {
 	return html`
 		<a
 			this=logo class="EhLogo"
-			style="background-image: url('./favicon.ico');"
+			style="background-image: url('/favicon.ico');"
 		></a>
 	`.pass(({ logo }) => {
 		logo.addEventListener("click", () => window.location = window.location.origin);
@@ -80,6 +80,7 @@ export default class ExHeader {
 		// Observe the header for a later attached "Log out" button (Sad Panda extension).
 		observe(exheader, `a[href="#"]`, (node) => {
 			node.classList.add("custom");
+			node.parentNode.remove();
 			this.cleartab.after(node);
 		}, true);
 	}
