@@ -1,6 +1,6 @@
 # SadPanda
 
-Chromium extension to access ExHentai
+Chromium extension to access EHentai
 
 ## Usage
 

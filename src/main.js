@@ -16,6 +16,9 @@ injectScript(chrome.runtime.getURL("src/overrides.js"));
 export default class ExHence {
 	constructor() {
 
+		this.eh = window.location.origin.includes("e-hentai") ? "e-" : "ex";
+		document.body.classList.add(`is-${this.eh}`);
+
 		this.logging = new Logging()
 
 		this.verbose = true;
@@ -90,22 +93,22 @@ export default class ExHence {
 
 	async loadOptions() {
 		return new Promise((res, rej) => {
-			chrome.storage.local.get(["ExHentaiCTRL"], async (result) => {
-				if (!result.hasOwnProperty("ExHentaiCTRL")) {
-					this.logging.debug("[ExHentaiCTRL] | No options set yet.");
+			chrome.storage.local.get(["EHentaiCTRL"], async (result) => {
+				if (!result.hasOwnProperty("EHentaiCTRL")) {
+					this.logging.debug("[EHentaiCTRL] | No options set yet.");
 					this.saveOptions();
 					return res(true);
 				}
-				this.options = result["ExHentaiCTRL"];
-				this.logging.debug("[ExHentaiCTRL] | loaded options ", this.options);
+				this.options = result["EHentaiCTRL"];
+				this.logging.debug("[EHentaiCTRL] | loaded options ", this.options);
 				res(true);
 			});
 		});
 	}
 
 	saveOptions() {
-		chrome.storage.local.set({ ExHentaiCTRL: this.options }, () => {
-			this.logging.debug("[ExHentaiCTRL] | saved options ", this.options);
+		chrome.storage.local.set({ EHentaiCTRL: this.options }, () => {
+			this.logging.debug("[EHentaiCTRL] | saved options ", this.options);
 		});
 	}
 
@@ -114,7 +117,7 @@ export default class ExHence {
 			chrome.runtime.sendMessage("getTab", (response) => {
 				if (!response.hasOwnProperty("id"))
 					return console.error(
-						"[ExHentaiCTRL] | No tab id response from background worker."
+						"[EHentaiCTRL] | No tab id response from background worker."
 					);
 				res(response.id);
 			});
@@ -132,7 +135,7 @@ export default class ExHence {
 					return res(true);
 				}
 				this.state = result[stateId];
-				this.logging.debug("[ExHentaiCTRL] | restored state ", this.state);
+				this.logging.debug("[EHentaiCTRL] | restored state ", this.state);
 				res(true);
 			});
 		});
@@ -141,7 +144,7 @@ export default class ExHence {
 	saveState() {
 		this.state.galleryHistory = this.state.galleryHistory.splice(0, 200);
 		chrome.storage.local.set({ [`${this.thisTabID}-state`]: this.state }, () => {
-			this.logging.debug("[ExHentaiCTRL] | saved state ", this.state);
+			this.logging.debug("[EHentaiCTRL] | saved state ", this.state);
 		});
 	}
 

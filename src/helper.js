@@ -1,16 +1,16 @@
 import zyX, { html } from "./zyX-es6.js";
 
-import ExHentaiCtrl from "./main.js";
+import EHentaiCtrl from "./main.js";
 
 /**
- * @this {ExHentaiCtrl}
+ * @this {EHentaiCtrl}
  */
 export default function () {
-	const alreadyOpened = [...document.body.querySelectorAll(".ExHentaiCTRL-Help")];
+	const alreadyOpened = [...document.body.querySelectorAll(".EHentaiCTRL-Help")];
 	if (alreadyOpened.length) return alreadyOpened.forEach((_) => _.remove());
 
 	html`
-		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Help">
+		<div this="menu" class="EHentaiCTRL-Window EHentaiCTRL-Help">
 			<span class="Header">
 				<div class="Title">ExHence Hotkeys</div>
 				<div this="close" class="Close">X</div>
@@ -40,19 +40,19 @@ export default function () {
 					<div this="Action">Favorite Post/Gallery</div>
 					<div class="Keys">Shift + F</div>
 				</div>
-				<div class="Hotkey" title="[ExHentai] Go to your ExHentai favorites">
+				<div class="Hotkey" title="[EHentai] Go to your EHentai favorites">
 					<div this="Action">Go To Favorites</div>
 					<div class="Keys">F</div>
 				</div>
-				<div class="Hotkey" title="[ExHentai] Go to ExHentai popular posts">
+				<div class="Hotkey" title="[EHentai] Go to EHentai popular posts">
 					<div this="Action">Go To Popular</div>
 					<div class="Keys">P</div>
 				</div>
-				<div class="Hotkey" title="[ExHentai] Go to your watched ExHentai tags">
+				<div class="Hotkey" title="[EHentai] Go to your watched EHentai tags">
 					<div this="Action">Go To Watched Tags</div>
 					<div class="Keys">G</div>
 				</div>
-				<div class="Hotkey" title="[ExHentai] Go to the ExHentai homepage">
+				<div class="Hotkey" title="[EHentai] Go to the EHentai homepage">
 					<div this="Action">Go Home</div>
 					<div class="Keys">X</div>
 				</div>

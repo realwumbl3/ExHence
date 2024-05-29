@@ -1,9 +1,9 @@
 import { html } from "./zyX-es6.js";
 
-import ExHentaiCtrl from "./main.js";
+import EHentaiCtrl from "./main.js";
 
 /**
- * @this {ExHentaiCtrl}
+ * @this {EHentaiCtrl}
  */
 export default function () {
 	const bottomOutRepr = (state) =>
@@ -15,11 +15,11 @@ export default function () {
 	const viewBehaviorRepr = (state) =>
 		state === "scrollZoom" ? "zoom, +shift pan" : "pan, +shift zoom";
 
-	const alreadyOpened = [...document.body.querySelectorAll(".ExHentaiCTRL-Options")]
+	const alreadyOpened = [...document.body.querySelectorAll(".EHentaiCTRL-Options")]
 	if (alreadyOpened.length) return alreadyOpened.forEach((_) => _.remove());
 
 	html`
-		<div this="menu" class="ExHentaiCTRL-Window ExHentaiCTRL-Options">
+		<div this="menu" class="EHentaiCTRL-Window EHentaiCTRL-Options">
 			<span class="Header">
 				<div class="Title">ExHence Options</div>
 				<div this="close" class="Close">X</div>

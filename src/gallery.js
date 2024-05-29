@@ -34,10 +34,18 @@ export default class ExGallery {
 
 		this.container = gallery;
 
+		this.headerNav = html`
+			<div class="HeaderNav">
+				<a this=first zyx-click="${_ => this.navigateTo("first")}"><div>&lt&lt</div></a>			
+				<a this=prev zyx-click="${_ => this.navigateTo("prev")}"><div>&lt</div></a>
+				<a this=next zyx-click="${_ => this.navigateTo("next")}"><div>&gt</div></a>
+				<a this=last zyx-click="${_ => this.navigateTo("last")}"><div>&gt&gt</div></a>
+			</div>
+		`.appendTo(this.ExHence.header.right_container);
+
 		this.navUrls = {}; // { first: "", prev: "", next: "", last: "" }
 		this.readNavBar();
-
-		this.renderHeaderNav();
+		this.updateHeaderNav();
 
 		this.highlight = new HighlightedThumb(this);
 
@@ -63,16 +71,10 @@ export default class ExGallery {
 
 	}
 
-	renderHeaderNav() {
-		this.ExHence.header.right_container.innerHTML = "";
-		html`
-			<div class="HeaderNav">
-				<a available="${this.navUrls.first && "true"}" zyx-click="${_ => this.navigateTo("first")}"><div>&lt&lt</div></a>			
-				<a available="${this.navUrls.prev && "true"}" zyx-click="${_ => this.navigateTo("prev")}"><div>&lt</div></a>
-				<a available="${this.navUrls.next && "true"}" zyx-click="${_ => this.navigateTo("next")}"><div>&gt</div></a>
-				<a available="${this.navUrls.last && "true"}" zyx-click="${_ => this.navigateTo("last")}"><div>&gt&gt</div></a>
-			</div>
-		`.appendTo(this.ExHence.header.right_container);
+	updateHeaderNav() {
+		Object.entries(this.navUrls).forEach(([key, url]) => {
+			this.headerNav[key].setAttribute("available", !!url);
+		})
 	}
 
 	getCenterish() {

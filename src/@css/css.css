@@ -1,4 +1,4 @@
-/* Vanilla ExHentai Header */
+/* Vanilla EHentai Header */
 body {
     padding: 0 !important;
 }
@@ -21,6 +21,7 @@ html body #nb {
     max-height: unset;
     padding: unset;
     opacity: 0;
+
 
     &>.ExButton {
         margin: .4em;
@@ -54,6 +55,10 @@ html body #nb {
         align-self: center;
         display: flex;
 
+        &>.ExButton {
+            margin: .4em;
+        }
+
         &>.HeaderNav {
             display: flex;
             align-items: stretch;
@@ -78,6 +83,9 @@ html body #nb {
 
 }
 
+html body.is-e- #nb {
+    backdrop-filter: blur(0.6em) brightness(140%) contrast(0.3);
+}
 
 span.ExButtonHotkeyIndicator {
     opacity: 0.1;
@@ -146,7 +154,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* The small black window over the header */
-.ExHentaiCTRL-Window {
+.EHentaiCTRL-Window {
     backdrop-filter: blur(1em);
     gap: 1em;
     grid-auto-flow: row;
@@ -192,7 +200,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* Options */
-.ExHentaiCTRL-Options {
+.EHentaiCTRL-Options {
     &>.Options {
         gap: .3em;
         grid-auto-flow: row;
@@ -231,7 +239,7 @@ body #nb:hover span.ExButtonHotkeyIndicator {
 }
 
 /* Hotkeys */
-.ExHentaiCTRL-Help {
+.EHentaiCTRL-Help {
     &>.Hotkeys {
         gap: .3em;
         grid-auto-flow: row;

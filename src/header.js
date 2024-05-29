@@ -1,6 +1,6 @@
 import zyX, { html } from "./zyX-es6.js";
 
-import ExHentaiCtrl from "./main.js";
+import EHentaiCtrl from "./main.js";
 import showOptions from "./options.js";
 import showHelper from "./helper.js";
 
@@ -21,12 +21,12 @@ function ButtonHotkeyIndicator(key, { label }) {
 
 export default class ExHeader {
 	/**
-	 * @param {ExHentaiCtrl} ExHence
+	 * @param {EHentaiCtrl} ExHence
 	 * @param {HTMLElement} exheader
 	 */
 	constructor(ExHence, exheader) {
 		this.ExHence = ExHence;
-		this.ExHence.logging.info("[ExHentaiCTRL] | Extending vanilla header...");
+		this.ExHence.logging.info("[EHentaiCTRL] | Extending vanilla header...");
 
 		const headerNodes = [...exheader.childNodes]
 		const frontpage = headerNodes[0]
@@ -58,12 +58,13 @@ export default class ExHeader {
 
 		html`
 			${CustomEHLogo}
-			<a class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}"><div>Back</div></a>
 			<a class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}"><div>Options</div></a>
 			<a class="ExButton" zyx-click="${showHelper.bind(this.ExHence)}"><div>Keys</div></a>
 			${[watched, popular, favorites, torrents, uconfig, manage, mytags, ...Object.values(rest)]}
 			<a this="cleartab" class="nbw custom">Clear History.</a>
-			<span this=right_container class="Right"></span>
+			<span this=right_container class="Right">
+				<a class="ExButton" zyx-click="${_ => this.ExHence.pressQ()}"><div>Back</div></a>
+			</span>
 		`
 			.bind(this)
 			.pass(({ cleartab }) => {
