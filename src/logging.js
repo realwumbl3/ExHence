@@ -22,17 +22,19 @@ export default function SetupLogging() {
 }
 
 export class Logging {
-	constructor() {
-		this.verbose = false;
-		this.history = [];
+	#history;
+	#verbose;
+	constructor({ verbose = false } = {}) {
+		this.#verbose = verbose;
+		this.#history = [];
 		this.log("Logging initialized.");
 	}
 
 	log(level, ...args) {
 		const entry = [`[Logging] level:${level} |`, ...args];
-		this.history.push(entry);
-		this.history.length > 100 && this.history.shift();
-		this.verbose && console.log(...entry);
+		this.#history.push(entry);
+		this.#history.length > 100 && this.#history.shift();
+		this.#verbose && console.log(...entry);
 	}
 
 	info(...args) {

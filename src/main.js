@@ -17,13 +17,10 @@ injectScript(chrome.runtime.getURL("src/overrides.js"));
 
 export default class ExHence {
 	constructor() {
-
 		this.eh = window.location.origin.includes("e-hentai") ? "e-" : "ex";
 		document.body.classList.add(`is-${this.eh}`);
 
 		this.logging = new Logging()
-
-		this.verbose = true;
 
 		this.options = {
 			autoScrollPadding: 250,
@@ -62,7 +59,6 @@ export default class ExHence {
 		const view = document.querySelector(".sni");
 		if (view) this.view = new ExView(this, view);
 	}
-
 
 	logSelf() {
 		this.logging.info("this", this);
