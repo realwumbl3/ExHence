@@ -1,10 +1,10 @@
 import { css, timeoutLimiter } from "./zyX-es6.js";
 
-css`
-	@import url(${chrome.runtime.getURL("src/@css/css.css")});
-	@import url(${chrome.runtime.getURL("src/@css/gallery.css")});
-	@import url(${chrome.runtime.getURL("src/@css/view.css")});
-`;
+// css`
+// 	@import url(${chrome.runtime.getURL("src/@css/css.css")});
+// 	@import url(${chrome.runtime.getURL("src/@css/gallery.css")});
+// 	@import url(${chrome.runtime.getURL("src/@css/view.css")});
+// `;
 
 import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
