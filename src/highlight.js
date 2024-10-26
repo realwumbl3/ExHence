@@ -49,7 +49,7 @@ export default class HighlightedThumb {
     }
 
     highlightedHref() {
-        return this.#target.querySelector("a").href;
+        return this.#target?.href || this.#target.querySelector("a")?.href;
     }
 
     /**	

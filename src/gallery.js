@@ -104,7 +104,7 @@ export default class ExGallery {
 	restorePageState(state) {
 		if (!state.selectedThumb) return false;
 		const selectedThumb = this.getGalleryNodes().find(
-			(node) => node.querySelector("a").href === state.selectedThumb
+			(node) => (node?.href || node.querySelector("a")?.href) === state.selectedThumb
 		);
 		if (selectedThumb) this.selectThumbnail(selectedThumb);
 		return { selectedThumb };
@@ -129,6 +129,32 @@ export default class ExGallery {
 		this.highlight.boundsCheck();
 		this.ExHence.state.galleryHistory[0].selectedThumb = this.highlight.highlightedHref();
 		this.ExHence.saveState();
+	}
+
+	navigateTo(direction) {
+		const goto = this.navUrls[direction];
+		if (!goto) return false;
+		if (this.ExHence.coolDownPause(1000)) return;
+		window.location = goto;
+		return true;
+	}
+
+	selectFirstThumbnail() {
+		this.selectThumbnail(0);
+	}
+
+	selectLastThumbnail() {
+		this.selectThumbnail(-1);
+	}
+
+	favoriteHighlighted() {
+		this.highlight.favorite();
+		this.ExHence.header.highlightFavoriteButton();
+	}
+
+	favoriteGallery() {
+		favoritePost(window.location.href);
+		this.ExHence.header.highlightFavoriteButton();
 	}
 
 	moveHighlight(e) {
@@ -181,32 +207,6 @@ export default class ExGallery {
 				break;
 		}
 		this.selectThumbnail(nodeIndex);
-	}
-
-	navigateTo(direction) {
-		const goto = this.navUrls[direction];
-		if (!goto) return false;
-		if (this.ExHence.coolDownPause(1000)) return;
-		window.location = goto;
-		return true;
-	}
-
-	selectFirstThumbnail() {
-		this.selectThumbnail(0);
-	}
-
-	selectLastThumbnail() {
-		this.selectThumbnail(-1);
-	}
-
-	favoriteHighlighted() {
-		this.highlight.favorite();
-		this.ExHence.header.highlightFavoriteButton();
-	}
-
-	favoriteGallery() {
-		favoritePost(window.location.href);
-		this.ExHence.header.highlightFavoriteButton();
 	}
 
 }

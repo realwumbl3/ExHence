@@ -18,7 +18,9 @@ body .ido {
 /* ExGallery */
 .gl1t,
 .gdtl,
-.gdtm, /* for E-hentai.org only ???? */
+.gdtm,
+/* for E-hentai.org only ???? */
+#gdt.gt200>a,
 .glte>tbody>tr {
     transition: all 200ms ease;
     transform: scale(.98);
@@ -41,6 +43,7 @@ body.blurImages .gdtl>a>img {
 
 .gl1t.highlighted,
 .gdtl.highlighted,
+#gdt.gt200>a.highlighted,
 .glte>tbody>tr.highlighted {
     backdrop-filter: blur(2px);
     z-index: 2;
