@@ -115,7 +115,15 @@ export default class ExGallery {
 	}
 
 	calculateColumns() {
-		return Math.floor(this.container.clientWidth / this.container.firstChild.clientWidth);
+		let topRow = 0;
+		const thumbs = this.getGalleryNodes();
+		const firstThumbOffsetTop = thumbs[0].offsetTop;
+		for (const thumb of thumbs) {
+			if (thumb.offsetTop <= firstThumbOffsetTop) {
+				topRow++;
+			}
+		}
+		return topRow;
 	}
 
 	selectThumbnail(nodeOrIndex) {

@@ -24,6 +24,7 @@ export default class ExView {
 			prev: null,
 			next: null,
 			last: null,
+			inGalery: null
 		};
 
 		this.zyXImg = new ZyXImage({ src: this.getImgSrc() });
@@ -41,6 +42,7 @@ export default class ExView {
 							<b>Post</b> ⠕ {post{}} ⠪</br >
 							<b>Page</b> ⠕ {page{}} ⠪
 						</div>
+						<span class="ExButton" zyx-click="${_ => this.links.inGalery.click()}">Gallery</span>
 						<span class="ExButton" zyx-click="${_ => this.links.first.click()}">&lt&lt</span>
 						<span class="ExButton" zyx-click="${_ => this.links.prev.click()}">&lt</span>
 						<span this=range class="Range" zyx-uplate>{x{--}} / {of{--}}</span>
@@ -112,7 +114,6 @@ export default class ExView {
 
 		const navigator = i4.querySelector(".sn")
 		const [first, prev, range, next, last] = [...navigator.children];
-		this.links = { first, prev, next, last }
 
 		const [x, of] = range.textContent.split(" / ").map(_ => parseInt(_));
 		this.range.flash({ x, of });
@@ -120,6 +121,10 @@ export default class ExView {
 		this.panZoom.resetTransform();
 		this.zyXImg.src = this.getImgSrc();
 
+		const lastRow = i6.querySelectorAll("a")
+		const [inGalery, report, download] = lastRow;
+
+		this.links = { first, prev, next, last, inGalery };
 		this.showHeaderFor(2000);
 	}
 
