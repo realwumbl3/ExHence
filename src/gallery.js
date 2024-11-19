@@ -123,7 +123,6 @@ export default class ExGallery {
 				topRow++;
 			}
 		}
-		console.log("topRow", topRow);
 		return topRow;
 	}
 
