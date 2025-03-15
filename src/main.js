@@ -180,6 +180,10 @@ export default class ExHence {
 					if (this.pageType === "gallery") return this.gallery.favoriteGallery();
 					if (this.pageType === "home") return this.gallery.favoriteHighlighted();
 				}
+				if (e.ctrlKey) {
+					// Do nothing, the user is trying to use their browser's search feature
+					return
+				}
 				return this.goToLocation("/favorites.php");
 			case "KeyP":
 				return this.goToLocation("/popular");
