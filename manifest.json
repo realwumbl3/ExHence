@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ExHence. by wumbl3.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Enhancement suit for E-Hentai / Ex.",
   "permissions": [
     "downloads",
