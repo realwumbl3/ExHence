@@ -53,7 +53,7 @@ export default class ExHeader {
 		exheader.innerHTML = "";
 
 		html`
-			${CustomEHLogo}
+			${CustomEHLogo} 
 			<a class="ExButton" zyx-click="${showOptions.bind(this.ExHence)}"><div>Options</div></a>
 			<a class="ExButton" zyx-click="${showHelper.bind(this.ExHence)}"><div>Keys</div></a>
 			${[watched, popular, favorites, torrents, uconfig, manage, mytags, ...Object.values(rest)]}
@@ -63,22 +63,22 @@ export default class ExHeader {
 			</span>
 		`
 			.bind(this)
-			.pass(({ cleartab }) => {
-				cleartab.addEventListener("click", () => {
-					cleartab.textContent = "ExHence History Cleared!";
-					setTimeout(() => (cleartab.textContent = "Clear History."), 1000);
-					this.ExHence.clearState();
-				});
-			})
 			.appendTo(exheader);
 
+		this.cleartab.addEventListener("click", () => {
+			cleartab.textContent = "ExHence History Cleared!";
+			setTimeout(() => (cleartab.textContent = "Clear History."), 1000);
+			this.ExHence.clearState();
+		});
 		exheader.style.opacity = 1;
 
 		// Observe the header for a later attached "Log out" button (Sad Panda extension).
 		observe(exheader, `a[href="#"]`, (node) => {
-			node.classList.add("custom");
-			node.parentNode.remove();
-			this.cleartab.after(node);
+			node.style.display = "none";
+			const { signout } = html`
+				<a this=signout class="ExButton custom" zyx-click="${_ =>node.click()}">Log out</a>
+			`.const()
+			this.cleartab.after(signout);
 		}, true);
 	}
 

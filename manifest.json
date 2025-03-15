@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "ExHence. by wumbl3.",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Enhancement suit for E-Hentai / Ex.",
   "permissions": [
     "downloads",
@@ -17,12 +17,13 @@
         "*://exhentai.org/*"
       ],
       "css": [
-        "src/@css/ximage.css",
+        "src/@css/ximage.css"
+      ],
+      "cssn't": [
         "src/@css/css.css",
         "src/@css/view.css",
         "src/@css/gallery.css"
       ],
-      "cssn't": [],
       "js": [
         "main.js"
       ],

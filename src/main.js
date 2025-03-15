@@ -1,10 +1,10 @@
 import { css, timeoutLimiter } from "./zyX-es6.js";
 
-// css`
-// 	@import url(${chrome.runtime.getURL("src/@css/css.css")});
-// 	@import url(${chrome.runtime.getURL("src/@css/gallery.css")});
-// 	@import url(${chrome.runtime.getURL("src/@css/view.css")});
-// `;
+css`
+	@import url(${chrome.runtime.getURL("src/@css/css.css")});
+	@import url(${chrome.runtime.getURL("src/@css/gallery.css")});
+	@import url(${chrome.runtime.getURL("src/@css/view.css")});
+`;
 
 import ExtendHeader from "./header.js";
 import ExGallery from "./gallery.js";
@@ -20,7 +20,7 @@ export default class ExHence {
 		this.eh = window.location.origin.includes("e-hentai") ? "e-" : "ex";
 		document.body.classList.add(`is-${this.eh}`);
 
-		this.logging = new Logging()
+		this.logging = new Logging({ verbose: true })
 
 		this.options = {
 			autoScrollPadding: 250,
@@ -44,12 +44,12 @@ export default class ExHence {
 
 		this.vanillaHeader = document.querySelector("#nb");
 		if (this.vanillaHeader) this.header = new ExtendHeader(this, this.vanillaHeader);
-
 		window.addEventListener("keydown", this.keydown.bind(this));
 
 		this.asynconstructor();
 
 		this.logging.assert(this instanceof ExHence, "This assetion should never fail.");
+		console.log("ExHense", this)
 	}
 
 	async asynconstructor() {
