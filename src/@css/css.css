@@ -89,13 +89,13 @@ html body.is-e- #nb {
 
 span.ExButtonHotkeyIndicator {
     opacity: 0.1;
-    font-size: 0.6rem;
+    font-size: 0.6em;
     background-color: grey;
-    height: 0.9rem;
+    height: 0.9em;
     color: black;
-    width: 0.9rem;
-    padding: 0.2rem;
-    line-height: .6rem;
+    width: 0.9em;
+    padding: 0.2em;
+    line-height: .9em;
     text-align: center;
     border-radius: 100%;
     top: 2px;
