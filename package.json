@@ -1,0 +1,19 @@
+{
+  "name": "extension-tests",
+  "version": "0.1.0",
+  "private": true,
+  "description": "E2E tests for YouTube iframe MV3 extension using Playwright",
+  "scripts": {
+    "test": "playwright test --headed --workers=1",
+    "test:headed": "playwright test --headed --workers=1",
+    "test:install": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.44.0",
+    "@types/node": "^24.7.2",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "i": "^0.3.7"
+  }
+}

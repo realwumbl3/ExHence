@@ -51,6 +51,7 @@ export default class ExHeader {
 		ButtonHotkeyIndicator(popular, { label: "P" });
 
 		exheader.innerHTML = "";
+		exheader.classList.remove("nosel");
 
 		html`
 			${CustomEHLogo} 
